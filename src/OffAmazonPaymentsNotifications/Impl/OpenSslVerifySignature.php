@@ -140,7 +140,7 @@ class OpenSslVerifySignature implements VerifySignature
     private function _getCertificateFromCertifcatePath($certificatePath)
     {
         try {
-            $cert = file_get_contents($certificatePath);
+            $cert = $this->curl_get_contents($certificatePath);
         } catch (Exception $ex) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
                 "Error with signature validation - unable to request signing ".
@@ -156,6 +156,43 @@ class OpenSslVerifySignature implements VerifySignature
         }
             
         return $cert;
+    }
+	
+	private function curl_get_contents($requestUrl, $postdata = null) 
+	{
+        $options = array(
+
+            CURLOPT_RETURNTRANSFER => true, // return web page
+            CURLOPT_HEADER => false, // dont return headers
+            CURLOPT_FOLLOWLOCATION => true, // follow redirects
+            CURLOPT_ENCODING => "", // handle all encodings
+            CURLOPT_USERAGENT => "OpenSeelVerifySignature::curl", // who am i
+            CURLOPT_AUTOREFERER => true, // set referer on redirect
+            CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
+            CURLOPT_TIMEOUT => 120, // timeout on response
+            CURLOPT_MAXREDIRS => 3, // stop after 3redirects
+        );
+
+        $ch = curl_init($requestUrl);
+        curl_setopt_array( $ch, $options );
+
+        //echo "<pre>"; var_dump($requestUrl);
+        //var_dump($postdata); echo "</pre>";
+
+        if ($postdata) {
+
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        }
+
+        $content = curl_exec( $ch );
+        $err = curl_errno( $ch );
+        $errmsg = curl_error( $ch );
+        $header = curl_getinfo( $ch );
+        curl_close( $ch );
+
+        return $content;
+
     }
 }
 ?>
