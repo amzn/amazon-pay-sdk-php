@@ -140,7 +140,7 @@ class OpenSslVerifySignature implements VerifySignature
     private function _getCertificateFromCertifcatePath($certificatePath)
     {
         try {
-             $cert = $this->curl_get_contents($certificatePath);
+            $cert = $this->curl_get_contents($certificatePath);
         } catch (Exception $ex) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
                 "Error with signature validation - unable to request signing ".
