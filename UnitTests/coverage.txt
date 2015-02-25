@@ -1,0 +1,18 @@
+
+
+Code Coverage Report 
+  2015-04-08 22:26:32
+
+ Summary: 
+  Classes: 0.00% (0/4)
+  Methods: 70.42% (50/71)
+  Lines:   81.59% (514/630)
+
+\PayWithAmazon::Client
+  Methods:  91.67% (44/48)   Lines:  84.51% (431/510)
+\PayWithAmazon::HttpCurl
+  Methods:  57.14% ( 4/ 7)   Lines:  53.33% ( 24/ 45)
+\PayWithAmazon::ResponseParser
+  Methods:  83.33% ( 5/ 6)   Lines:  56.52% ( 13/ 23)
+\PayWithAmazon::Signature
+  Methods:  90.00% ( 9/10)   Lines:  88.46% ( 46/ 52)

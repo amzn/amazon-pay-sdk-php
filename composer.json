@@ -1,0 +1,30 @@
+{
+   "name": "amzn/login-and-pay-with-amazon-sdk-php",
+   "type": "library",
+   "description": "Pay with Amazon SDK",
+   "keywords": [
+      "amazon",
+      "pay",
+      "payment",
+      "payments",
+      "pay with amazon",
+      "amazon payments"
+   ],
+   "homepage": "https://github.com/amzn/login-and-pay-with-amazon-sdk-php",
+   "license": "Apache OSL-2",
+   "authors": [
+      {
+         "name": "Amazon Payments",
+         "email": "eps-dse@amazon.com"
+      }
+   ],
+   "autoload": {
+      "psr-4": {
+         "PayWithAmazon\\": "PayWithAmazon/"
+      }
+   },
+   "require": {
+      "ext-curl": "*",
+      "php": ">=5.3.0"
+   }
+}
