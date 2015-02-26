@@ -421,19 +421,12 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
-     /* Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
-     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Authorize.html
+     /* Authorize API call - Returns the status of a particular authorization and the total amount captured on the authorization.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetAuthorizationDetails.html
      *
      * @param SellerId [String]
-     * @param AmazonOrderReferenceId [String]
-     * @param AuthorizeAmount [String]
-     * @param CurrencyCode [String]
-     * @optional AuthorizationReferenceId [String]
-     * @optional CaptureNow [String]
+     * @param AmazonAuthorizationId [String]
      * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
-     * @optional SellerAuthorizationNote [String]
-     * @optional TransactionTimeout [String]
-     * @optional SoftDescriptor [String]
      */
     public function GetAuthorizationDetails($RequestParameters = null)
     {
@@ -457,6 +450,18 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* Capture API call - Captures funds from an authorized payment instrument.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Capture.html
+     *
+     * @param SellerId [String]
+     * @param AmazonAuthorizationId [String]
+     * @param CaptureAmount [String]
+     * @param CurrencyCode [String]
+     * @optional CaptureReferenceId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional SellerCaptureNote [String]
+     * @optional SoftDescriptor [String]
+     */
     public function Capture($RequestParameters = null)
     {
         $parameters           = array();
@@ -501,6 +506,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* GetCaptureDetails API call - Returns the status of a particular capture and the total amount refunded on the capture.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetCaptureDetails.html
+     *
+     * @param SellerId [String]
+     * @param AmazonCaptureId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
+    
     public function GetCaptureDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -523,6 +536,18 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* Refund API call - Refunds a previously captured amount.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Refund.html
+     *
+     * @param SellerId [String]
+     * @param AmazonCaptureId [String]
+     * @param RefundReferenceId [String]
+     * @param RefundAmount [String]
+     * @param CurrencyCode [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional SellerRefundNote [String]
+     * @optional SoftDescriptor [String]
+     */
     public function Refund($RequestParameters = null)
     {
         $parameters           = array();
@@ -567,6 +592,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* GetRefundDetails API call - Returns the status of a particular refund.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetRefundDetails.html
+     *
+     * @param SellerId [String]
+     * @param AmazonRefundId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
+    
     public function GetRefundDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -589,11 +622,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
-    /* Returns the operational status of the Off-Amazon Payments API section
+    /* GetServiceStatus API Call - Returns the operational status of the Off-Amazon Payments API section
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetServiceStatus.html
+     *
      *The GetServiceStatus operation returns the operational status of the Off-Amazon Payments API
-     *section of Amazon Marketplace Web Service (Amazon MWS). Status values are GREEN, GREEN_I, YELLOW, and RED.
-     *@see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetServiceStatus.html
+     *section of Amazon Marketplace Web Service (Amazon MWS).
+     *Status values are GREEN, GREEN_I, YELLOW, and RED.
      */
+    
     public function GetServiceStatus($RequestParameters = null)
     {
         $parameters           = array();
@@ -610,8 +646,9 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
-    /* Creates an order reference for the given object
+    /* CreateOrderReferenceForId API Call - Creates an order reference for the given object
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CreateOrderReferenceForId.html
+     *
      * @param Id [String]
      * @optional InheritShippingAddress [Boolean]
      * @optional ConfirmNow [Boolean]
@@ -622,6 +659,7 @@ class OffAmazonPaymentsService_Client
      * @optional StoreName [String]
      * @optional CustomInformation [String]
      */
+    
     public function CreateOrderReferenceForId($RequestParameters = null)
     {
         $parameters           = array();
@@ -662,6 +700,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+     /* GetBillingAgreementDetails API Call - Returns details about the Billing Agreement object and its current state.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetBillingAgreementDetails.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
+     
     public function GetBillingAgreementDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -684,6 +730,21 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* SetBillingAgreementDetails API call - Sets billing agreement details such as a description of the agreement and other information about the seller.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetBillingAgreementDetails.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @param Amount [String]
+     * @param CurrencyCode [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional PlatformId [String]
+     * @optional SellerNote [String]
+     * @optional SellerBillingAgreementId [String]
+     * @optional StoreName [String]
+     * @optional CustomInformation [String]
+     */
+    
     public function SetBillingAgreementDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -700,6 +761,8 @@ class OffAmazonPaymentsService_Client
             throw new InvalidArgumentException("AmazonBillingAgreementId is a required parameter");
         }
         
+        if (!empty($RequestParameters['MWSAuthToken']))
+            $parameters['MWSAuthToken'] = $RequestParameters['MWSAuthToken'];
         if (!empty($RequestParameters['PlatformId']))
             $parameters['BillingAgreementAttributes.PlatformId'] = $RequestParameters['PlatformId'];
         if (!empty($RequestParameters['SellerNote']))
@@ -710,12 +773,17 @@ class OffAmazonPaymentsService_Client
             $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation'] = $RequestParameters['CustomInformation'];
         if (!empty($RequestParameters['StoreName']))
             $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName'] = $RequestParameters['StoreName'];
-        if (!empty($RequestParameters['MWSAuthToken']))
-            $parameters['MWSAuthToken'] = $RequestParameters['MWSAuthToken'];
         $ResponseToArray = $this->CalculatesignatureAndPost($parameters);
         return ($ResponseToArray);
     }
     
+    /* ConfirmBillingAgreement API Call - Confirms that the billing agreement is free of constraints and all required information has been set on the billing agreement.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function ConfirmBillingAgreement($RequestParameters = null)
     {
         $parameters           = array();
