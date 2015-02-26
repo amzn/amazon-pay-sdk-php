@@ -75,23 +75,23 @@ class OffAmazonPaymentsService_Client
 	}
 	
         if ($this->_Config['SellerId'] == "") {
-            throw new InvalidArgumentException("merchantId not set in the properties file");
+            throw new InvalidArgumentException("merchantId is a required parameter and is not set");
         }
         
         if ($this->_Config['accessKey'] == "") {
-            throw new InvalidArgumentException("accessKey not set ");
+            throw new InvalidArgumentException("accessKey is a required parameter and is not set");
         }
         
         if ($this->_Config['secretKey'] == "") {
-            throw new InvalidArgumentException("secretKey not set in the properties file");
+            throw new InvalidArgumentException("secretKey is a required parameter and is not set");
         }
         
         if ($this->_Config['region'] == "") {
-            throw new InvalidArgumentException("region not set in the properties file");
+            throw new InvalidArgumentException("region is a required parameter and is not set");
         }
         
         if ($this->_Config['environment'] == "") {
-            throw new InvalidArgumentException("environment not set in the properties file");
+            throw new InvalidArgumentException("environment is a required parameter and is not set");
         }
     }
     
@@ -139,6 +139,14 @@ class OffAmazonPaymentsService_Client
 	return $UserInfoObject;
     }
     
+    /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
+     * 
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetOrderReferenceDetails.html
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @optional AddressConsentToken [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function GetOrderReferenceDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -163,6 +171,20 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetOrderReferenceDetailss.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @param Amount [String]
+     * @param CurrencyCode [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional PlatformId [String]
+     * @optional SellerNote [String]
+     * @optional SellerOrderId [String]
+     * @optional StoreName [String]
+     * @optional CustomInformation [String]
+     */
     public function SetOrderReferenceDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -207,6 +229,13 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* ConfirmOrderReferenceDetails API call - Confirms that the order reference is free of constraints and all required information has been set on the order reference.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmOrderReference.html
+     
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function ConfirmOrderReference($RequestParameters = null)
     {
         $parameters           = array();
@@ -229,6 +258,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* CancelOrderReferenceDetails API call - Cancels a previously confirmed order reference.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CancelOrderReference.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @optional CancelationReason [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function CancelOrderReference($RequestParameters = null)
     {
         $parameters           = array();
@@ -253,6 +290,15 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* CloseOrderReferenceDetails API call - Confirms that an order reference has been fulfilled (fully or partially)
+     * and that you do not expect to create any new authorizations on this order reference.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseOrderReference.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @optional ClosureReason [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function CloseOrderReference($RequestParameters = null)
     {
         $parameters           = array();
@@ -277,6 +323,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* CloseAuthorization API call - Closes an authorization.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseOrderReference.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @optional AddressConsentToken [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function CloseAuthorization($RequestParameters = null)
     {
         $parameters           = array();
@@ -301,6 +355,20 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Authorize.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @param AuthorizeAmount [String]
+     * @param CurrencyCode [String]
+     * @optional AuthorizationReferenceId [String]
+     * @optional CaptureNow [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional SellerAuthorizationNote [String]
+     * @optional TransactionTimeout [String]
+     * @optional SoftDescriptor [String]
+     */
     public function Authorize($RequestParameters = null)
     {
         $parameters           = array();
@@ -353,6 +421,20 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+     /* Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Authorize.html
+     *
+     * @param SellerId [String]
+     * @param AmazonOrderReferenceId [String]
+     * @param AuthorizeAmount [String]
+     * @param CurrencyCode [String]
+     * @optional AuthorizationReferenceId [String]
+     * @optional CaptureNow [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     * @optional SellerAuthorizationNote [String]
+     * @optional TransactionTimeout [String]
+     * @optional SoftDescriptor [String]
+     */
     public function GetAuthorizationDetails($RequestParameters = null)
     {
         $parameters           = array();
@@ -929,23 +1011,7 @@ class OffAmazonPaymentsService_Client
         curl_close($ch);
         list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
         $other = preg_split("/\r\n|\n|\r/", $other);
-        /* $headers = array();
-        foreach ($other as $value) {
-        if (strpos($value, ': ') !== FALSE) {
-        list ($k, $v) = explode (': ', $value);
-        if (array_key_exists($k, $headers)) {
-        $headers[$k] = $headers[$k] . "," . $v;
-        } else {
-        $headers[$k] = $v;
-        }
-        }
-        }*/
-        /*require_once 'OffAmazonPaymentsService/Model/ResponseHeaderMetadata.php';
-        $responseHeaderMetadata = new OffAmazonPaymentsService_Model_ResponseHeaderMetadata(
-        $headers['x-mws-request-id'],
-        $headers['x-mws-response-context'],
-        $headers['x-mws-timestamp']);
-        */
+	
         list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
         return array(
             'Status' => (int) $code,
