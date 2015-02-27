@@ -191,13 +191,13 @@ class GenericResponse
     
     public function __construct($response)
     {
-        $Responsetype = array('ConfirmORO' => 'ConfirmOrderReferenceResult',
-                              'CloseORO'   => 'CloseOrderReferenceResult',
-                              'CancelORO'  => 'CancelOrderReferenceResult',
-                              'ConfirmBA'  => 'ConfirmBillingAgreementResult',
-                              'CloseBA'    => 'CloseBillingAgreementResult',
-                              'CloseAuth'  => 'CloseAuthorizationResult');
-        
+        $Responsetype = array('ConfirmORO' => 'ConfirmOrderReferenceResponse',
+                              'CloseORO'   => 'CloseOrderReferenceResponse',
+                              'CancelORO'  => 'CancelOrderReferenceResponse',
+                              'ConfirmBA'  => 'ConfirmBillingAgreementResponse',
+                              'CloseBA'    => 'CloseBillingAgreementResponse',
+                              'CloseAuth'  => 'CloseAuthorizationResponse');
+        $Responsetypefound = false;
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
         $ErrorDetails = new ErrorResponse($response);
         
@@ -206,22 +206,26 @@ class GenericResponse
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
-        } elseif(isset($response['ResponseMetadata']) &&
-                  (array_key_exists($Responsetype['ConfirmORO'], $response)||
-                   array_key_exists($Responsetype['CloseORO'], $response)||
-                   array_key_exists($Responsetype['CancelORO'], $response)||
-                   array_key_exists($Responsetype['ConfirmBA'], $response)||
-                   array_key_exists($Responsetype['CloseBA'], $response)||
-                   array_key_exists($Responsetype['CloseAuth'], $response))
-                 ){
-            foreach ($iterator as $key => $value) {
-                if ($key === 'RequestId') {
-                    $this->RequestId = $value;
-                    $this->isSuccess = true;
-            }
-            }
-        }else{
-            throw new Exception("This method does not support the repsonse for the API call, please check to call the right Response Function");
+        }  elseif(isset($response['ResponseMetadata'])){
+            
+                foreach ($Responsetype as $key => $value) {
+                    if ($response['ResponseType']['ResponseName']===$value){
+                        $Responsetypefound = true;
+                        
+                        foreach ($iterator as $key => $value) {
+                            if ($key === 'RequestId') {
+                                $this->RequestId = $value;
+                                $this->isSuccess = true;
+                            }
+                        }
+                        break;
+                    
+                    }
+                    
+                }
+                if(!$Responsetypefound){
+                    throw new Exception("This method does not support the repsonse for the API call, please check to call the right Response Function");
+                }
         }
     }
 }

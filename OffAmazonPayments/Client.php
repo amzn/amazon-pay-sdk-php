@@ -39,20 +39,23 @@ class OffAmazonPaymentsService_Client
 		'ProxyPort'          => - 1,
 		'ProxyUsername'      => null,
 		'ProxyPassword'      => null,
-		'clientId'           => null
+		'clientId'           => null,
+		'UserProfileRegion'  => null
 	);
-    private $_serviceUrls = array('eu' => 'https://mws-eu.amazonservices.com',
-                                  'na' => 'https://mws.amazonservices.com');
+    private $MPSserviceUrls = array('eu' => 'https://mws-eu.amazonservices.com',
+                                    'na' => 'https://mws.amazonservices.com');
     
     private $LiveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					 'na' => 'https://api.amazon.com',
+					 'us' => 'https://api.amazon.com',
 					 'de' => 'https://api.amazon.co.de');
     
     private $SandboxProfileEndpoint = array('uk' => 'https://api.sandbox.amazon.co.uk',
 					    'na' => 'https://api.sandbox.amazon.com',
+					    'us' => 'https://api.sandbox.amazon.com',
 					    'de' => 'https://api.sandbox.amazon.co.de');
     
-    private $_regionMappings = array('de' => 'eu',
+    private $MPSregionMappings = array('de' => 'eu',
                                      'na' => 'na',
                                      'uk' => 'eu',
                                      'us' => 'na');
@@ -95,6 +98,9 @@ class OffAmazonPaymentsService_Client
         }
     }
     
+    /* Setter
+     * Sets the value for the key if the key exists in _Config
+     */
     public function __set($name, $value)
     {
         if (array_key_exists($name, $this->_Config)) {
@@ -104,6 +110,9 @@ class OffAmazonPaymentsService_Client
         }
     }
     
+    /* Setter
+     * Gets the value for the key if the key exists in _Config
+     */
     public function __get($name)
     {
         if (array_key_exists($name, $this->_Config)) {
@@ -113,27 +122,54 @@ class OffAmazonPaymentsService_Client
         }
     }
     
+    /* GetUserInfo convenience funtion - Returns user's profile information from Amazon using the access token returned by the Button widget.
+     * 
+     * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
+     * @param $access_token [String]
+     * @param _Config['UserProfileRegion'] [String]
+     */
     public function GetUserInfo($access_token)
     {
-	$this->ProfileEndpointUrl();
+	//Get the correct Profile Endpoint URL based off the country/region provided in the _Config['UserProfileRegion']
+	if(!empty($this->UserProfileRegion))
+	{
+	    $this->ProfileEndpointUrl();
+	}
+	else{
+	    throw new InvalidArgumentException("Profile Region is a required parameter and is not set");
+	}
+	if(empty($access_token))
+	{
+	    throw new InvalidArgumentException("Access Token is a required parameter and is not set");
+	}
+	//to make sure double encoding doesn't occur decode first and encode again.
+	$access_token = urldecode($access_token);
 	
 	$c = curl_init($this->ProfileEndpoint.'/auth/o2/tokeninfo?access_token='. urlencode($access_token));
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($c);
+	 if (!$response = curl_exec($c)) {
+            $error_msg = "Unable to post request, underlying exception of " . curl_error($c);
+            curl_close($c);
+            throw new Exception($error_msg);
+        }
 	curl_close($c);
 	$data = json_decode($response);
 	
 	if ($data->aud != $this->_Config['clientId']) {
 	// the access token does not belong to us
 	header('HTTP/1.1 404 Not Found');
-	throw new Exception('The Requested Information was not found');
+	throw new Exception('The Access token entered is incorrect');
 	}
 
 	// exchange the access token for user profile
 	$c = curl_init($this->ProfileEndpoint.'/user/profile');
 	curl_setopt($c, CURLOPT_HTTPHEADER, array('Authorization: bearer '. $access_token));
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($c);
+	if (!$response = curl_exec($c)) {
+            $error_msg = "Unable to post request, underlying exception of " . curl_error($c);
+            curl_close($c);
+            throw new Exception($error_msg);
+        }
 	curl_close($c);
 	$UserInfoObject = json_decode($response);
 	return $UserInfoObject;
@@ -172,7 +208,7 @@ class OffAmazonPaymentsService_Client
     }
     
     /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
-     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetOrderReferenceDetailss.html
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetOrderReferenceDetails.html
      *
      * @param SellerId [String]
      * @param AmazonOrderReferenceId [String]
@@ -806,6 +842,13 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* ValidateBillignAgreement API Call - Validates the status of the BillingAgreement object and the payment method associated with it.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ValidateBillignAgreement.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function ValidateBillignAgreement($RequestParameters = null)
     {
         $parameters           = array();
@@ -828,6 +871,26 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the billing agreement.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_AuthorizeOnBillingAgreement.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @param AuthorizationReferenceId [String]
+     * @param AuthorizationAmount [String]
+     * @param CurrencyCode [String]
+     * @optional SellerAuthorizationNote [String]
+     * @optional TransactionTimeout - Defaults to 0 -Synchronous
+     * @optional CaptureNow [String]
+     * @optional SoftDescriptor [String]
+     * @optional SellerNote [String]
+     * @optional PlatformId [String]
+     * @optional CustomInformation [String]
+     * @optional SellerOrderId [String]
+     * @optional StoreName [String]
+     * @optional InheritShippingAddress [Boolean] - Defaults to true
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function AuthorizeOnBillingAgreement($RequestParameters = null)
     {
         $parameters           = array();
@@ -893,6 +956,14 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /* CloseBillingAgreement API Call - Returns details about the Billing Agreement object and its current state.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseBillingAgreement.html
+     *
+     * @param SellerId [String]
+     * @param AmazonBillingAgreementId [String]
+     * @optional ClosureReason [String]
+     * @optional MWSAuthToken [String] (required only for Solution Porviders and Marketplace owners)
+     */
     public function CloseBillingAgreement($RequestParameters = null)
     {
         $parameters           = array();
@@ -917,22 +988,60 @@ class OffAmazonPaymentsService_Client
         return ($ResponseToArray);
     }
     
+    /*Create an Array of required parameters, sort them
+     *calculate signature and invoke the POST them to the MWS Service URL
+     * @param AWSAccessKeyId [String]
+     * @param Version [String]
+     * @param SignatureMethod [String]
+     * @param Timestamp [String]
+     * @param Signature [String]
+     */
     private function CalculatesignatureAndPost($parameters)
     {
         $parameters['AWSAccessKeyId']   = $this->_Config['accessKey'];
         $parameters['Version']          = self::SERVICE_VERSION;
         $parameters['SignatureMethod']  = 'HmacSHA256';
         $parameters['SignatureVersion'] = 2;
-        $parameters['Timestamp']        = $this->_getFormattedTimestamp();
+        $parameters['Timestamp']        = $this->GetFormattedTimestamp();
         uksort($parameters, 'strcmp');
 	$this->createServiceUrl();
-        $parameters['Signature'] = $this->_signParameters($parameters);
-        $parameters              = $this->_getParametersAsString($parameters);
-        $ResponseToArray         = $this->_invokePost($parameters);
+        $parameters['Signature'] = $this->SignParameters($parameters);
+        $parameters              = $this->GetParametersAsString($parameters);
+        $ResponseToArray         = $this->InvokePost($parameters);
         return $ResponseToArray;
     }
     
-    private function _signParameters(array $parameters)
+    /**
+     * Computes RFC 2104-compliant HMAC signature for request parameters
+     * Implements AWS Signature, as per following spec:
+     *
+     * If Signature Version is 0, it signs concatenated Action and Timestamp
+     *
+     * If Signature Version is 1, it performs the following:
+     *
+     * Sorts all  parameters (including SignatureVersion and excluding Signature,
+     * the value of which is being created), ignoring case.
+     *
+     * Iterate over the sorted list and append the parameter name (in original case)
+     * and then its value. It will not URL-encode the parameter values before
+     * constructing this string. There are no separators.
+     *
+     * If Signature Version is 2, string to sign is based on following:
+     *
+     *    1. The HTTP Request Method followed by an ASCII newline (%0A)
+     *    2. The HTTP Host header in the form of lowercase host, followed by an ASCII newline.
+     *    3. The URL encoded HTTP absolute path component of the URI
+     *       (up to but not including the query string parameters);
+     *       if this is empty use a forward '/'. This parameter is followed by an ASCII newline.
+     *    4. The concatenation of all query string components (names and values)
+     *       as UTF-8 characters which are URL encoded as per RFC 3986
+     *       (hex characters MUST be uppercase), sorted using lexicographic byte ordering.
+     *       Parameter names are separated from their values by the '=' character
+     *       (ASCII character 61), even if the value is empty.
+     *       Pairs of parameter and values are separated by the '&' character (ASCII code 38).
+     *
+     */
+    private function SignParameters(array $parameters)
     {
         $signatureVersion = $parameters['SignatureVersion'];
         $algorithm        = "HmacSHA1";
@@ -940,15 +1049,20 @@ class OffAmazonPaymentsService_Client
         if (2 === $signatureVersion) {
             $algorithm                     = "HmacSHA256";
             $parameters['SignatureMethod'] = $algorithm;
-            $stringToSign                  = $this->_calculateStringToSignV2($parameters);
+            $stringToSign                  = $this->CalculateStringToSignV2($parameters);
         } else {
             throw new Exception("Invalid Signature Version specified");
         }
         
-        return $this->_sign($stringToSign, $algorithm);
+        return $this->Sign($stringToSign, $algorithm);
     }
     
-    private function _calculateStringToSignV2(array $parameters)
+    /**
+     * Calculate String to Sign for SignatureVersion 2
+     * @param array $parameters request parameters
+     * @return String to Sign
+     */
+    private function CalculateStringToSignV2(array $parameters)
     {
         $data = 'POST';
         $data .= "\n";
@@ -956,11 +1070,14 @@ class OffAmazonPaymentsService_Client
         $data .= "\n";
         $data .= $this->_endpointpath;
         $data .= "\n";
-        $data .= $this->_getParametersAsString($parameters);
+        $data .= $this->GetParametersAsString($parameters);
         return $data;
     }
     
-    private function _getParametersAsString(array $parameters)
+    /**
+     * Convert paremeters to Url encoded query string
+     */
+    private function GetParametersAsString(array $parameters)
     {
         $queryParameters = array();
         foreach ($parameters as $key => $value) {
@@ -975,7 +1092,10 @@ class OffAmazonPaymentsService_Client
         return str_replace('%7E', '~', rawurlencode($value));
     }
     
-    private function _sign($data, $algorithm)
+    /**
+     * Computes RFC 2104-compliant HMAC signature.
+     */
+    private function Sign($data, $algorithm)
     {
         if ($algorithm === 'HmacSHA1') {
             $hash = 'sha1';
@@ -986,14 +1106,22 @@ class OffAmazonPaymentsService_Client
         }
         
         return base64_encode(hash_hmac($hash, $data, $this->_Config['secretKey'], true));
-    }
+    }   
     
-    private function _getFormattedTimestamp()
+    /**
+     * Formats date as ISO 8601 timestamp
+     */
+    private function GetFormattedTimestamp()
     {
         return gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", time());
     }
     
-    private function _invokePost($parameters)
+    /**
+     * InvokePost takes the parameters and invokes the _httpPost function to POST the parameters
+     * exponential retries on error 500 and 503
+     * The response from the POST is an XML which is converted to Array
+     */
+    private function InvokePost($parameters)
     {
         $response        = array();
         $responseBody    = null;
@@ -1008,9 +1136,13 @@ class OffAmazonPaymentsService_Client
                     $response        = $this->_httpPost($parameters);
                     $responseBody    = $response['ResponseBody'];
                     $statusCode      = $response['Status'];
+                    $ResponseType    = new SimpleXMLElement($responseBody);
+
                     $ResponseToArray = simplexml_load_string((string) $responseBody);
                     $ResponseToArray = json_encode($ResponseToArray);
                     $ResponseToArray = json_decode($ResponseToArray, true);
+                    $ResponseToArray['ResponseType'] = array('ResponseName' => $ResponseType->getName());
+		    
                     if ($statusCode == 200) {
                         $shouldRetry = false;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
@@ -1037,7 +1169,7 @@ class OffAmazonPaymentsService_Client
     }
     
     /**
-     * Perform HTTP post with exponential retries on error 500 and 503
+     * Perform HTTP post using Curl
      *
      */
     private function _httpPost($parameters)
@@ -1109,16 +1241,16 @@ class OffAmazonPaymentsService_Client
     {
 	$region = strtolower($this->_Config['region']);
         if (strcasecmp($this->_Config['environment'], self::SANDBOX) == 0) {
-            if (array_key_exists($region,$this->_regionMappings)) {
-                $this->_Config['serviceUrl'] = $this->_serviceUrls[$this->_regionMappings[$region]] . '/' . self::SANDBOX_PATH . '/' . self::SERVICE_VERSION;
+            if (array_key_exists($region,$this->MPSregionMappings)) {
+                $this->_Config['serviceUrl'] = $this->MPSserviceUrls[$this->MPSregionMappings[$region]] . '/' . self::SANDBOX_PATH . '/' . self::SERVICE_VERSION;
             } else {
 		throw new Exception($region.'is not a supported region');
 	    }
             
             $this->_endpointpath = '/' . self::SANDBOX_PATH . '/' . self::SERVICE_VERSION;
         } elseif (strcasecmp($this->_Config['environment'], self::LIVE) == 0) {
-            if (array_key_exists($region,$this->_regionMappings)) {
-                $this->_Config['serviceUrl'] = $this->_serviceUrls[$this->_regionMappings[$region]] . '/' . self::LIVE_PATH . '/' . self::SERVICE_VERSION;
+            if (array_key_exists($region,$this->MPSregionMappings)) {
+                $this->_Config['serviceUrl'] = $this->MPSserviceUrls[$this->MPSregionMappings[$region]] . '/' . self::LIVE_PATH . '/' . self::SERVICE_VERSION;
             }
 	    else {
 		throw new Exception($region.'is not a supported region');
@@ -1130,13 +1262,13 @@ class OffAmazonPaymentsService_Client
     
     private function ProfileEndpointUrl()
     {
-	$region = strtolower($this->_Config['region']);
+	$region = strtolower($this->_Config['UserProfileRegion']);
         if (strcasecmp($this->_Config['environment'], self::SANDBOX) == 0) {
-            if (array_key_exists($region,$this->_regionMappings)) {
+            if (array_key_exists($region,$this->SandboxProfileEndpoint)) {
                 $this->ProfileEndpoint = $this->SandboxProfileEndpoint[$region];
             }
         } elseif (strcasecmp($this->_Config['environment'], self::LIVE) == 0) {
-            if (array_key_exists($region,$this->_regionMappings)) {
+            if (array_key_exists($region,$this->LiveProfileEndpoint)) {
                 $this->ProfileEndpoint = $this->LiveProfileEndpoint[$region];
             }
         }
