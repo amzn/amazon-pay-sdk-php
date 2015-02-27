@@ -48,17 +48,17 @@ class OffAmazonPaymentsService_Client
     private $LiveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					 'na' => 'https://api.amazon.com',
 					 'us' => 'https://api.amazon.com',
-					 'de' => 'https://api.amazon.co.de');
+					 'de' => 'https://api.amazon.de');
     
     private $SandboxProfileEndpoint = array('uk' => 'https://api.sandbox.amazon.co.uk',
 					    'na' => 'https://api.sandbox.amazon.com',
 					    'us' => 'https://api.sandbox.amazon.com',
-					    'de' => 'https://api.sandbox.amazon.co.de');
+					    'de' => 'https://api.sandbox.amazon.de');
     
     private $MPSregionMappings = array('de' => 'eu',
-                                     'na' => 'na',
-                                     'uk' => 'eu',
-                                     'us' => 'na');
+                                       'na' => 'na',
+                                       'uk' => 'eu',
+                                       'us' => 'na');
     
     public function __construct($config = null)
     {
@@ -73,7 +73,8 @@ class OffAmazonPaymentsService_Client
 	    if (array_key_exists($key, $this->_Config)) {
             $this->_Config[$key] = $value;
 	    } else {
-            throw new Exception("Key " . $name . " is not part of the configuration", 1);
+            throw new Exception("Key " . $name . " is either not part of the configuration or has incorrect Key name.
+				check the _Config array key names to match your key names of your config array ", 1);
 	    }
 	}
 	
@@ -106,7 +107,8 @@ class OffAmazonPaymentsService_Client
         if (array_key_exists($name, $this->_Config)) {
             $this->_Config[$name] = $value;
         } else {
-            throw new Exception("Key " . $name . " is not part of the configuration", 1);
+            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _Config or the' . $name .
+				'does not match the key name in the _Config array', 1);
         }
     }
     
@@ -118,7 +120,8 @@ class OffAmazonPaymentsService_Client
         if (array_key_exists($name, $this->_Config)) {
             return $this->_Config[$name];
         } else {
-            throw new Exception("Key " . $name . " was not found in the configuration", 1);
+            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _Config or the' . $name .
+				'does not match the key name in the _Config array', 1);
         }
     }
     
@@ -136,7 +139,7 @@ class OffAmazonPaymentsService_Client
 	    $this->ProfileEndpointUrl();
 	}
 	else{
-	    throw new InvalidArgumentException("Profile Region is a required parameter and is not set");
+	    throw new InvalidArgumentException("Profile Region is a required parameter and is not set.");
 	}
 	if(empty($access_token))
 	{
