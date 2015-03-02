@@ -73,29 +73,29 @@ class OffAmazonPaymentsService_Client
 	    if (array_key_exists($key, $this->_Config)) {
             $this->_Config[$key] = $value;
 	    } else {
-            throw new Exception("Key " . $name . " is either not part of the configuration or has incorrect Key name.
-				check the _Config array key names to match your key names of your config array ", 1);
+            throw new Exception('Key ' . $name . ' is either not part of the configuration or has incorrect Key name.
+				check the _Config array key names to match your key names of your config array ', 1);
 	    }
 	}
 	
-        if ($this->_Config['SellerId'] == "") {
-            throw new InvalidArgumentException("merchantId is a required parameter and is not set");
+        if ($this->_Config['SellerId'] == '') {
+            throw new InvalidArgumentException('merchantId is a required parameter and is not set');
         }
         
-        if ($this->_Config['accessKey'] == "") {
-            throw new InvalidArgumentException("accessKey is a required parameter and is not set");
+        if ($this->_Config['accessKey'] == '') {
+            throw new InvalidArgumentException('accessKey is a required parameter and is not set');
         }
         
-        if ($this->_Config['secretKey'] == "") {
-            throw new InvalidArgumentException("secretKey is a required parameter and is not set");
+        if ($this->_Config['secretKey'] == '') {
+            throw new InvalidArgumentException('secretKey is a required parameter and is not set');
         }
         
-        if ($this->_Config['region'] == "") {
-            throw new InvalidArgumentException("region is a required parameter and is not set");
+        if ($this->_Config['region'] == '') {
+            throw new InvalidArgumentException('region is a required parameter and is not set');
         }
         
-        if ($this->_Config['environment'] == "") {
-            throw new InvalidArgumentException("environment is a required parameter and is not set");
+        if ($this->_Config['environment'] == '') {
+            throw new InvalidArgumentException('environment is a required parameter and is not set');
         }
     }
     
@@ -134,16 +134,16 @@ class OffAmazonPaymentsService_Client
     public function GetUserInfo($access_token)
     {
 	//Get the correct Profile Endpoint URL based off the country/region provided in the _Config['UserProfileRegion']
-	if(!empty($this->UserProfileRegion))
+	if(!empty($this->_Config['UserProfileRegion']))
 	{
 	    $this->ProfileEndpointUrl();
 	}
 	else{
-	    throw new InvalidArgumentException("Profile Region is a required parameter and is not set.");
+	    throw new InvalidArgumentException('Profile Region is a required parameter and is not set.');
 	}
 	if(empty($access_token))
 	{
-	    throw new InvalidArgumentException("Access Token is a required parameter and is not set");
+	    throw new InvalidArgumentException('Access Token is a required parameter and is not set');
 	}
 	//to make sure double encoding doesn't occur decode first and encode again.
 	$access_token = urldecode($access_token);
@@ -151,7 +151,7 @@ class OffAmazonPaymentsService_Client
 	$c = curl_init($this->ProfileEndpoint.'/auth/o2/tokeninfo?access_token='. urlencode($access_token));
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 	 if (!$response = curl_exec($c)) {
-            $error_msg = "Unable to post request, underlying exception of " . curl_error($c);
+            $error_msg = 'Unable to post request, underlying exception of ' . curl_error($c);
             curl_close($c);
             throw new Exception($error_msg);
         }
@@ -169,7 +169,7 @@ class OffAmazonPaymentsService_Client
 	curl_setopt($c, CURLOPT_HTTPHEADER, array('Authorization: bearer '. $access_token));
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 	if (!$response = curl_exec($c)) {
-            $error_msg = "Unable to post request, underlying exception of " . curl_error($c);
+            $error_msg = 'Unable to post request, underlying exception of ' . curl_error($c);
             curl_close($c);
             throw new Exception($error_msg);
         }
@@ -1128,7 +1128,6 @@ class OffAmazonPaymentsService_Client
     {
         $response        = array();
         $responseBody    = null;
-        $ResponseToArray = null;
         $statusCode      = 200;
         /* Submit the request and read response body */
         try {
@@ -1139,12 +1138,6 @@ class OffAmazonPaymentsService_Client
                     $response        = $this->_httpPost($parameters);
                     $responseBody    = $response['ResponseBody'];
                     $statusCode      = $response['Status'];
-                    $ResponseType    = new SimpleXMLElement($responseBody);
-
-                    $ResponseToArray = simplexml_load_string((string) $responseBody);
-                    $ResponseToArray = json_encode($ResponseToArray);
-                    $ResponseToArray = json_decode($ResponseToArray, true);
-                    $ResponseToArray['ResponseType'] = array('ResponseName' => $ResponseType->getName());
 		    
                     if ($statusCode == 200) {
                         $shouldRetry = false;
@@ -1168,7 +1161,7 @@ class OffAmazonPaymentsService_Client
             throw $se;
         }
         
-        return $ResponseToArray;
+        return $responseBody;
     }
     
     /**

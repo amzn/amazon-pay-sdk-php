@@ -5,8 +5,8 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *
  *  You may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at:
- *  http://aws.amazon.com/apache2.0
+ *  You may obtain a copy of the License at)
+ *  http)//aws.amazon.com/apache2.0
  *  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  *  CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the
@@ -17,6 +17,7 @@
 class OrderReferenceDetailsResponse
 {
     public $OrderReferenceId = null;
+    public $RequestId = null;
     public $ExpirationTimestamp = null;
     public $CreationTimestamp = null;
     public $ReasonCode = null;
@@ -56,52 +57,68 @@ class OrderReferenceDetailsResponse
     public $ErrorCode = null;
     public $ErrorMessage = null;
     
-    public $isOrderReferenceDetailsSuccess = false;
+    public $success = false;
+    public $ResponseName = null;
     
     
     
     public function __construct($response)
     {
-        $Responsetype= array('GetORO' => 'GetOrderReferenceDetailsResult',
-                             'SetORO' => 'SetOrderReferenceDetailsResult',
-                             'OROIpn' => 'OrderReference');
-        $increment = 0;
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype = array(
+            'GetORO' => 'GetOrderReferenceDetailsResult',
+            'SetORO' => 'SetOrderReferenceDetailsResult',
+            'OROIpn' => 'OrderReference'
+        );
+        
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $parentkeys   = new ArrayParentKey($Responsetype);
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
         } elseif (isset($response[$Responsetype['GetORO']]) ||
                   isset($response[$Responsetype['SetORO']]) ||
                   isset($response[$Responsetype['OROIpn']])) {
+            
+            $this->success = true;
+            
             foreach ($iterator as $key => $value) {
                 
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+                $Parentkey = $parentkeys->getParentkey($iterator);
+                print_r($Parentkey);
+                print_r($key . ')' . $value);
                 
                 if ($key === 'AmazonOrderReferenceId')
                     $this->OrderReferenceId = $value;
-                    
+                
+                
                 elseif ($key === 'CreationTimestamp')
                     $this->CreationTimestamp = $value;
-                    
+                
                 elseif ($key === 'ExpirationTimestamp')
                     $this->ExpirationTimestamp = $value;
-                    
+                
                 elseif ($key === 'ReasonCode')
                     $this->ReasonCode = $value;
-                    
+                
                 elseif ($key === 'ReasonDescription')
                     $this->ReasonDescription = $value;
-                    
-                elseif ($Parentkey === 'Constraint' && $key === 'ConstraintID'){
-                    $this->Constraint['ConstraintID_'. ++$increment] = $value;
+                
+                elseif (in_array('Constraints', $Parentkey) && $key === 'ConstraintID') {
+                    $this->Constraint[]  = $value;
                     $this->HasConstraint = true;
                 }
                 
-                elseif ($Parentkey === 'Constraint' && $key === 'Description')
-                    $this->Description['Description_'. $increment] = $value;
+                elseif (in_array('Constraints', $Parentkey) && $key === 'Description')
+                    $this->Description[] = $value;
+                
+                elseif ($key === 'State')
+                    $this->OrderReferenceState = $value;
                 
                 elseif ($key === 'SellerNote')
                     $this->SellerNote = $value;
@@ -112,11 +129,12 @@ class OrderReferenceDetailsResponse
                 elseif ($key === 'CurrencyCode')
                     $this->CurrencyCode = $value;
                 
-                 elseif ($key === 'PlatformId')
+                elseif ($key === 'PlatformId')
                     $this->PlatformId = $value;
-               
-                elseif (($Parentkey === 'member') && is_numeric($key))
-                    $this->AuthorizationId['AuthorizationId_' . ++$key] = $value;
+                
+                elseif (in_array('IdList', $Parentkey) &&
+                        (in_array('member', $Parentkey) || $key === 'member'))
+                    $this->AuthorizationId[] = $value;
                 
                 elseif ($key === 'PostalCode')
                     $this->PostalCode = $value;
@@ -148,9 +166,6 @@ class OrderReferenceDetailsResponse
                 elseif ($key === 'City')
                     $this->City = $value;
                 
-                elseif ($key === 'State')
-                    $this->OrderReferenceState = $value;
-                
                 elseif ($key === 'County')
                     $this->County = $value;
                 
@@ -166,13 +181,13 @@ class OrderReferenceDetailsResponse
                 elseif ($key === 'StoreName')
                     $this->StoreName = $value;
                 
-                elseif ($key === 'SellerOrderId') 
+                elseif ($key === 'SellerOrderId')
                     $this->SellerOrderId = $value;
                 
-                elseif ($key === 'CustomInformation') 
+                elseif ($key === 'CustomInformation')
                     $this->CustomInformation = $value;
                 
-                $this->isOrderReferenceDetailsSuccess = true;
+                
             }
             
         } else {
@@ -187,45 +202,50 @@ class GenericResponse
     public $RequestId = null;
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isSuccess = false;
+    public $success = false;
     
     public function __construct($response)
     {
-        $Responsetype = array('ConfirmORO' => 'ConfirmOrderReferenceResponse',
-                              'CloseORO'   => 'CloseOrderReferenceResponse',
-                              'CancelORO'  => 'CancelOrderReferenceResponse',
-                              'ConfirmBA'  => 'ConfirmBillingAgreementResponse',
-                              'CloseBA'    => 'CloseBillingAgreementResponse',
-                              'CloseAuth'  => 'CloseAuthorizationResponse');
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype      = array(
+            'ConfirmORO' => 'ConfirmOrderReferenceResponse',
+            'CloseORO' => 'CloseOrderReferenceResponse',
+            'CancelORO' => 'CancelOrderReferenceResponse',
+            'ConfirmBA' => 'ConfirmBillingAgreementResponse',
+            'CloseBA' => 'CloseBillingAgreementResponse',
+            'CloseAuth' => 'CloseAuthorizationResponse'
+        );
         $Responsetypefound = false;
-        $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
-        $ErrorDetails = new ErrorResponse($response);
+        $iterator          = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $ErrorDetails      = new ErrorResponse($response);
         
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
-        }  elseif(isset($response['ResponseMetadata'])){
+        } elseif (isset($response['ResponseMetadata'])) {
             
-                foreach ($Responsetype as $key => $value) {
-                    if ($response['ResponseType']['ResponseName']===$value){
-                        $Responsetypefound = true;
-                        
-                        foreach ($iterator as $key => $value) {
-                            if ($key === 'RequestId') {
-                                $this->RequestId = $value;
-                                $this->isSuccess = true;
-                            }
-                        }
-                        break;
+            foreach ($Responsetype as $key => $value) {
+                if ($response['ResponseType']['ResponseName'] === $value) {
+                    $Responsetypefound = true;
                     
+                    foreach ($iterator as $key => $value) {
+                        if ($key === 'RequestId') {
+                            $this->RequestId = $value;
+                            $this->success   = true;
+                        }
                     }
                     
+                    
                 }
-                if(!$Responsetypefound){
-                    throw new Exception("This method does not support the repsonse for the API call, please check to call the right Response Function");
-                }
+                
+            }
+            if (!$Responsetypefound) {
+                throw new Exception("This method does not support the repsonse for the API call, please check to call the right Response Function");
+            }
         }
     }
 }
@@ -234,6 +254,8 @@ class GenericResponse
 class AuthorizeResponse
 {
     public $AuthorizationId = null;
+    public $OrderReferenceId = null;
+    public $RequestId = null;
     public $AuthorizationReferenceId = null;
     public $SellerAuthorizationNote = null;
     
@@ -259,36 +281,51 @@ class AuthorizeResponse
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isAuthorizeSuccess = false;
+    public $success = false;
+    public $ResponseName = null;
     
     
     
     public function __construct($response)
     {
-        $Responsetype= array('Auth' => 'AuthorizeResult',
-                             'AuthBA' => 'AuthorizeOnBillingAgreementResult',
-                             'GetAuth' => 'GetAuthorizationDetailsResult',
-                             'GetBAAuth' => 'GetAuthorizeOnBillingAgreementResult',
-                             'AuthIpn' => 'AuthorizationDetails');
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype = array(
+            'Auth' => 'AuthorizeResult',
+            'AuthBA' => 'AuthorizeOnBillingAgreementResult',
+            'GetAuth' => 'GetAuthorizationDetailsResult',
+            'GetBAAuth' => 'GetAuthorizeOnBillingAgreementResult',
+            'AuthIpn' => 'AuthorizationDetails'
+        );
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $parentkeys   = new ArrayParentKey($Responsetype);
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
-        } elseif (isset($response[$Responsetype['Auth']])||
-                  isset($response[$Responsetype['AuthBA']])||
-                  isset($response[$Responsetype['GetAuth']])||
-                  isset($response[$Responsetype['GetBAAuth']])||
-                  isset($response[$Responsetype['AuthIpn']])
-                 ) {
+        } elseif (isset($response[$Responsetype['Auth']]) ||
+                  isset($response[$Responsetype['AuthBA']]) ||
+                  isset($response[$Responsetype['GetAuth']]) ||
+                  isset($response[$Responsetype['GetBAAuth']]) ||
+                  isset($response[$Responsetype['AuthIpn']])) {
+            
+            $this->success = true;
+            
             foreach ($iterator as $key => $value) {
-                
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+                $Parentkey = $parentkeys->getParentkey($iterator);
                 
                 if ($key === 'AmazonAuthorizationId')
                     $this->AuthorizationId = $value;
+                
+                elseif ($key === 'AmazonOrderReferenceId')
+                    $this->OrderReferenceId = $value;
+                
+                elseif ($key === 'RequestId')
+                    $this->RequestId = $value;
                 
                 elseif ($key === 'ExpirationTimestamp')
                     $this->ExpirationTimestamp = $value;
@@ -298,48 +335,69 @@ class AuthorizeResponse
                 
                 elseif ($key === 'SellerNote')
                     $this->SellerNote = $value;
+                
                 elseif ($key === 'SellerAuthorizationNote')
                     $this->SellerAuthorizationNote = $value;
-                elseif ($Parentkey === 'AuthorizationAmount' && $key === 'Amount')
+                
+                elseif ((in_array('AuthorizationAmount', $Parentkey) && $key === 'Amount'))
                     $this->AuthorizationAmount = $value;
-                elseif ($Parentkey === 'AuthorizationAmount' && $key === 'CurrencyCode')
+                
+                elseif ((in_array('AuthorizationAmount', $Parentkey) && $key === 'CurrencyCode'))
                     $this->AuthCurrencyCode = $value;
-                elseif ($Parentkey === 'CapturedAmount' && $key === 'Amount')
+                
+                elseif ((in_array('CapturedAmount', $Parentkey) && $key === 'Amount'))
                     $this->CapturedAmount = $value;
-                elseif ($Parentkey === 'CapturedAmount' && $key === 'CurrencyCode')
+                
+                elseif ((in_array('CapturedAmount', $Parentkey) && $key === 'CurrencyCode'))
                     $this->CapturedCurrencyCode = $value;
-                elseif ($Parentkey === 'AuthorizationFee' && $key === 'Amount')
+                
+                elseif ((in_array('AuthorizationFee', $Parentkey) && $key === 'Amount'))
                     $this->AuthFeeAmount = $value;
-                elseif ($Parentkey === 'AuthorizationFee' && $key === 'CurrencyCode')
+                
+                elseif ((in_array('AuthorizationFee', $Parentkey) && $key === 'CurrencyCode'))
                     $this->AuthFeeCurrencyCode = $value;
+                
                 elseif ($key === 'State')
                     $this->AuthorizationState = $value;
-                elseif (($Parentkey === 'member') && is_numeric($key))
-                    $this->CaptureId['CaptureId_' . ++$key] = $value;
+                
+                elseif (in_array('IdList', $Parentkey) && (in_array('member', $Parentkey) || $key === 'member'))
+                    array_push($this->CaptureId, $value);
+                
                 elseif ($key === 'ReasonCode')
                     $this->ReasonCode = $value;
+                
                 elseif ($key === 'ReasonDescription')
                     $this->ReasonDescription = $value;
+                
                 elseif ($key === 'CaptureNow')
                     $this->CaptureNow = $value;
+                
                 elseif ($key === 'SoftDescriptor')
                     $this->SoftDescriptor = $value;
+                
                 elseif ($key === 'LastUpdateTimestamp')
                     $this->LastUpdateTimestamp = $value;
+                
                 elseif ($key === 'ExpirationTimestamp')
                     $this->ExpirationTimestamp = $value;
+                
                 elseif ($key === 'CreationTimestamp')
                     $this->CreationTimestamp = $value;
+                
+                elseif ($key === 'ResponseName')
+                    $this->ResponseName = $value;
+                
+                
             }
-            
-            $this->isAuthorizeSuccess = true;
         }
         
     }
 }
 
-class CaptureResponse {
+class CaptureResponse
+{
     public $CaptureId = null;
+    public $RequestId = null;
     public $CaptureReferenceId = null;
     public $CaptureNote = null;
     
@@ -364,32 +422,43 @@ class CaptureResponse {
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isCaptureSuccess = false;
+    public $success = false;
     
     
     public function __construct($response)
     {
-        $Responsetype= array('Capture' => 'CaptureResult',
-                             'GetCapture' => 'GetCaptureDetailsResult',
-                             'CaptureIpn' => 'CaptureDetails');
-    
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype = array(
+            'Capture' => 'CaptureResult',
+            'GetCapture' => 'GetCaptureDetailsResult',
+            'CaptureIpn' => 'CaptureDetails'
+        );
+        
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $parentkeys   = new ArrayParentKey($Responsetype);
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
-        } elseif(isset($response[$Responsetype['Capture']])||
-                  isset($response[$Responsetype['GetCapture']])||
-                  isset($response[$Responsetype['CaptureIpn']])
-                ) {
+        } elseif (isset($response[$Responsetype['Capture']]) ||
+                  isset($response[$Responsetype['GetCapture']]) ||
+                  isset($response[$Responsetype['CaptureIpn']])) {
+            
+            $this->success = true;
+            
             foreach ($iterator as $key => $value) {
                 
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+                $Parentkey = $parentkeys->getParentkey($iterator);
                 
                 if ($key === 'AmazonCaptureId')
                     $this->CaptureId = $value;
+                
+                elseif ($key === 'RequestId')
+                    $this->RequestId = $value;
                 
                 elseif ($key === 'CaptureReferenceId')
                     $this->CaptureReferenceId = $value;
@@ -400,29 +469,29 @@ class CaptureResponse {
                 elseif ($key === 'SellerCaptureNote')
                     $this->CaptureNote = $value;
                 
-                elseif ($Parentkey === 'CaptureAmount' && $key === 'Amount')
+                elseif (in_array('CaptureAmount', $Parentkey) && $key === 'Amount')
                     $this->CaptureAmount = $value;
                 
-                elseif ($Parentkey === 'CaptureAmount' && $key === 'CurrencyCode')
+                elseif (in_array('CaptureAmount', $Parentkey) && $key === 'CurrencyCode')
                     $this->CaptureCurrencyCode = $value;
                 
-                elseif ($Parentkey === 'RefundedAmount' && $key === 'Amount')
+                elseif (in_array('RefundedAmount', $Parentkey) && $key === 'Amount')
                     $this->RefundAmount = $value;
                 
-                elseif ($Parentkey === 'RefundedAmount' && $key === 'CurrencyCode')
+                elseif (in_array('RefundedAmount', $Parentkey) && $key === 'CurrencyCode')
                     $this->RefundCurrencyCode = $value;
                 
-                elseif ($Parentkey === 'CaptureFee' && $key === 'Amount')
+                elseif (in_array('CaptureFee', $Parentkey) && $key === 'Amount')
                     $this->CaptureFeeAmount = $value;
                 
-                elseif ($Parentkey === 'CaptureFee' && $key === 'CurrencyCode')
+                elseif (in_array('CaptureFee', $Parentkey) && $key === 'CurrencyCode')
                     $this->CaptureFeeCurrencyCode = $value;
                 
                 elseif ($key === 'State')
                     $this->CaptureState = $value;
                 
-                elseif (($Parentkey === 'member') && is_numeric($key))
-                    $this->RefundId['RefundId_' . ++$key] = $value;   
+                elseif (in_array('IdList', $Parentkey) && (in_array('member', $Parentkey) || $key === 'member'))
+                    array_push($this->RefundId, $value);
                 
                 elseif ($key === 'SoftDescriptor')
                     $this->SoftDescriptor = $value;
@@ -438,15 +507,15 @@ class CaptureResponse {
                 
                 elseif ($key === 'CreationTimestamp')
                     $this->CreationTimestamp = $value;
+                
             }
-            
-            $this->isCaptureSuccess = true;
         }
         
     }
 }
 
-class RefundResponse{
+class RefundResponse
+{
     
     public $RefundId = null;
     public $RefundReferenceId = null;
@@ -469,32 +538,40 @@ class RefundResponse{
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isRefundSuccess = false;
+    public $success = false;
     
     
     public function __construct($response)
     {
-        $Responsetype= array('Refund' => 'RefundResult',
-                             'GetRefund' => 'GetRefundDetailsResult',
-                             'RefundIpn' => 'RefundDetails');
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype = array(
+            'Refund' => 'RefundResult',
+            'GetRefund' => 'GetRefundDetailsResult',
+            'RefundIpn' => 'RefundDetails'
+        );
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $parentkeys   = new ArrayParentKey($Responsetype);
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
-        } elseif (isset($response[$Responsetype['Refund']])||
-                  isset($response[$Responsetype['GetRefund']])||
-                  isset($response[$Responsetype['RefundIpn']])
-                  ) {
+        } elseif (isset($response[$Responsetype['Refund']]) ||
+                  isset($response[$Responsetype['GetRefund']]) ||
+                  isset($response[$Responsetype['RefundIpn']])) {
+            
+            $this->success = true;
+            
             foreach ($iterator as $key => $value) {
                 
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+                $Parentkey = $parentkeys->getParentkey($iterator);
                 
                 if ($key === 'AmazonRefundId')
                     $this->RefundId = $value;
-                    
+                
                 elseif ($key === 'RefundReferenceId')
                     $this->RefundReferenceId = $value;
                 
@@ -507,20 +584,20 @@ class RefundResponse{
                 elseif ($key === 'RefundType')
                     $this->RefundType = $value;
                 
-                elseif ($Parentkey === 'RefundedAmount' && $key === 'Amount')
+                elseif (in_array('RefundAmount', $Parentkey) && $key === 'Amount')
                     $this->RefundAmount = $value;
                 
-                elseif ($Parentkey === 'RefundedAmount' && $key === 'CurrencyCode')
+                elseif (in_array('RefundAmount', $Parentkey) && $key === 'CurrencyCode')
                     $this->RefundCurrencyCode = $value;
-                 
-                elseif ($Parentkey === 'FeeRefunded' && $key === 'Amount')
+                
+                elseif (in_array('FeeRefunded', $Parentkey) && $key === 'Amount')
                     $this->CaptureFeeRefundAmount = $value;
                 
-                elseif ($Parentkey === 'FeeRefunded' && $key === 'CurrencyCode')
+                elseif (in_array('FeeRefunded', $Parentkey) && $key === 'CurrencyCode')
                     $this->CaptureFeeRefundCurrencyCode = $value;
                 
                 elseif ($key === 'State')
-                    $this->RefundState = $value; 
+                    $this->RefundState = $value;
                 
                 elseif ($key === 'SoftDescriptor')
                     $this->SoftDescriptor = $value;
@@ -535,10 +612,9 @@ class RefundResponse{
                     $this->LastUpdateTimestamp = $value;
                 
                 elseif ($key === 'CreationTimestamp')
-                    $this->CreationTimestamp = $value;
+                    $this->CreationTimestamp = $value;  
             }
             
-            $this->isRefundSuccess = true;
         }
         
     }
@@ -557,28 +633,32 @@ class GetServiceStatusResponse
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isGetServiceSuccess = false;
+    public $success = false;
     
     public function __construct($response)
     {
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
         } elseif (isset($response['GetServiceStatusResult'])) {
+            
+            $this->success = true;
+            
             foreach ($iterator as $key => $value) {
                 
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
-                
-                if ($key === 'Status')
+               if ($key === 'Status')
                     $this->ServiceStatus = $value;
-                    
+                
                 elseif ($key === 'MessageId')
                     $this->MessageId = $value;
-                    
+                
                 elseif ($key === 'Message')
                     $this->Message = $value;
                 
@@ -589,12 +669,9 @@ class GetServiceStatusResponse
                     $this->Text = $value;
                 
                 elseif ($key === 'Timestamp')
-                    $this->Timestamp = $value;
-            }
-            
-            $this->isGetServiceSuccess = true;
-        }
-        
+                    $this->Timestamp = $value;   
+            }       
+        }       
     }
 }
 
@@ -638,130 +715,140 @@ class BillingAgreementDetailsResponse
     public $CountryCode = null;
     public $StateOrRegion = null;
     public $City = null;
-    public $County= null;
-    public $District= null;
+    public $County = null;
+    public $District = null;
     public $DestinationType = null;
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
     
-    public $isBillingAgreementDetailsSuccess = false;
-    
-    
+    public $success = false;
     
     public function __construct($response)
     {
-        $Responsetype= array('GetBA' => 'GetBillingAgreementDetailsResult',
-                                 'SetBA' => 'SetBillingAgreementDetailsResult');
-        $increment = 0;
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
+        $Responsetype = array(
+            'GetBA' => 'GetBillingAgreementDetailsResult',
+            'SetBA' => 'SetBillingAgreementDetailsResult'
+        );
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
+        $parentkeys   = new ArrayParentKey($Responsetype);
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
         } elseif (isset($response[$Responsetype['GetBA']]) || isset($response[$Responsetype['SetBA']])) {
+            $this->success = true;
             foreach ($iterator as $key => $value) {
                 
-                $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+                $Parentkey = $parentkeys->getParentkey($iterator);
                 
                 if ($key === 'AmazonBillingAgreementId')
                     $this->BillingAgreementId = $value;
                 
                 elseif ($key === 'State')
                     $this->BillingAgreementState = $value;
-                
+                    
                 elseif ($key === 'ReleaseEnvironment')
                     $this->ReleaseEnvironment = $value;
-                
-                elseif ($Parentkey === 'Constraint' && $key === 'ConstraintID'){
-                    $this->Constraint['ConstraintID_'. ++$increment] = $value;
+                    
+                elseif (in_array('Constraint', $Parentkey) && $key === 'ConstraintID') {
+                    array_push($this->Constraint, $value);
                     $this->HasConstraint = true;
                 }
                 
-                elseif ($Parentkey === 'Constraint' && $key === 'Description')
-                    $this->Description['Description_'. $increment] = $value;
-                
-                
-                elseif (($Parentkey === 'AmountLimitPerTimePeriod') && $key === 'Amount')
+                elseif (in_array('Constraint', $Parentkey) && $key === 'Description')
+                    array_push($this->Description, $value);
+                    
+                elseif (in_array("BillingAgreementLimits", $Parentkey) &&
+                        in_array('AmountLimitPerTimePeriod', $Parentkey) &&
+                        $key === 'Amount')
                     $this->AmountLimit = $value;
-                
-                elseif (($Parentkey === 'AmountLimitPerTimePeriod') && $key === 'CurrencyCode')
+                    
+                elseif (in_array("BillingAgreementLimits", $Parentkey) &&
+                        in_array('AmountLimitPerTimePeriod', $Parentkey) &&
+                        $key === 'CurrencyCode')
                     $this->AmountLimitCurrencyCode = $value;
                     
-                elseif (($Parentkey === 'CurrentRemainingBalance') && $key === 'Amount')
+                elseif (in_array("BillingAgreementLimits", $Parentkey) &&
+                        in_array('CurrentRemainingBalance', $Parentkey) &&
+                        $key === 'Amount')
                     $this->BalanceAmount = $value;
                     
-                elseif (($Parentkey === 'CurrentRemainingBalance') && $key === 'CurrencyCode')
+                elseif (in_array("BillingAgreementLimits", $Parentkey) &&
+                        in_array('CurrentRemainingBalance', $Parentkey) &&
+                        $key === 'CurrencyCode')
                     $this->BalanceAmountCurrencyCode = $value;
-                
+                    
                 elseif ($key === 'TimePeriodStartDate')
                     $this->TimePeriodStartDate = $value;
-                
+                    
                 elseif ($key === 'TimePeriodEndDate')
                     $this->TimePeriodStartDate = $value;
+                    
                 elseif ($key === 'LastUpdatedTimestamp')
                     $this->LastUpdatedTimestamp = $value;
-                
+                    
                 elseif ($key === 'Phone')
                     $this->Phone = $value;
-                
+                    
                 elseif ($key === 'Email')
                     $this->Email = $value;
-                
+                    
                 elseif ($key === 'Name')
                     $this->Name = $value;
                     
                 elseif ($key === 'AddressLine1')
                     $this->AddressLine1 = $value;
-                
+                    
                 elseif ($key === 'AddressLine2')
                     $this->AddressLine2 = $value;
-                
+                    
                 elseif ($key === 'AddressLine3')
                     $this->AddressLine3 = $value;
                     
                 elseif ($key === 'PostalCode')
                     $this->PostalCode = $value;
-                
+                    
                 elseif ($key === 'CountryCode')
                     $this->CountryCode = $value;
-                
+                    
                 elseif ($key === 'StateOrRegion')
                     $this->StateOrRegion = $value;
-                
+                    
                 elseif ($key === 'City')
                     $this->City = $value;
-                
+                    
                 elseif ($key === 'County')
                     $this->County = $value;
-                
+                    
                 elseif ($key === 'District')
                     $this->District = $value;
-                
+                    
                 elseif ($key === 'DestinationType')
                     $this->DestinationType = $value;
-                        
-                 elseif ($key === 'StoreName')
+                    
+                elseif ($key === 'StoreName')
                     $this->StoreName = $value;
-                
+                    
                 elseif ($key === 'SellerNote')
                     $this->SellerNote = $value;
-                
+                    
                 elseif ($key === 'PlatformId')
                     $this->PlatformId = $value;
                     
                 elseif ($key === 'SellerBillingAgreementId')
                     $this->SellerBillingAgreementId = $value;
+                    
                 elseif ($key === 'StoreName')
                     $this->StoreName = $value;
-                
-                elseif ($key === 'SellerOrderId') {
+                    
+                elseif ($key === 'SellerOrderId')
                     $this->SellerOrderId = $value;
-                }
-                
-                $this->isBillingAgreementDetailsSuccess = true;
             }
             
         } else {
@@ -783,28 +870,33 @@ class ValidateBillingAgreementResponse
     
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $isValidateBASuccess = false;
+    public $success = false;
     
     public function __construct($response)
     {
+        $ResponseArray = new XMLResponseToArray($response);
+        $response      = $ResponseArray->ResponseToArray;
+        
         $iterator     = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
         $ErrorDetails = new ErrorResponse($response);
         
-        if ($ErrorDetails->IsError == true) {
+        if ($ErrorDetails->error == true) {
             $this->ErrorCode    = $ErrorDetails->ErrorCode;
             $this->ErrorMessage = $ErrorDetails->ErrorMessage;
             
         } elseif (isset($response['ValidateBillingAgreementResult'])) {
+            
+            $this->success = true;
             foreach ($iterator as $key => $value) {
                 
                 $Parentkey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
                 
                 if ($key === 'ValidationResult')
                     $this->ValidationResult = $value;
-                    
+                
                 elseif ($key === 'FailureReasonCode')
                     $this->FailureReasonCode = $value;
-                    
+                
                 elseif ($key === 'State')
                     $this->BillingAgreementState = $value;
                 
@@ -813,14 +905,27 @@ class ValidateBillingAgreementResponse
                 
                 elseif ($key === 'ReasonDescription')
                     $this->ReasonDescription = $value;
-                
                 elseif ($key === 'LastUpdatedTimestamp')
-                    $this->LastUpdatedTimestamp = $value;
-            }
-            
-            $this->isValidateBASuccess = true;
-        }
+                    $this->LastUpdatedTimestamp = $value;    
+            }           
+        }      
+    }
+}
+
+class XMLResponseToArray
+{
+    public $ResponseToArray = null;
+    public function __construct($response)
+    {
+        $this->ResponseToArray = simplexml_load_string((string) $response);
+        $this->ResponseToArray = json_encode($this->ResponseToArray);
+        $this->ResponseToArray = json_decode($this->ResponseToArray, true);
         
+        //Adding the Response Type to the array to show what type of response was returned.
+        $ResponseType                          = new SimpleXMLElement($response);
+        $this->ResponseToArray['ResponseType'] = array(
+            'ResponseName' => $ResponseType->getName()
+        );
     }
 }
 
@@ -828,22 +933,61 @@ class ErrorResponse
 {
     public $ErrorCode = null;
     public $ErrorMessage = null;
-    public $IsError = false;
+    public $error = false;
     
     public function __construct($response)
     {
+        
         $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($response));
         
         if (isset($response['Error'])) {
+            $this->error = true;
             
             foreach ($iterator as $key => $value) {
                 
                 if ($key === 'Code')
                     $this->ErrorCode = $value;
-                if ($key === 'Message')
-                    $this->ErrorMessage = $value;
-            }
-            $this->IsError = true;
+                
+                
+                elseif ($key === 'Message')
+                    $this->ErrorMessage = $value;   
+            }    
         }
+    }
+}
+
+class ArrayParentKey
+{
+    public $responseType = null;
+    
+    public function __construct($responsetype)
+    {
+        $this->responseType = $responsetype;
+    }
+    
+    public function getParentkey($iterator)
+    {
+        if (is_object($iterator->getSubIterator($iterator->getDepth() - 2))) {
+            $parentKey = null;
+            $childKey  = null;
+            
+            $childKey  = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+            $parentKey = $iterator->getSubIterator($iterator->getDepth() - 2)->key();
+            if (array_search($parentKey, $this->responseType)) {
+                return array(
+                    $childKey
+                );
+            } else {
+                return array(
+                    $parentKey,
+                    $childKey
+                );
+            }
+        } else {
+            $childKey = $iterator->getSubIterator($iterator->getDepth() - 1)->key();
+            return array(
+                $childKey
+            );
+        }  
     }
 }
