@@ -23,26 +23,26 @@ class OffAmazonPaymentsService_Client
     private $_userAgent = null;
     private $_endpointpath = null;
     private $_profileEndpoint = null;
-    private $_config = array('sellerId' 	  => null,
-			     'secretKey' 	  => null,
-			     'accessKey' 	  => null,
-			     'mwsAuthToken'   	  => null,
-			     'serviceUrl' 	  => null,
+    private $_config = array('seller_id' 	  => null,
+			     'secret_key' 	  => null,
+			     'access_key' 	  => null,
+			     'mws_auth_token'  	  => null,
+			     'service_url' 	  => null,
 			     'region' 		  => 'na',
-			     'currencyCode'	  => 'USD',
+			     'currency_code'	  => 'USD',
 			     'sandbox' 		  => false,
-			     'platformId'	  => null,
-			     'caBundleFile' 	  => null,
-			     'applicationName' 	  => null,
-			     'applicationVersion' => null,
-			     'proxyHost' 	  => null,
-			     'proxyPort' 	  => -1,
-			     'proxyUsername' 	  => null,
-			     'proxyPassword' 	  => null,
-			     'clientId' 	  => null,
-			     'userProfileRegion'  => null,
-			     'handleThrottle' 	  => true);
-    private $_mwsEndpoint = 'OffAmazonPayments_Sandbox';
+			     'platform_id'	  => null,
+			     'cabundle_file' 	  => null,
+			     'application_name'   => null,
+			     'application_version'=> null,
+			     'proxy_host' 	  => null,
+			     'proxy_port' 	  => -1,
+			     'proxy_username' 	  => null,
+			     'proxy_password' 	  => null,
+			     'client_id' 	  => null,
+			     'user_profile_region'=> null,
+			     'handle_throttle' 	  => true);
+    private $_mwsEndpoint = null;
     
     private $_mwsServiceUrl = array('eu' => 'https://mws-eu.amazonservices.com',
 				    'na' => 'https://mws.amazonservices.com');
@@ -68,7 +68,7 @@ class OffAmazonPaymentsService_Client
 	   $configArray = $config;
 	}
 	
-	elseif((json_decode($config) != $config) && json_decode($config)){
+	elseif((json_decode($config) != $config) && json_decode($config) && json_last_error()==0){
 	    $configArray = json_decode($config,true);
 	}
 	elseif((!is_array($config)) && file_exists($config)){
@@ -83,16 +83,17 @@ class OffAmazonPaymentsService_Client
 				 '3 '.$config. ' can be a JSON string'.PHP_EOL);
 	}
 	if(is_array($configArray)){
-	$this->checkConfigHasAllRequiredKeys($configArray);
+	$this->_checkConfigKeys($configArray);
 	}else{
 	  throw new Exception($configArray. ' is of the incorrect type '. gettype($configArray) .' and should be of the type array');  
 	}
         
     }
     
-    private function checkConfigHasAllRequiredKeys($config)
+    private function _checkConfigKeys($config)
     {
-        
+	$config = array_change_key_case($config, CASE_LOWER);
+	
         foreach ($config as $key => $value) {
             if (array_key_exists($key, $this->_config)) {
                 $this->_config[$key] = $value;
@@ -101,7 +102,6 @@ class OffAmazonPaymentsService_Client
 				check the _config array key names to match your key names of your config array ', 1);
             }
         }
-        
         $this->_mwsEndpoint = $this->_config['sandbox'] ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
     }
     
@@ -110,10 +110,11 @@ class OffAmazonPaymentsService_Client
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->_config)) {
+        if (array_key_exists(strtolower($name), $this->_config)) {
             $this->_config[$name] = $value;
         } else {
-            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the' . $name . 'does not match the key name in the _config array', 1);
+            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the'
+				. $name . 'does not match the key name in the _config array', 1);
         }
     }
     
@@ -122,10 +123,11 @@ class OffAmazonPaymentsService_Client
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->_config)) {
+        if (array_key_exists(strtolower($name), $this->_config)) {
             return $this->_config[$name];
         } else {
-            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the' . $name . 'does not match the key name in the _config array', 1);
+            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the'
+				. $name . 'does not match the key name in the _config array', 1);
         }
     }
     
@@ -133,12 +135,12 @@ class OffAmazonPaymentsService_Client
      * 
      * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
      * @param $access_token [String]
-     * @param _config['userProfileRegion'] [String]
+     * @param _config['user_profile_region'] [String]
      */
     public function getUserInfo($access_token)
     {
-        //Get the correct Profile Endpoint URL based off the country/region provided in the _config['userProfileRegion']
-        if (!empty($this->_config['userProfileRegion'])) {
+        //Get the correct Profile Endpoint URL based off the country/region provided in the _config['user_profile_region']
+        if (!empty($this->_config['user_profile_region'])) {
             $this->_profileEndpointUrl();
         } else {
             throw new InvalidArgumentException('Profile Region is a required parameter and is not set.');
@@ -159,7 +161,7 @@ class OffAmazonPaymentsService_Client
         curl_close($c);
         $data = json_decode($response);
         
-        if ($data->aud != $this->_config['clientId']) {
+        if ($data->aud != $this->_config['client_id']) {
             // the access token does not belong to us
             header('HTTP/1.1 404 Not Found');
             throw new Exception('The Access token entered is incorrect');
@@ -227,10 +229,10 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
         
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currencyCode'];
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currency_code'];
         
-        if (!empty($this->_config['platformId']))
-            $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platformId'];
+        if (!empty($this->_config['platform_id']))
+            $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['SellerNote']))
             $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['SellerNote'];
         if (!empty($requestParameters['SellerOrderId']))
@@ -366,7 +368,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizeAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizeAmount'];
         
-	$parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currencyCode'];
+	$parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currency_code'];
         
         if (!empty($requestParameters['AuthorizationReferenceId'])){
             $parameters['AuthorizationReferenceId'] = $requestParameters['AuthorizationReferenceId'];
@@ -432,7 +434,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['CaptureAmount']))
             $parameters['CaptureAmount.Amount'] = $requestParameters['CaptureAmount'];
         
-        $parameters['CaptureAmount.CurrencyCode'] = $this->_config['currencyCode'];
+        $parameters['CaptureAmount.CurrencyCode'] = $this->_config['currency_code'];
 	
         if (!empty($requestParameters['CaptureReferenceId'])) {
             $parameters['CaptureReferenceId'] = $requestParameters['CaptureReferenceId'];
@@ -498,7 +500,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['RefundAmount']))
             $parameters['RefundAmount.Amount'] = $requestParameters['RefundAmount'];
         
-	$parameters['RefundAmount.CurrencyCode'] = $this->_config['currencyCode'];
+	$parameters['RefundAmount.CurrencyCode'] = $this->_config['currency_code'];
 	
         if (!empty($requestParameters['SellerRefundNote']))
             $parameters['SellerRefundNote'] = $requestParameters['SellerRefundNote'];
@@ -580,10 +582,10 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
 	    
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currencyCode'];
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currency_code'];
 	    
-        if (!empty($this->_config['platformId']))
-            $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platformId'];
+        if (!empty($this->_config['platform_id']))
+            $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['SellerNote']))
             $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['SellerNote'];
         if (!empty($requestParameters['SellerOrderId']))
@@ -640,8 +642,8 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AmazonBillingAgreementId']))
             $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
         
-        if (!empty($this->_config['platformId']))
-            $parameters['BillingAgreementAttributes.PlatformId'] = $this->_config['platformId'];
+        if (!empty($this->_config['platform_id']))
+            $parameters['BillingAgreementAttributes.PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['SellerNote']))
             $parameters['BillingAgreementAttributes.SellerNote'] = $requestParameters['SellerNote'];
         if (!empty($requestParameters['SellerBillingAgreementId']))
@@ -727,7 +729,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizationAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizationAmount'];
         
-	    $parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currencyCode'];
+	    $parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currency_code'];
         
         
         if (!empty($requestParameters['SellerAuthorizationNote']))
@@ -740,8 +742,8 @@ class OffAmazonPaymentsService_Client
             $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
         if (!empty($requestParameters['SellerNote']))
             $parameters['SellerNote'] = $requestParameters['SellerNote'];
-        if (!empty($this->_config['platformId']))
-            $parameters['PlatformId'] = $this->_config['platformId'];
+        if (!empty($this->_config['platform_id']))
+            $parameters['PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['CustomInformation']))
             $parameters['SellerOrderAttributes.CustomInformation'] = $requestParameters['CustomInformation'];
         if (!empty($requestParameters['SellerOrderId']))
@@ -791,14 +793,14 @@ class OffAmazonPaymentsService_Client
      */
     private function _calculateSignatureAndPost($parameters)
     {
-        if (!empty($this->_config['mwsAuthToken'])) {
-            $parameters['MWSAuthToken'] = $this->_config['mwsAuthToken'];
+        if (!empty($this->_config['mws_auth_token'])) {
+            $parameters['MWSAuthToken'] = $this->_config['mws_auth_token'];
         }
-        if (!empty($this->_config['sellerId'])) {
-            $parameters['SellerId'] = $this->_config['sellerId'];
+        if (!empty($this->_config['seller_id'])) {
+            $parameters['SellerId'] = $this->_config['seller_id'];
         }
         
-        $parameters['AWSAccessKeyId']   = $this->_config['accessKey'];
+        $parameters['AWSAccessKeyId']   = $this->_config['access_key'];
         $parameters['Version']          = self::SERVICE_VERSION;
         $parameters['SignatureMethod']  = 'HmacSHA256';
         $parameters['SignatureVersion'] = 2;
@@ -813,16 +815,40 @@ class OffAmazonPaymentsService_Client
         return $response;
     }
     
+    /* toJson  - converts XML into Json
+     * @param $response [XML]
+     */
     public function toJson($response)
     {
-	$response = simplexml_load_string($response);
+	//Getting the HttpResponse Status code to the output as a string
+	$status = strval($response['Status']);
+	
+	//Getting the Simple XML element object of the XML Response Body
+	$response = simplexml_load_string((string)$response['ResponseBody']);
+	
+	//Adding the HttpResponse Status code to the output as a string
+	$response->addChild('ResponseStatus', $status);
+	
 	return(json_encode($response));
     }
     
+    /* toArray  - converts XML into associative array
+     * @param $response [XML]
+     */
     public function toArray($response)
     {
-	$response = simplexml_load_string((string)$response);
+	//Getting the HttpResponse Status code to the output as a string
+	$status = strval($response['Status']);
+	
+	//Getting the Simple XML element object of the XML Response Body
+	$response = simplexml_load_string((string)$response['ResponseBody']);
+	
+	//Adding the HttpResponse Status code to the output as a string
+	$response->addChild('ResponseStatus', $status);
+	
+	//Converting the SimpleXMLElement Object to array()
 	$response = json_encode($response);
+	
 	return(json_decode($response,true));
     }
     /**
@@ -919,7 +945,7 @@ class OffAmazonPaymentsService_Client
             throw new Exception("Non-supported signing method specified");
         }
         
-        return base64_encode(hash_hmac($hash, $data, $this->_config['secretKey'], true));
+        return base64_encode(hash_hmac($hash, $data, $this->_config['secret_key'], true));
     }
     
     /**
@@ -938,7 +964,6 @@ class OffAmazonPaymentsService_Client
     private function _invokePost($parameters)
     {
         $response     = array();
-        $responseBody = null;
         $statusCode   = 200;
         /* Submit the request and read response body */
         try {
@@ -946,15 +971,15 @@ class OffAmazonPaymentsService_Client
             $retries     = 0;
             do {
                 try {
+		    $this->_constructUserAgentHeader();
                     $response     = $this->_httpPost($parameters);
-                    $responseBody = $response['ResponseBody'];
                     $statusCode   = $response['Status'];
                     
                     if ($statusCode == 200) {
                         $shouldRetry = false;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
                         $shouldRetry = ($response['ErrorCode'] === 'RequestThrottled') ? false : true;
-                        if ($shouldRetry) {
+                        if ($shouldRetry && $this->_config['handle_throttle']) {
                             $this->_pauseOnRetry(++$retries, $statusCode);
                         }
                     } else {
@@ -972,7 +997,7 @@ class OffAmazonPaymentsService_Client
             throw $se;
         }
         
-        return $responseBody;
+        return $response;
     }
     
     /**
@@ -983,7 +1008,7 @@ class OffAmazonPaymentsService_Client
     {
         
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->_config['serviceUrl']);
+        curl_setopt($ch, CURLOPT_URL, $this->_config['service_url']);
         curl_setopt($ch, CURLOPT_PORT, 443);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
@@ -991,8 +1016,8 @@ class OffAmazonPaymentsService_Client
         // if a ca bundle is configured, use it as opposed to the default ca
         // configured for the server
         
-        if (!is_null($this->_config['caBundleFile'])) {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->_config['caBundleFile']);
+        if (!is_null($this->_config['cabundle_file'])) {
+            curl_setopt($ch, CURLOPT_CAINFO, $this->_config['cabundle_file']);
         }
         
         curl_setopt($ch, CURLOPT_USERAGENT, $this->_userAgent);
@@ -1000,12 +1025,12 @@ class OffAmazonPaymentsService_Client
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        if ($this->_config['proxyHost'] != null && $this->_config['proxyPort'] != -1) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->_config['proxyHost'] . ':' . $this->_config['proxyPort']);
+        if ($this->_config['proxy_host'] != null && $this->_config['proxy_port'] != -1) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->_config['proxy_host'] . ':' . $this->_config['proxy_port']);
         }
         
-        if ($this->_config['proxyUsername'] != null && $this->_config['proxyPassword'] != null) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_config['proxyUsername'] . ':' . $this->_config['proxyPassword']);
+        if ($this->_config['proxy_username'] != null && $this->_config['proxy_password'] != null) {
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_config['proxy_username'] . ':' . $this->_config['proxy_password']);
         }
         
         $response = '';
@@ -1048,7 +1073,7 @@ class OffAmazonPaymentsService_Client
     {
         $region = strtolower($this->_config['region']);
         if (array_key_exists($region, $this->_regionMappings)) {
-            $this->_config['serviceUrl'] = $this->_mwsServiceUrl[$this->_regionMappings[$region]] . '/' . $this->_mwsEndpoint . '/' . self::SERVICE_VERSION;
+            $this->_config['service_url'] = $this->_mwsServiceUrl[$this->_regionMappings[$region]] . '/' . $this->_mwsEndpoint . '/' . self::SERVICE_VERSION;
             $this->_endpointpath         = '/' . $this->_mwsEndpoint . '/' . self::SERVICE_VERSION;
         } else {
             throw new Exception($region . 'is not a supported region');
@@ -1057,7 +1082,7 @@ class OffAmazonPaymentsService_Client
     
     private function _profileEndpointUrl()
     {
-        $region = strtolower($this->_config['userProfileRegion']);
+        $region = strtolower($this->_config['user_profile_region']);
         if ($this->_config['sandbox']) {
             if (array_key_exists($region, $this->_sandboxProfileEndpoint)) {
                 $this->_profileEndpoint = $this->_sandboxProfileEndpoint[$region];
@@ -1069,9 +1094,9 @@ class OffAmazonPaymentsService_Client
         }
     }
     
-    private function _constructUserAgentHeader($applicationName, $applicationVersion)
+    private function _constructUserAgentHeader()
     {
-        $this->_userAgent = $this->_quoteApplicationName($applicationName) . '/' . $this->_quoteApplicationVersion($applicationVersion);
+        $this->_userAgent = $this->_quoteApplicationName($this->application_name) . '/' . $this->_quoteApplicationVersion($this->application_version);
         $this->_userAgent .= ' (';
         $this->_userAgent .= 'Language=PHP/' . phpversion();
         $this->_userAgent .= '; ';

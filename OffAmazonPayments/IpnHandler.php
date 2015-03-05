@@ -33,13 +33,13 @@ class IpnHandler
     private $fields = array();
     private $_signatureFields = array();
     private $_Certificate = null;
-    private $ExpectedCnName = 'sns.amazonaws.com';
+    private $_expectedCnName = 'sns.amazonaws.com';
     
-    private $_IpnConfig = array('caBundleFile'  => null,
-                                'ProxyHost'     => null,
-                                'ProxyPort'     => -1,
-                                'ProxyUsername' => null,
-                                'ProxyPassword' => null);
+    private $_ipnConfig = array('cabundle_file'  => null,
+                                'proxy_host'     => null,
+                                'proxy_port'     => -1,
+                                'proxy_username' => null,
+                                'proxy_password' => null);
     
     /**
      * Create a new instance of the openssl implementation of
@@ -50,13 +50,13 @@ class IpnHandler
      *
      * @return void
      */
-    public function __construct($headers, $body, $IpnConfig = null)
+    public function __construct($headers, $body, $ipnConfig = null)
     {
         $this->_headers = $headers;
         $this->_body    = $body;
         
-        if($IpnConfig!=null){
-            $this->_IpnConfig = $IpnConfig;
+        if($ipnConfig!=null){
+            $this->_checkConfigKeys($ipnConfig);
         }
         
         // get the list of fields that we are interested in
@@ -71,11 +71,25 @@ class IpnHandler
         $this->parseRawMessage();
     }
     
+    private function _checkConfigKeys($ipnConfig)
+    {
+        $ipnConfig = array_change_key_case($ipnConfig, CASE_LOWER);
+        
+        foreach ($ipnConfig as $key => $value) {
+            if (array_key_exists($key, $this->_ipnConfig)) {
+                $this->_ipnConfig[$key] = $value;
+            } else {
+                throw new Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
+				check the _ipnConfig array key names to match your key names of your config array ', 1);
+            }
+        }
+    }
+    
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->_IpnConfig))
+        if (array_key_exists(strtolower($name), $this->_ipnConfig))
         {
-            $this->_IpnConfig[$name] = $value;
+            $this->_ipnConfig[$name] = $value;
         }
         else
         {
@@ -85,9 +99,9 @@ class IpnHandler
     
     public function __get($name)
     {
-        if (array_key_exists($name, $this->_IpnConfig))
+        if (array_key_exists(strtolower($name), $this->_ipnConfig))
         {
-            return $this->_IpnConfig[$name];
+            return $this->_ipnConfig[$name];
         }
         else
         {
@@ -118,6 +132,10 @@ class IpnHandler
     public function GetJsonIpnMessage()
     {
         return json_decode($this->_snsmessage['Message'], true);
+    }
+    public function returnMessage()
+    {
+        return $this->_snsmessage;
     }
     
     
@@ -277,19 +295,19 @@ class IpnHandler
         
         // curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         
-        if (!is_null($this->_IpnConfig['caBundleFile']))
+        if (!is_null($this->_ipnConfig['cabundle_file']))
         {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->_IpnConfig['caBundleFile']);
+            curl_setopt($ch, CURLOPT_CAINFO, $this->_ipnConfig['cabundle_file']);
         }
         
-        if ($this->_IpnConfig['ProxyHost'] != null && $this->_IpnConfig['ProxyPort'] != -1)
+        if ($this->_ipnConfig['proxy_host'] != null && $this->_ipnConfig['proxy_port'] != -1)
         {
-            curl_setopt($ch, CURLOPT_PROXY, $this->_IpnConfig['ProxyHost'] . ':' . $this->_IpnConfig['ProxyPort']);
+            curl_setopt($ch, CURLOPT_PROXY, $this->_ipnConfig['proxy_host'] . ':' . $this->_ipnConfig['proxy_port']);
         }
         
-        if ($this->_IpnConfig['ProxyUsername'] != null && $this->_IpnConfig['ProxyPassword'] != null)
+        if ($this->_ipnConfig['proxy_username'] != null && $this->_ipnConfig['proxy_password'] != null)
         {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_IpnConfig['ProxyUsername'] . ':' . $this->_IpnConfig['ProxyPassword']);
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_ipnConfig['proxy_username'] . ':' . $this->_ipnConfig['proxy_password']);
         }
        
         $response = '';
@@ -345,7 +363,7 @@ class IpnHandler
             throw new Exception("Unable to verify certificate - error with the certificate subject", null, $ex);
         }
         
-        if (strcmp($certSubject["CN"], $this->ExpectedCnName))
+        if (strcmp($certSubject["CN"], $this->_expectedCnName))
         {
             throw new Exception("Unable to verify certificate issued by Amazon - error with certificate subject");
         }
