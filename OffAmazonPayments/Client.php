@@ -76,7 +76,7 @@ class OffAmazonPaymentsService_Client
 	  $configArray = json_decode($jsonString,true);
 	}
 	else{
-	    throw new Exception ($config. ' is of type '. gettype($config) .' and it is not supported.'.PHP_EOL.
+	    throw new Exception ($config. ' is not a supported type or the JSON file is not found in the specified path'.PHP_EOL.
 				 'Supported Input types are:'.PHP_EOL.
 				 '1.'.$config. ' can be a JSON file name containing config data in JSON format'.PHP_EOL.
 				 '2 '.$config. ' can be a PHP associative array'.PHP_EOL.
