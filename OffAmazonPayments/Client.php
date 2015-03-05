@@ -68,7 +68,7 @@ class OffAmazonPaymentsService_Client
 	   $configArray = $config;
 	}
 	
-	elseif((json_decode($config) != $config) && json_decode($config) && json_last_error()==0){
+	elseif((json_decode($config) != $config) && json_decode($config)){
 	    $configArray = json_decode($config,true);
 	}
 	elseif((!is_array($config)) && file_exists($config)){
