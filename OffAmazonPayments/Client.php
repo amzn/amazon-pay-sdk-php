@@ -118,7 +118,7 @@ class OffAmazonPaymentsService_Client
         }
     }
     
-    /* Setter
+    /* Getter
      * Gets the value for the key if the key exists in _config
      */
     public function __get($name)

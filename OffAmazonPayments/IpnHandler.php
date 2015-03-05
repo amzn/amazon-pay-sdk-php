@@ -68,14 +68,17 @@ class IpnHandler
             "TopicArn" => true,
             "Type" => true
         );
-        /**
         
-        * Converts a http POST body and headers into
-        * a notification object
-        */
+        //validate the IPN message header [x-amz-sns-message-type]  
         $this->_validateHeaders();
+        
+        //converts the IPN [Message] to Notification object
         $this->_getMessage();
+        
+        //checks if the notification [Type] is Notification and constructs the signature fields
         $this->_checkForCorrectMessageType();
+        
+        //verifies the singature against the provided pem file in the IPN
         $this->_constructAndVerifySignature();
     }
     
@@ -93,6 +96,9 @@ class IpnHandler
         }
     }
     
+    /* Setter function
+     * sets the value for the key if the key exists in _ipnConfig 
+     */
     public function __set($name, $value)
     {
         if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
@@ -102,6 +108,9 @@ class IpnHandler
         }
     }
     
+    /* Getter function
+     * returns the value for the key if the key exists in _ipnConfig 
+     */
     public function __get($name)
     {
         if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
@@ -119,7 +128,8 @@ class IpnHandler
         return json_decode($this->_snsMessage['Message'], true);
     }
     
-    /* ipnMessagetoJson() - Converts IPN [Message] field to JSON
+    /* toJson() - Converts IPN [Message] field to JSON
+     *
      * Has child elements
      * ['NotificationData'] [XML] - API call XML notification data
      * Type - Notification
@@ -146,6 +156,7 @@ class IpnHandler
     }
     
     /* toArray() - Converts IPN [Message] field to associative array
+     *
      * Has child elements
      * ['NotificationData'] [XML] - API call XML notification data
      * Type - Notification
@@ -225,6 +236,13 @@ class IpnHandler
         }
     }
     
+    /* _checkForCorrectMessageType()
+     * 
+     * Checks if the Field [Type] is set to ['Notification']
+     * gets the value for the fields marked true in the fields array
+     * constructs the signature string
+     */
+    
     private function _checkForCorrectMessageType()
     {
         $type = $this->_getMandatoryField("Type");
@@ -289,7 +307,10 @@ class IpnHandler
         }
     }
     
-    
+    /* _getCertificate($certificatePath)
+     * 
+     * gets the certificate from the $certificatePath using Curl
+     */
     private function _getCertificate($certificatePath)
     {
         $ch = curl_init();
@@ -321,8 +342,6 @@ class IpnHandler
             throw new Exception($errorNo);
         }
         
-        
-        
         curl_close($ch);
         return $response;
         
@@ -335,9 +354,8 @@ class IpnHandler
      * @param string $data            data to validate
      * @param string $signature       decoded signature to compare against
      * @param string $certificate     certificate object defined in Certificate.php
-     * 
-     * @return bool true if valid
      */
+    
     public function verifySignatureIsCorrectFromCertificate($signature)
     {
         $certKey = openssl_get_publickey($this->_certificate);
