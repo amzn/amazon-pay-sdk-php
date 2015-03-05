@@ -369,8 +369,10 @@ class IpnHandler
         $response->addChild('MessageId', $this->_snsMessage['MessageId']);
         $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
         
+        //Merging the remaining fields with the response
         $responseArray = array_merge($remainingFields,(array)$response);
-        //Converting the SimpleXMLElement Object to array()
+       
+        //Converting to JSON format
         $response = json_encode($responseArray);
         
         return $response;
@@ -404,6 +406,7 @@ class IpnHandler
         $response = json_encode($response);
         $response = json_decode($response, true);
         
+        //Merging the remaining fields with the response array
         $response = array_merge($remainingFields,$response);
         
         return $response;
