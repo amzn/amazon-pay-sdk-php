@@ -349,7 +349,7 @@ class IpnHandler
      *
      * Has child elements
      * ['NotificationData'] [XML] - API call XML notification data
-     * @param remainingFields - consisits of remiang IPN array fields that are merged
+     * @param remainingFields - consists of remaining IPN array fields that are merged
      * Type - Notification
      * MessageId -  ID of the Notification
      * Topic ARN - Topic of the IPN
@@ -382,8 +382,8 @@ class IpnHandler
     /* toArray() - Converts IPN [Message] field to associative array
      *
      * Has child elements
-     * ['NotificationData'] [XML] - API call XML notification data
-     * @param remainingFields - consisits of remiang IPN array fields that are merged
+     * ['NotificationData'] [XML] - API call XML response data
+     * @param remainingFields - consists of remaining IPN array fields that are merged
      * Type - Notification
      * MessageId -  ID of the Notification
      * Topic ARN - Topic of the IPN
