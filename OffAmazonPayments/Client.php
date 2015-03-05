@@ -45,7 +45,8 @@ class OffAmazonPaymentsService_Client
     private $_mwsEndpoint = null;
     
     private $_mwsServiceUrl = array('eu' => 'https://mws-eu.amazonservices.com',
-				    'na' => 'https://mws.amazonservices.com');
+				    'na' => 'https://mws.amazonservices.com',
+				    'jp' => 'https://mws.amazonservices.jp');
     
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'na' => 'https://api.amazon.com',
@@ -60,7 +61,8 @@ class OffAmazonPaymentsService_Client
     private $_regionMappings = array('de' => 'eu',
 				     'na' => 'na',
 				     'uk' => 'eu',
-				     'us' => 'na');
+				     'us' => 'na',
+				     'jp' => 'jp');
     
     public function __construct($config = null)
     {
