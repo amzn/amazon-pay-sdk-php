@@ -1,33 +1,14 @@
 <?php
 /**
- * IPN_Handler 
- *
- * This file is invoked whenever a new notification needs to be processed,
- * and will call the IPN API
- *
- * Note that if the IPN Client throws an Exception, the IPH_Handler routine is
- * expected to throw a HTTP error response to signal that there has been an issue
- * with the message
- * 
- * This class logs information to an error logs, 
- * and places the last received notification
- * into the session context as a way to pass to other pages
- *
+ * Class IPN_Handler 
+ * Takes headers and body of the IPN message as input in the constructor 
+ * verifies that the IPN is from the right resource and has the valid data
  */
 
 class IpnHandler
 {
-    
-    /**
-     * Expected value for the CN field in an
-     * Amazon issued certificate
-     */
+   
     private $_headers = null;
-    
-    /**
-     * IHttpRequestFactory for creating http requests
-     *
-     */
     private $_body = null;
     private $_snsMessage = null;
     private $_fields = array();
@@ -41,15 +22,7 @@ class IpnHandler
                                 'proxy_username' => null,
                                 'proxy_password' => null);
     
-    /**
-     * Create a new instance of the openssl implementation of
-     * verify signature
-     * 
-     * @param string expectedCnName for Amazon cert
-     * @param IHttpRequestFactory httpRequestFactory factory to create http requests
-     *
-     * @return void
-     */
+    
     public function __construct($headers, $body, $ipnConfig = null)
     {
         $this->_headers = $headers;
@@ -78,7 +51,7 @@ class IpnHandler
         //checks if the notification [Type] is Notification and constructs the signature fields
         $this->_checkForCorrectMessageType();
         
-        //verifies the singature against the provided pem file in the IPN
+        //verifies the signature against the provided pem file in the IPN
         $this->_constructAndVerifySignature();
     }
     
@@ -120,68 +93,6 @@ class IpnHandler
         }
     }
     
-    /* ipnMessagetoJson() - JSON decode the [Message] portion of the IPN
-     */
-    
-    public function ipnMessagetoJson()
-    {
-        return json_decode($this->_snsMessage['Message'], true);
-    }
-    
-    /* toJson() - Converts IPN [Message] field to JSON
-     *
-     * Has child elements
-     * ['NotificationData'] [XML] - API call XML notification data
-     * Type - Notification
-     * MessageId -  ID of the Notification
-     * Topic ARN - Topic of the IPN
-     * @return response in JSON format
-     */
-    public function toJson()
-    {
-        $ipnMessage = $this->ipnMessagetoJson();
-        
-        //Getting the Simple XML element object of the IPN XML Response Body
-        $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
-        
-        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML elsement Object
-        $response->addChild('Type', $this->_snsMessage['Type']);
-        $response->addChild('MessageId', $this->_snsMessage['MessageId']);
-        $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
-        
-        //Converting the SimpleXMLElement Object to array()
-        $response = json_encode($response);
-        
-        return $response;
-    }
-    
-    /* toArray() - Converts IPN [Message] field to associative array
-     *
-     * Has child elements
-     * ['NotificationData'] [XML] - API call XML notification data
-     * Type - Notification
-     * MessageId -  ID of the Notification
-     * Topic ARN - Topic of the IPN
-     * @return response in array format
-     */
-    public function toArray()
-    {
-        $ipnMessage = $this->ipnMessagetoJson();
-        
-        //Getting the Simple XML element object of the IPN XML Response Body
-        $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
-        
-        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML elsement Object
-        $response->addChild('Type', $this->_snsMessage['Type']);
-        $response->addChild('MessageId', $this->_snsMessage['MessageId']);
-        $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
-        
-        //Converting the SimpleXMLElement Object to array()
-        $response = json_encode($response);
-        $response = json_decode($response, true);
-        
-        return $response;
-    }
     
     private function _validateHeaders()
     {
@@ -424,5 +335,94 @@ class IpnHandler
         } else {
             return null;
         }
+    }
+    
+    /* returnMessage() - JSON decode the raw [Message] portion of the IPN
+     */
+    
+    public function returnMessage()
+    {
+        return json_decode($this->_snsMessage['Message'], true);
+    }
+    
+    /* toJson() - Converts IPN [Message] field to JSON
+     *
+     * Has child elements
+     * ['NotificationData'] [XML] - API call XML notification data
+     * @param remainingFields - consisits of remiang IPN array fields that are merged
+     * Type - Notification
+     * MessageId -  ID of the Notification
+     * Topic ARN - Topic of the IPN
+     * @return response in JSON format
+     */
+    public function toJson()
+    {
+        $ipnMessage = $this->returnMessage();
+        
+        $remainingFields = $this->_getRemainingIpnFields();
+        
+        //Getting the Simple XML element object of the IPN XML Response Body
+        $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
+        
+        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML elsement Object
+        $response->addChild('Type', $this->_snsMessage['Type']);
+        $response->addChild('MessageId', $this->_snsMessage['MessageId']);
+        $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
+        
+        $responseArray = array_merge($remainingFields,(array)$response);
+        //Converting the SimpleXMLElement Object to array()
+        $response = json_encode($responseArray);
+        
+        return $response;
+    }
+    
+    
+    /* toArray() - Converts IPN [Message] field to associative array
+     *
+     * Has child elements
+     * ['NotificationData'] [XML] - API call XML notification data
+     * @param remainingFields - consisits of remiang IPN array fields that are merged
+     * Type - Notification
+     * MessageId -  ID of the Notification
+     * Topic ARN - Topic of the IPN
+     * @return response in array format
+     */
+    public function toArray()
+    {
+        $ipnMessage = $this->returnMessage();
+        $remainingFields = $this->_getRemainingIpnFields();
+        
+        //Getting the Simple XML element object of the IPN XML Response Body
+        $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
+        
+        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML elsement Object
+        $response->addChild('Type', $this->_snsMessage['Type']);
+        $response->addChild('MessageId', $this->_snsMessage['MessageId']);
+        $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
+        
+        //Converting the SimpleXMLElement Object to array()
+        $response = json_encode($response);
+        $response = json_decode($response, true);
+        
+        $response = array_merge($remainingFields,$response);
+        
+        return $response;
+    }
+    
+    /* _getRemainingIpnFields()
+     * Gets the remaining fields of the IPN to be later appeded to the return message
+     */
+    private function _getRemainingIpnFields()
+    {
+        $ipnMessage = $this->returnMessage();
+        
+        $remainingFields = ['NotificationReferenceId' =>$ipnMessage['NotificationReferenceId'],
+                            'NotificationType' =>$ipnMessage['NotificationType'],
+                            'IsSample' =>$ipnMessage['IsSample'],
+                            'SellerId' =>$ipnMessage['SellerId'],
+                            'ReleaseEnvironment' =>$ipnMessage['ReleaseEnvironment'],
+                            'Version' =>$ipnMessage['Version']];
+       
+        return($remainingFields);
     }
 }
