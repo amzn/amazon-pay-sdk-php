@@ -91,7 +91,7 @@ class IpnHandler
         }
         else
         {
-            throw new Exception("Key " . $name . " was not found int he configuration", 1);
+            throw new Exception("Key " . $name . " was not found in the configuration", 1);
         }
     }
     
@@ -108,9 +108,6 @@ class IpnHandler
      */
     private function parseRawMessage()
     {
-        // Is this json, is this
-        // an sns message, do we have the fields we require
-        // $snsMessage = SnsMessageParser::parseNotification($this->headers, $body);
         $this->_validateHeaders();
         $this->GetMessage();
         $this->_checkForCorrectMessageType();
