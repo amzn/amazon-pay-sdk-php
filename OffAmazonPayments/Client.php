@@ -51,12 +51,14 @@ class OffAmazonPaymentsService_Client
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'na' => 'https://api.amazon.com',
 					  'us' => 'https://api.amazon.com',
-					  'de' => 'https://api.amazon.de');
+					  'de' => 'https://api.amazon.de',
+					  'jp' => 'https://api.amazon.co.jp');
     
     private $_sandboxProfileEndpoint = array('uk' => 'https://api.sandbox.amazon.co.uk',
 					     'na' => 'https://api.sandbox.amazon.com',
 					     'us' => 'https://api.sandbox.amazon.com',
-					     'de' => 'https://api.sandbox.amazon.de');
+					     'de' => 'https://api.sandbox.amazon.de',
+					     'jp' => 'https://api.sandbox.amazon.co.jp');
     
     private $_regionMappings = array('de' => 'eu',
 				     'na' => 'na',
