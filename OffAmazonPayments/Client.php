@@ -107,7 +107,7 @@ class OffAmazonPaymentsService_Client
 				check the _config array key names to match your key names of your config array ', 1);
             }
         }
-        $this->_modePath = $this->_config['sandbox'] ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
+        $this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
     }
     
     /* Setter
