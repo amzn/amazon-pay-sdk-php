@@ -28,7 +28,6 @@ class OffAmazonPaymentsService_Client
 			     'secret_key' 	  => null,
 			     'access_key' 	  => null,
 			     'mws_auth_token'  	  => null,
-			     'service_url' 	  => null,
 			     'region' 		  => 'na',
 			     'currency_code'	  => 'USD',
 			     'sandbox' 		  => false,
@@ -45,7 +44,9 @@ class OffAmazonPaymentsService_Client
 			     'handle_throttle' 	  => true);
     private $_modePath = null;
     
-    private $_mwsServiceUrl = array('eu' => 'mws-eu.amazonservices.com',
+    private $_mwsServiceUrl = null;
+    
+    private $_mwsServiceUrls = array('eu' => 'mws-eu.amazonservices.com',
 				    'na' => 'mws.amazonservices.com',
 				    'jp' => 'mws.amazonservices.jp');
     
@@ -1012,7 +1013,7 @@ class OffAmazonPaymentsService_Client
     {
         
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->_config['service_url']);
+        curl_setopt($ch, CURLOPT_URL, $this->_mwsServiceUrl);
         curl_setopt($ch, CURLOPT_PORT, 443);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
@@ -1079,8 +1080,8 @@ class OffAmazonPaymentsService_Client
 	
         $region = strtolower($this->_config['region']);
         if (array_key_exists($region, $this->_regionMappings)) {
-	    $this->_mwsEndpointUrl = $this->_mwsServiceUrl[$this->_regionMappings[$region]];
-            $this->_config['service_url'] = 'https://'.$this->_mwsEndpointUrl . '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
+	    $this->_mwsEndpointUrl = $this->_mwsServiceUrls[$this->_regionMappings[$region]];
+            $this->_mwsServiceUrl = 'https://'.$this->_mwsEndpointUrl . '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
             $this->_mwsEndpointPath         = '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
         } else {
             throw new Exception($region . 'is not a supported region');
