@@ -107,7 +107,6 @@ class OffAmazonPaymentsService_Client
 				check the _config array key names to match your key names of your config array ', 1);
             }
         }
-        $this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
     }
     
     /* Setter
@@ -1076,6 +1075,8 @@ class OffAmazonPaymentsService_Client
     
     private function _createServiceUrl()
     {
+	$this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
+	
         $region = strtolower($this->_config['region']);
         if (array_key_exists($region, $this->_regionMappings)) {
 	    $this->_mwsEndpointUrl = $this->_mwsServiceUrl[$this->_regionMappings[$region]];
@@ -1093,10 +1094,8 @@ class OffAmazonPaymentsService_Client
             if (array_key_exists($region, $this->_sandboxProfileEndpoint)) {
                 $this->_profileEndpoint = $this->_sandboxProfileEndpoint[$region];
             }
-        } else {
-            if (array_key_exists($region, $this->_liveProfileEndpoint)) {
+        } elseif (array_key_exists($region, $this->_liveProfileEndpoint)) {
                 $this->_profileEndpoint = $this->_liveProfileEndpoint[$region];
-            }
         }
     }
     
