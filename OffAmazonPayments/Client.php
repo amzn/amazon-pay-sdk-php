@@ -233,7 +233,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
         
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currency_code'];
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
@@ -372,7 +372,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizeAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizeAmount'];
         
-	$parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currency_code'];
+	$parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         if (!empty($requestParameters['AuthorizationReferenceId'])){
             $parameters['AuthorizationReferenceId'] = $requestParameters['AuthorizationReferenceId'];
@@ -438,7 +438,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['CaptureAmount']))
             $parameters['CaptureAmount.Amount'] = $requestParameters['CaptureAmount'];
         
-        $parameters['CaptureAmount.CurrencyCode'] = $this->_config['currency_code'];
+        $parameters['CaptureAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
 	
         if (!empty($requestParameters['CaptureReferenceId'])) {
             $parameters['CaptureReferenceId'] = $requestParameters['CaptureReferenceId'];
@@ -504,7 +504,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['RefundAmount']))
             $parameters['RefundAmount.Amount'] = $requestParameters['RefundAmount'];
         
-	$parameters['RefundAmount.CurrencyCode'] = $this->_config['currency_code'];
+	$parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
 	
         if (!empty($requestParameters['SellerRefundNote']))
             $parameters['SellerRefundNote'] = $requestParameters['SellerRefundNote'];
@@ -586,7 +586,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
 	    
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = $this->_config['currency_code'];
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
 	    
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
@@ -733,7 +733,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizationAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizationAmount'];
         
-	    $parameters['AuthorizationAmount.CurrencyCode'] = $this->_config['currency_code'];
+	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         
         if (!empty($requestParameters['SellerAuthorizationNote']))
@@ -741,7 +741,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['TransactionTimeout']))
             $parameters['TransactionTimeout'] = $requestParameters['TransactionTimeout'];
         if (!empty($requestParameters['CaptureNow']))
-            $parameters['CaptureNow'] = $requestParameters['CaptureNow'];
+            $parameters['CaptureNow'] = strtolower($requestParameters['CaptureNow']);
         if (!empty($requestParameters['SoftDescriptor']))
             $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
         if (!empty($requestParameters['SellerNote']))
@@ -755,7 +755,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['StoreName']))
             $parameters['SellerOrderAttributes.StoreName'] = $requestParameters['StoreName'];
         if (!empty($requestParameters['InheritShippingAddress'])) {
-            $parameters['InheritShippingAddress'] = $requestParameters['InheritShippingAddress'];
+            $parameters['InheritShippingAddress'] = strtolower($requestParameters['InheritShippingAddress']);
         } else {
             $parameters['InheritShippingAddress'] = true;
         }
