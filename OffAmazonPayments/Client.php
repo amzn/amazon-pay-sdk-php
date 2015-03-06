@@ -21,7 +21,8 @@ class OffAmazonPaymentsService_Client
     const SERVICE_VERSION = '2013-01-01';
     
     private $_userAgent = null;
-    private $_endpointpath = null;
+    private $_mwsEndpointPath = null;
+    private $_mwsEndpointUrl = null;
     private $_profileEndpoint = null;
     private $_config = array('seller_id' 	  => null,
 			     'secret_key' 	  => null,
@@ -42,11 +43,11 @@ class OffAmazonPaymentsService_Client
 			     'client_id' 	  => null,
 			     'user_profile_region'=> null,
 			     'handle_throttle' 	  => true);
-    private $_mwsEndpoint = null;
+    private $_modePath = null;
     
-    private $_mwsServiceUrl = array('eu' => 'https://mws-eu.amazonservices.com',
-				    'na' => 'https://mws.amazonservices.com',
-				    'jp' => 'https://mws.amazonservices.jp');
+    private $_mwsServiceUrl = array('eu' => 'mws-eu.amazonservices.com',
+				    'na' => 'mws.amazonservices.com',
+				    'jp' => 'mws.amazonservices.jp');
     
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'na' => 'https://api.amazon.com',
@@ -106,7 +107,7 @@ class OffAmazonPaymentsService_Client
 				check the _config array key names to match your key names of your config array ', 1);
             }
         }
-        $this->_mwsEndpoint = $this->_config['sandbox'] ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
+        $this->_modePath = $this->_config['sandbox'] ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
     }
     
     /* Setter
@@ -910,9 +911,9 @@ class OffAmazonPaymentsService_Client
     {
         $data = 'POST';
         $data .= "\n";
-        $data .= "mws.amazonservices.com";
+        $data .= $this->_mwsEndpointUrl;
         $data .= "\n";
-        $data .= $this->_endpointpath;
+        $data .= $this->_mwsEndpointPath;
         $data .= "\n";
         $data .= $this->_getParametersAsString($parameters);
         return $data;
@@ -1077,8 +1078,9 @@ class OffAmazonPaymentsService_Client
     {
         $region = strtolower($this->_config['region']);
         if (array_key_exists($region, $this->_regionMappings)) {
-            $this->_config['service_url'] = $this->_mwsServiceUrl[$this->_regionMappings[$region]] . '/' . $this->_mwsEndpoint . '/' . self::SERVICE_VERSION;
-            $this->_endpointpath         = '/' . $this->_mwsEndpoint . '/' . self::SERVICE_VERSION;
+	    $this->_mwsEndpointUrl = $this->_mwsServiceUrl[$this->_regionMappings[$region]];
+            $this->_config['service_url'] = 'https://'.$this->_mwsEndpointUrl . '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
+            $this->_mwsEndpointPath         = '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
         } else {
             throw new Exception($region . 'is not a supported region');
         }
