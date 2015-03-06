@@ -983,7 +983,7 @@ class OffAmazonPaymentsService_Client
                         $shouldRetry = false;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
                         $shouldRetry = ($response['ErrorCode'] === 'RequestThrottled') ? false : true;
-                        if ($shouldRetry && $this->_config['handle_throttle']) {
+                        if ($shouldRetry && strtolower($this->_config['handle_throttle'])) {
                             $this->_pauseOnRetry(++$retries, $statusCode);
                         }
                     } else {
