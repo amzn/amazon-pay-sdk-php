@@ -53,6 +53,12 @@ The sandbox parameter is defaulted to false if not specified:
 ```php
 $client = new OffAmazonPayments_Client($config)
 
+$config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
+                'access_key'    => 'YOUR_ACCESS_KEY',
+                'secret_key'    => 'YOUR_SECRET_KEY',
+                'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+                'sandbox'       => true );
+
 Also you can set the sandbox variable in the _config() array of the Client class by 
 
 $client->sandbox = true;
