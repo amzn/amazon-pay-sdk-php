@@ -21,11 +21,11 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
+| Parameter   | variable name | mandatory | Description |
+|:-------------:|:-------------:|:----------:|:----------:|
+| Seller Id  | seller_id | yes |
+| Access Key | access_key | yes |
+| Secret Key | secret_key | yes |
 
 ```php
 require 'Client.php'
