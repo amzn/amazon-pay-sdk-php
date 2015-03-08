@@ -21,26 +21,26 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| _Parameter_   | _variable name_ | _mandatory_ | _values_ |
-|:-------------|:-----------|:----------:|:----------:|
-| Seller Id  | `seller_id`      | yes        |
-| Access Key | `access_key`     | yes        |
-| Secret Key | `secret_key`     | yes        |
-| Region     | `secret_key`     | yes        |
-| Currency Code | `currency_code`    | no        |
-| Environment | `region`     | yes        |
-| MWS Auth token | `mws_auth_token`     | yes        |
-| Platform ID | `platform_id`     | yes        |
-| CA Bundle File | `cabundle_fule`     | yes        |
-| Application Name | `application_name`     | yes        |
-| Application Version | `application_file`     | yes        |
-| Proxy Host | `proxy_host`     | yes        |
-| Proxy Port | `proxy_port`     | yes        |
-| Proxy Username | `proxy_username`     | yes        |
-| Proxy Password | `proxy_password`     | yes        |
-| LWA Client ID | `client_id`     | yes        |
-| Profile Region | `user_profile_region`     | yes        |
-| Handle Throttle | `handle_throttle`     | yes        |
+| Parameter           | variable name       | mandatory | values           | Description |
+|---------------------|---------------------|:---------:|------------------|-------------|
+| Seller Id           | `seller_id`         |    yes    | Default : `null` |             |
+| Access Key          | `access_key`        |    yes    | Default : `null` |             |
+| Secret Key          | `secret_key`        |    yes    | Default : `null` |             |
+| Region              | `region`            |    yes    | Default : `na`   |             |
+| Currency Code       | `currency_code`     |     no    | Default : `USD`  |             |
+| Environment         | `sandbox`           |     no    | Default : `true` |             |
+| MWS Auth token      | `mws_auth_token`    |     no    | Default : `null` |             |
+| Platform ID         | `platform_id`       |     no    | Default : `null` |             |
+| CA Bundle File      | `cabundle_file`     |     no    | Default : `null` |             |
+| Application Name    | `application_name`  |     no    | Default : `null` |             |
+| Application Version | application_version |     no    | Default : `null` |             |
+| Proxy Host          | proxy_host          |     no    | Default : `null` |             |
+| Proxy Port          | proxy_port          |     no    | Default : `-1`   |             |
+| Proxy Username      | proxy_username      |     no    | Default : `null` |             |
+| Proxy Password      | proxy_password      |     no    | Default : `null` |             |
+| LWA Client ID       | client_id           |     no    | Default : `null` |             |
+| Profile Region      | user_profile_region |     no    | Default : `na`   |             |
+| Handle Throttle     | handle_throttle     |     no    | Default : `true` |             |
 
 ```php
 require 'Client.php'
