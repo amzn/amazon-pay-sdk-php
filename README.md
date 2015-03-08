@@ -21,9 +21,9 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| _Parameter_   | _variable name_ | _mandatory_ | _values_ | | _Description_ |
-|:-------------:|:-----------:|:----------:|:----------:||:----------:|
-| Seller Id  | `seller_id`      | yes        |default `null`|
+| _Parameter_   | _variable name_ | _mandatory_ | _values_ |
+|:-------------:|:-----------:|:----------:|:----------:|
+| Seller Id  | `seller_id`      | yes        |
 | Access Key | `access_key`     | yes        |
 | Secret Key | `secret_key`     | yes        |
 | Region     | `secret_key`     | yes        |
