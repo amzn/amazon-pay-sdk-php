@@ -21,14 +21,13 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| _Parameter_   | _variable name_ | _mandatory_ | _values_ |
+| _Parameter_   | _variable name_ | _mandatory_ | _values_ | Description|
 |:-------------|:-----------|:----------:|:----------:|
 | Seller Id  | `seller_id`      | yes        |
 | Access Key | `access_key`     | yes        |
 | Secret Key | `secret_key`     | yes        |
 | Region     | `secret_key`     | yes        |
 | Currency Code | `currency_code`    | no        |
-| Secret Key | secret_key     | yes        |
 | Environment | `region`     | yes        |
 | MWS Auth token | `mws_auth_token`     | yes        |
 | Platform ID | `platform_id`     | yes        |
