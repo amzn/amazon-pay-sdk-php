@@ -21,11 +21,27 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| Parameter   | variable name | mandatory | Description |
-|:-------------:|:-------------:|:----------:|:----------:|
-| Seller Id  | seller_id | yes |
-| Access Key | access_key | yes |
-| Secret Key | secret_key | yes |
+| _Parameter_   | _variable name_ | _mandatory_ | _values_ | | _Description_ |
+|:-------------:|:-----------:|:----------:|:----------:||:----------:|
+| Seller Id  | `seller_id`      | yes        |default `null`|
+| Access Key | `access_key`     | yes        |
+| Secret Key | `secret_key`     | yes        |
+| Region     | `secret_key`     | yes        |
+| Currency Code | `currency_code`    | no        |
+| Secret Key | secret_key     | yes        |
+| Environment | `region`     | yes        |
+| MWS Auth token | `mws_auth_token`     | yes        |
+| Platform ID | `platform_id`     | yes        |
+| CA Bundle File | `cabundle_fule`     | yes        |
+| Application Name | `application_name`     | yes        |
+| Application Version | `application_file`     | yes        |
+| Proxy Host | `proxy_host`     | yes        |
+| Proxy Port | `proxy_port`     | yes        |
+| Proxy Username | `proxy_username`     | yes        |
+| Proxy Password | `proxy_password`     | yes        |
+| LWA Client ID | `client_id`     | yes        |
+| Profile Region | `user_profile_region`     | yes        |
+| Handle Throttle | `handle_throttle`     | yes        |
 
 ```php
 require 'Client.php'
