@@ -24,31 +24,31 @@ class OffAmazonPaymentsService_Client
     private $_mwsEndpointPath = null;
     private $_mwsEndpointUrl = null;
     private $_profileEndpoint = null;
-    private $_config = array('seller_id' 	  => null,
-			     'secret_key' 	  => null,
-			     'access_key' 	  => null,
-			     'mws_auth_token'  	  => null,
-			     'region' 		  => 'na',
-			     'currency_code'	  => 'USD',
-			     'sandbox' 		  => false,
-			     'platform_id'	  => null,
-			     'cabundle_file' 	  => null,
-			     'application_name'   => null,
-			     'application_version'=> null,
-			     'proxy_host' 	  => null,
-			     'proxy_port' 	  => -1,
-			     'proxy_username' 	  => null,
-			     'proxy_password' 	  => null,
-			     'client_id' 	  => null,
-			     'user_profile_region'=> null,
-			     'handle_throttle' 	  => true);
+    private $_config = array('seller_id' 	   => null,
+			     'secret_key' 	   => null,
+			     'access_key' 	   => null,
+			     'mws_auth_token' 	   => null,
+			     'region' 		   => 'na',
+			     'currency_code' 	   => 'USD',
+			     'sandbox' 		   => false,
+			     'platform_id' 	   => null,
+			     'cabundle_file' 	   => null,
+			     'application_name'    => null,
+			     'application_version' => null,
+			     'proxy_host' 	   => null,
+			     'proxy_port' 	   => -1,
+			     'proxy_username' 	   => null,
+			     'proxy_password' 	   => null,
+			     'client_id' 	   => null,
+			     'user_profile_region' => null,
+			     'handle_throttle' 	   => true);
     private $_modePath = null;
     
     private $_mwsServiceUrl = null;
     
     private $_mwsServiceUrls = array('eu' => 'mws-eu.amazonservices.com',
-				    'na' => 'mws.amazonservices.com',
-				    'jp' => 'mws.amazonservices.jp');
+				     'na' => 'mws.amazonservices.com',
+				     'jp' => 'mws.amazonservices.jp');
     
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'na' => 'https://api.amazon.com',
@@ -70,36 +70,32 @@ class OffAmazonPaymentsService_Client
     
     public function __construct($config = null)
     {
-	if(is_array($config)){
-	   $configArray = $config;
-	}
-	
-	elseif((json_decode($config) != $config) && json_decode($config)){
-	    $configArray = json_decode($config,true);
-	}
-	elseif((!is_array($config)) && file_exists($config)){
-	  $jsonString = file_get_contents($config);
-	  $configArray = json_decode($jsonString,true);
-	}
-	else{
-	    throw new Exception ($config. ' is not a supported type or the JSON file is not found in the specified path'.PHP_EOL.
-				 'Supported Input types are:'.PHP_EOL.
-				 '1.'.$config. ' can be a JSON file name containing config data in JSON format'.PHP_EOL.
-				 '2 '.$config. ' can be a PHP associative array'.PHP_EOL.
-				 '3 '.$config. ' can be a JSON string'.PHP_EOL);
-	}
-	if(is_array($configArray)){
-	$this->_checkConfigKeys($configArray);
-	}else{
-	  throw new Exception($configArray. ' is of the incorrect type '. gettype($configArray) .' and should be of the type array');  
-	}
-        
+        if (!is_null($config)) {
+            
+            if (is_array($config)) {
+                $configArray = $config;
+            }
+            
+            elseif ((json_decode($config) != $config) && json_decode($config)) {
+                $configArray = json_decode($config, true);
+            } elseif ((!is_array($config)) && file_exists($config)) {
+                $jsonString  = file_get_contents($config);
+                $configArray = json_decode($jsonString, true);
+            } else {
+                throw new Exception($config . ' is not a supported type or the JSON file is not found in the specified path' . PHP_EOL . 'Supported Input types are:' . PHP_EOL . '1.' . $config . ' can be a JSON file name containing config data in JSON format' . PHP_EOL . '2 ' . $config . ' can be a PHP associative array' . PHP_EOL . '3 ' . $config . ' can be a JSON string' . PHP_EOL);
+            }
+            if (is_array($configArray)) {
+                $this->_checkConfigKeys($configArray);
+            } else {
+                throw new Exception($configArray . ' is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
+            }
+        }
     }
     
     private function _checkConfigKeys($config)
     {
-	$config = array_change_key_case($config, CASE_LOWER);
-	
+        $config = array_change_key_case($config, CASE_LOWER);
+        
         foreach ($config as $key => $value) {
             if (array_key_exists($key, $this->_config)) {
                 $this->_config[$key] = $value;
@@ -111,16 +107,28 @@ class OffAmazonPaymentsService_Client
     }
     
     /* Setter
-     * Sets the value for the key if the key exists in _config
+     * 1. If input is $name=key,value=$value type pair,sets the value for the key if the key exists in _config array
+     * 2. if the input $value is an array,sets the value(s) for the _config array with the provided value
+     * 3. if the input $value is path to JSON file, sets the _config array values through _checkConfigKeys funtion.
      */
     public function __set($name, $value)
     {
-        if (array_key_exists(strtolower($name), $this->_config)) {
-            $this->_config[$name] = $value;
-        } else {
-            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the'
-				. $name . 'does not match the key name in the _config array', 1);
-        }
+      if(is_array($value)) {
+	    
+	    $this->_checkConfigKeys($value);
+        
+	} elseif (array_key_exists(strtolower($name), $this->_config)) {
+                $this->_config[strtolower($name)] = $value;
+        
+	} elseif ((!is_array($value)) && file_exists($value)) {
+                $jsonString  = file_get_contents($value);
+                $configArray = json_decode($jsonString, true);
+		$this->_checkConfigKeys($configArray);
+        }else{
+            throw new Exception('1. Key ' . $name . ' is either not a part of the configuration array _config or the' . $name
+				. 'does not match the key name in the _config array'.PHP_EOL.
+				'2. input is not a valid JSON file or the path to JSON file is incorrect',1);
+	}
     }
     
     /* Getter
@@ -129,10 +137,9 @@ class OffAmazonPaymentsService_Client
     public function __get($name)
     {
         if (array_key_exists(strtolower($name), $this->_config)) {
-            return $this->_config[$name];
+            return $this->_config[strtolower($name)];
         } else {
-            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the'
-				. $name . 'does not match the key name in the _config array', 1);
+            throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the' . $name . 'does not match the key name in the _config array', 1);
         }
     }
     
@@ -184,7 +191,7 @@ class OffAmazonPaymentsService_Client
             throw new Exception($error_msg);
         }
         curl_close($c);
-        $userInfo = json_decode($response,true);
+        $userInfo = json_decode($response, true);
         return $userInfo;
     }
     
@@ -196,6 +203,7 @@ class OffAmazonPaymentsService_Client
      */
     public function getOrderReferenceDetails($requestParameters = null)
     {
+	print_r($this->_config);
         $parameters           = array();
         $parameters['Action'] = 'GetOrderReferenceDetails';
         
@@ -228,13 +236,13 @@ class OffAmazonPaymentsService_Client
         $parameters['Action'] = 'SetOrderReferenceDetails';
         
         
-        if (!empty($requestParameters['AmazonOrderReferenceId'])) 
+        if (!empty($requestParameters['AmazonOrderReferenceId']))
             $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
         
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
         
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
@@ -264,7 +272,7 @@ class OffAmazonPaymentsService_Client
         $parameters['Action'] = 'ConfirmOrderReference';
         
         
-        if (!empty($requestParameters['AmazonOrderReferenceId'])) 
+        if (!empty($requestParameters['AmazonOrderReferenceId']))
             $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
@@ -373,11 +381,11 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizeAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizeAmount'];
         
-	$parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
-        if (!empty($requestParameters['AuthorizationReferenceId'])){
+        if (!empty($requestParameters['AuthorizationReferenceId'])) {
             $parameters['AuthorizationReferenceId'] = $requestParameters['AuthorizationReferenceId'];
-	} else {
+        } else {
             $parameters['AuthorizationReferenceId'] = uniqid('A01_REF_');
         }
         
@@ -387,13 +395,13 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['SellerAuthorizationNote']))
             $parameters['SellerAuthorizationNote'] = $requestParameters['SellerAuthorizationNote'];
         
-	if (!empty($requestParameters['TransactionTimeout']))
+        if (!empty($requestParameters['TransactionTimeout']))
             $parameters['TransactionTimeout'] = $requestParameters['TransactionTimeout'];
         
-	if (!empty($requestParameters['SoftDescriptor']))
+        if (!empty($requestParameters['SoftDescriptor']))
             $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
         
-	$response = $this->_calculateSignatureAndPost($parameters);
+        $response = $this->_calculateSignatureAndPost($parameters);
         return ($response);
     }
     
@@ -411,7 +419,7 @@ class OffAmazonPaymentsService_Client
         
         if (!empty($requestParameters['AmazonAuthorizationId']))
             $parameters['AmazonAuthorizationId'] = $requestParameters['AmazonAuthorizationId'];
-	    
+        
         $response = $this->_calculateSignatureAndPost($parameters);
         return ($response);
     }
@@ -440,7 +448,7 @@ class OffAmazonPaymentsService_Client
             $parameters['CaptureAmount.Amount'] = $requestParameters['CaptureAmount'];
         
         $parameters['CaptureAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
-	
+        
         if (!empty($requestParameters['CaptureReferenceId'])) {
             $parameters['CaptureReferenceId'] = $requestParameters['CaptureReferenceId'];
         } else {
@@ -452,7 +460,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['SoftDescriptor']))
             $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
         
-	$response = $this->_calculateSignatureAndPost($parameters);
+        $response = $this->_calculateSignatureAndPost($parameters);
         return ($response);
     }
     
@@ -505,8 +513,8 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['RefundAmount']))
             $parameters['RefundAmount.Amount'] = $requestParameters['RefundAmount'];
         
-	$parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
-	
+        $parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        
         if (!empty($requestParameters['SellerRefundNote']))
             $parameters['SellerRefundNote'] = $requestParameters['SellerRefundNote'];
         if (!empty($requestParameters['SoftDescriptor']))
@@ -531,7 +539,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AmazonRefundId']))
             $parameters['AmazonRefundId'] = $requestParameters['AmazonRefundId'];
         
-	$response = $this->_calculateSignatureAndPost($parameters);
+        $response = $this->_calculateSignatureAndPost($parameters);
         return ($response);
     }
     
@@ -574,21 +582,21 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['Id']))
             $parameters['Id'] = $requestParameters['Id'];
         
-        if (!empty($requestParameters['InheritShippingAddress'])){
+        if (!empty($requestParameters['InheritShippingAddress'])) {
             $parameters['InheritShippingAddress'] = strtolower($requestParameters['InheritShippingAddress']);
         } else {
-	    $parameters['InheritShippingAddress'] = true;
-	}
-        if (!empty($requestParameters['ConfirmNow'])){
+            $parameters['InheritShippingAddress'] = true;
+        }
+        if (!empty($requestParameters['ConfirmNow'])) {
             $parameters['ConfirmNow'] = strtolower($requestParameters['ConfirmNow']);
-        } else{
-	    $parameters['ConfirmNow'] = false;
-	}
+        } else {
+            $parameters['ConfirmNow'] = false;
+        }
         if (!empty($requestParameters['Amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
-	    
-	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
-	    
+        
+        $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['SellerNote']))
@@ -658,7 +666,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['StoreName']))
             $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName'] = $requestParameters['StoreName'];
         
-	$response = $this->_calculateSignatureAndPost($parameters);
+        $response = $this->_calculateSignatureAndPost($parameters);
         return ($response);
     }
     
@@ -734,7 +742,7 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['AuthorizationAmount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizationAmount'];
         
-	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         
         if (!empty($requestParameters['SellerAuthorizationNote']))
@@ -778,7 +786,7 @@ class OffAmazonPaymentsService_Client
         $parameters           = array();
         $parameters['Action'] = 'CloseBillingAgreement';
         
-        if (!empty($requestParameters['AmazonBillingAgreementId'])) 
+        if (!empty($requestParameters['AmazonBillingAgreementId']))
             $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
         if (!empty($requestParameters['ClosureReason']))
             $parameters['ClosureReason'] = $requestParameters['ClosureReason'];
@@ -816,7 +824,7 @@ class OffAmazonPaymentsService_Client
         
         $parameters['Signature'] = $this->_signParameters($parameters);
         $parameters              = $this->_getParametersAsString($parameters);
-        $response         	 = $this->_invokePost($parameters);
+        $response                = $this->_invokePost($parameters);
         return $response;
     }
     
@@ -825,16 +833,16 @@ class OffAmazonPaymentsService_Client
      */
     public function toJson($response)
     {
-	//Getting the HttpResponse Status code to the output as a string
-	$status = strval($response['Status']);
-	
-	//Getting the Simple XML element object of the XML Response Body
-	$response = simplexml_load_string((string)$response['ResponseBody']);
-	
-	//Adding the HttpResponse Status code to the output as a string
-	$response->addChild('ResponseStatus', $status);
-	
-	return(json_encode($response));
+        //Getting the HttpResponse Status code to the output as a string
+        $status = strval($response['Status']);
+        
+        //Getting the Simple XML element object of the XML Response Body
+        $response = simplexml_load_string((string) $response['ResponseBody']);
+        
+        //Adding the HttpResponse Status code to the output as a string
+        $response->addChild('ResponseStatus', $status);
+        
+        return (json_encode($response));
     }
     
     /* toArray  - converts XML into associative array
@@ -842,19 +850,19 @@ class OffAmazonPaymentsService_Client
      */
     public function toArray($response)
     {
-	//Getting the HttpResponse Status code to the output as a string
-	$status = strval($response['Status']);
-	
-	//Getting the Simple XML element object of the XML Response Body
-	$response = simplexml_load_string((string)$response['ResponseBody']);
-	
-	//Adding the HttpResponse Status code to the output as a string
-	$response->addChild('ResponseStatus', $status);
-	
-	//Converting the SimpleXMLElement Object to array()
-	$response = json_encode($response);
-	
-	return(json_decode($response,true));
+        //Getting the HttpResponse Status code to the output as a string
+        $status = strval($response['Status']);
+        
+        //Getting the Simple XML element object of the XML Response Body
+        $response = simplexml_load_string((string) $response['ResponseBody']);
+        
+        //Adding the HttpResponse Status code to the output as a string
+        $response->addChild('ResponseStatus', $status);
+        
+        //Converting the SimpleXMLElement Object to array()
+        $response = json_encode($response);
+        
+        return (json_decode($response, true));
     }
     /**
      * Computes RFC 2104-compliant HMAC signature for request parameters
@@ -968,17 +976,17 @@ class OffAmazonPaymentsService_Client
      */
     private function _invokePost($parameters)
     {
-        $response     = array();
-        $statusCode   = 200;
+        $response   = array();
+        $statusCode = 200;
         /* Submit the request and read response body */
         try {
             $shouldRetry = true;
             $retries     = 0;
             do {
                 try {
-		    $this->_constructUserAgentHeader();
-                    $response     = $this->_httpPost($parameters);
-                    $statusCode   = $response['Status'];
+                    $this->_constructUserAgentHeader();
+                    $response   = $this->_httpPost($parameters);
+                    $statusCode = $response['Status'];
                     
                     if ($statusCode == 200) {
                         $shouldRetry = false;
@@ -1076,13 +1084,13 @@ class OffAmazonPaymentsService_Client
     
     private function _createServiceUrl()
     {
-	$this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
-	
+        $this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
+        
         $region = strtolower($this->_config['region']);
         if (array_key_exists($region, $this->_regionMappings)) {
-	    $this->_mwsEndpointUrl = $this->_mwsServiceUrls[$this->_regionMappings[$region]];
-            $this->_mwsServiceUrl = 'https://'.$this->_mwsEndpointUrl . '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
-            $this->_mwsEndpointPath         = '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
+            $this->_mwsEndpointUrl  = $this->_mwsServiceUrls[$this->_regionMappings[$region]];
+            $this->_mwsServiceUrl   = 'https://' . $this->_mwsEndpointUrl . '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
+            $this->_mwsEndpointPath = '/' . $this->_modePath . '/' . self::SERVICE_VERSION;
         } else {
             throw new Exception($region . 'is not a supported region');
         }
@@ -1096,13 +1104,13 @@ class OffAmazonPaymentsService_Client
                 $this->_profileEndpoint = $this->_sandboxProfileEndpoint[$region];
             }
         } elseif (array_key_exists($region, $this->_liveProfileEndpoint)) {
-                $this->_profileEndpoint = $this->_liveProfileEndpoint[$region];
+            $this->_profileEndpoint = $this->_liveProfileEndpoint[$region];
         }
     }
     
     private function _constructUserAgentHeader()
     {
-        $this->_userAgent = $this->_quoteApplicationName($this->application_name) . '/' . $this->_quoteApplicationVersion($this->application_version);
+        $this->_userAgent = $this->_quoteApplicationName($this->_config['application_name']) . '/' . $this->_quoteApplicationVersion($this->_config['application_version']);
         $this->_userAgent .= ' (';
         $this->_userAgent .= 'Language=PHP/' . phpversion();
         $this->_userAgent .= '; ';
