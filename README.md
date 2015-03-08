@@ -21,7 +21,7 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
-| _Parameter_   | _variable name_ | _mandatory_ | _values_ | Description|
+| _Parameter_   | _variable name_ | _mandatory_ | _values_ |
 |:-------------|:-----------|:----------:|:----------:|
 | Seller Id  | `seller_id`      | yes        |
 | Access Key | `access_key`     | yes        |
