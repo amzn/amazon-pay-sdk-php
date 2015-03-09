@@ -22,14 +22,14 @@ Client Takes in parameters in the following format
 
 ##Parameters List
 
-###MandatoryParameters
+####Mandatory Parameters
 | Parameter           | variable name       | mandatory | values                                       |
 |---------------------|---------------------|:---------:|----------------------------------------------|
 | Seller Id           | `seller_id`         |    yes    | Default : `null`                             |
 | Access Key          | `access_key`        |    yes    | Default : `null`                             |
 | Secret Key          | `secret_key`        |    yes    | Default : `null`                             |
 
-###Optional Parameters
+####Optional Parameters
 | Parameter           | variable name       | mandatory | values                                       |
 |---------------------|---------------------|:---------:|----------------------------------------------|
 | Region              | `region`            |    yes    | Default : `na`<br>Other: `de`,`uk`,`us`,`eu` |
