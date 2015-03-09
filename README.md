@@ -21,11 +21,17 @@ Client Takes in parameters in the following format
 3. Path to the JSON file
 
 ##Parameters List
+
+###MandatoryParameters
 | Parameter           | variable name       | mandatory | values                                       |
 |---------------------|---------------------|:---------:|----------------------------------------------|
 | Seller Id           | `seller_id`         |    yes    | Default : `null`                             |
 | Access Key          | `access_key`        |    yes    | Default : `null`                             |
 | Secret Key          | `secret_key`        |    yes    | Default : `null`                             |
+
+###Optional Parameters
+| Parameter           | variable name       | mandatory | values                                       |
+|---------------------|---------------------|:---------:|----------------------------------------------|
 | Region              | `region`            |    yes    | Default : `na`<br>Other: `de`,`uk`,`us`,`eu` |
 | Currency Code       | `currency_code`     |     no    | Default : `USD`                              |
 | Environment         | `sandbox`           |     no    | Default : `false`                            |
