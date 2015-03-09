@@ -60,7 +60,7 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
 
 ## JSON file path            
 $config = 'PATH_TO_JSON_FILE';
-```
+
 #####Instantiate the client class with the config type
 $client = new OffAmazonPayments_Client($config);
 ```
@@ -78,9 +78,10 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
 
 ## JSON file path            
 $config = 'PATH_TO_JSON_FILE';
-```
+
 #####Instantiate the client class with the config type
 $client = new OffAmazonPayments_Client();
+
 $client->config = $config;
 ```
 
