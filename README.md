@@ -1,15 +1,10 @@
 # Login and Pay with Amazon PHP SDK
 Login and Pay with Amazon API Integration
 
-# Install
-
-```
-gem install off_amazon_payments
-```
-
 ## Requirements
 
 * PHP 5.3 or higher
+* Curl
 
 ## Quick Start
 
@@ -48,6 +43,10 @@ Client Takes in parameters in the following format
 | Profile Region      | `user_profile_region` | Default : `us`<br>Other: `de`,`uk`,`jp`	    |
 | Handle Throttle     | `handle_throttle`     | Default : `true`<br>Other: `false`	    |
 
+## Setting Configuration
+There are two ways of setting configuration
+
+1. Setting configuration while instantiating the OffAmazonPayments_Client object
 ```php
 require 'Client.php'
 # Your Login and Pay with Amazon keys are
@@ -59,21 +58,30 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'secret_key'  => 'YOUR_SECRET_KEY',
                 'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID');
 
-## JSON string input
-$config = {
-           "merchant_id": "YOUR_MERCHANT_ID",
-           "access_key" : "YOUR_ACCESS_KEY",
-           "secret_key" : "YOUR_SECRET_KEY",
-           "client_id"  : "YOUR_LOGIN_WITH_AMAZON_CLIENT_ID"
-           }
+## JSON file path            
+$config = 'PATH_TO_JSON_FILE';
+```
+#####Instantiate the client class with the config type
+$client = new OffAmazonPayments_Client($config);
+```
+2. Setting configuration after instantiating the OffAmazonPayments_Client object
+```php
+require 'Client.php'
+# Your Login and Pay with Amazon keys are
+# available in your Seller Central account
+
+## PHP Associative array
+$config = array('merchant_id' => 'YOUR_MERCHANT_ID',
+                'access_key'  => 'YOUR_ACCESS_KEY',
+                'secret_key'  => 'YOUR_SECRET_KEY',
+                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID');
 
 ## JSON file path            
 $config = 'PATH_TO_JSON_FILE';
 ```
-#####Instantiate the client class with the config type 
-
-```php
-$client = new OffAmazonPayments_Client($config)
+#####Instantiate the client class with the config type
+$client = new OffAmazonPayments_Client();
+$client->config = $config;
 ```
 
 ### Testing in Sandbox Mode
