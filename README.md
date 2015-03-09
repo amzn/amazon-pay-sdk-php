@@ -23,30 +23,30 @@ Client Takes in parameters in the following format
 ##Parameters List
 
 ####Mandatory Parameters
-| Parameter           | variable name       | mandatory | values                                       |
-|---------------------|---------------------|:---------:|----------------------------------------------|
-| Seller Id           | `seller_id`         |    yes    | Default : `null`                             |
-| Access Key          | `access_key`        |    yes    | Default : `null`                             |
-| Secret Key          | `secret_key`        |    yes    | Default : `null`                             |
+| Parameter           | variable name       | mandatory | values          |
+|---------------------|---------------------|:---------:|-----------------|
+| Seller Id           | `seller_id`         |    yes    | Default : `null`|
+| Access Key          | `access_key`        |    yes    | Default : `null`|
+| Secret Key          | `secret_key`        |    yes    | Default : `null`|
 
 ####Optional Parameters
-| Parameter           | variable name       | mandatory | values                                       |
-|---------------------|---------------------|:---------:|----------------------------------------------|
-| Region              | `region`            |    yes    | Default : `na`<br>Other: `de`,`uk`,`us`,`eu` |
-| Currency Code       | `currency_code`     |     no    | Default : `USD`                              |
-| Environment         | `sandbox`           |     no    | Default : `false`                            |
-| MWS Auth token      | `mws_auth_token`    |     no    | Default : `null`                             |
-| Platform ID         | `platform_id`       |     no    | Default : `null`                             |
-| CA Bundle File      | `cabundle_file`     |     no    | Default : `null`                             |
-| Application Name    | `application_name`  |     no    | Default : `null`                             |
-| Application Version | application_version |     no    | Default : `null`                             |
-| Proxy Host          | proxy_host          |     no    | Default : `null`                             |
-| Proxy Port          | proxy_port          |     no    | Default : `-1`                               |
-| Proxy Username      | proxy_username      |     no    | Default : `null`                             |
-| Proxy Password      | proxy_password      |     no    | Default : `null`                             |
-| LWA Client ID       | client_id           |     no    | Default : `null`                             |
-| Profile Region      | user_profile_region |     no    | Default : `na`                               |
-| Handle Throttle     | handle_throttle     |     no    | Default : `true`                             |
+| Parameter           | variable name       | values                                       |
+|---------------------|---------------------|----------------------------------------------|
+| Region              | `region`              | Default : `na`<br>Other: `de`,`uk`,`us`,`eu` |
+| Currency Code       | `currency_code`       | Default : `USD`                              |
+| Environment         | `sandbox`             | Default : `false`|
+| MWS Auth token      | `mws_auth_token`      | Default : `null` |
+| Platform ID         | `platform_id`         | Default : `null` |
+| CA Bundle File      | `cabundle_file`       | Default : `null`|
+| Application Name    | `application_name`    | Default : `null`|
+| Application Version | `application_version` | Default : `null`|
+| Proxy Host          | `proxy_host`          | Default : `null`|
+| Proxy Port          | `proxy_port`          | Default : `-1`  |
+| Proxy Username      | `proxy_username`      | Default : `null`|
+| Proxy Password      | `proxy_password`      | Default : `null`|
+| LWA Client ID       | `client_id`           | Default : `null`|
+| Profile Region      | `user_profile_region` | Default : `na`  |
+| Handle Throttle     | `handle_throttle`     | Default : `true`|
 
 ```php
 require 'Client.php'
