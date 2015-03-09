@@ -30,23 +30,23 @@ Client Takes in parameters in the following format
 | Secret Key | `secret_key`  | Default : `null`|
 
 ####Optional Parameters
-| Parameter           | variable name       | values                                       |
-|---------------------|---------------------|----------------------------------------------|
-| Region              | `region`              | Default : `na`<br>Other: `de`,`uk`,`us`,`eu` |
-| Currency Code       | `currency_code`       | Default : `USD`                              |
-| Environment         | `sandbox`             | Default : `false`|
-| MWS Auth token      | `mws_auth_token`      | Default : `null` |
-| Platform ID         | `platform_id`         | Default : `null` |
-| CA Bundle File      | `cabundle_file`       | Default : `null`|
-| Application Name    | `application_name`    | Default : `null`|
-| Application Version | `application_version` | Default : `null`|
-| Proxy Host          | `proxy_host`          | Default : `null`|
-| Proxy Port          | `proxy_port`          | Default : `-1`  |
-| Proxy Username      | `proxy_username`      | Default : `null`|
-| Proxy Password      | `proxy_password`      | Default : `null`|
-| LWA Client ID       | `client_id`           | Default : `null`|
-| Profile Region      | `user_profile_region` | Default : `na`  |
-| Handle Throttle     | `handle_throttle`     | Default : `true`|
+| Parameter           | variable name         | values                                      |
+|---------------------|-----------------------|---------------------------------------------|
+| Region              | `region`              | Default : `na`<br>Other: `de`,`uk`,`us`,`eu`|
+| Currency Code       | `currency_code`       | Default : `USD`<br>Other: `EUR`,`GBP`,`JPY` |
+| Environment         | `sandbox`             | Default : `false`<br>Other: `true`	    |
+| MWS Auth token      | `mws_auth_token`      | Default : `null` 			    |
+| Platform ID         | `platform_id`         | Default : `null` 			    |
+| CA Bundle File      | `cabundle_file`       | Default : `null`			    |
+| Application Name    | `application_name`    | Default : `null`			    |
+| Application Version | `application_version` | Default : `null`			    |
+| Proxy Host          | `proxy_host`          | Default : `null`			    |
+| Proxy Port          | `proxy_port`          | Default : `-1`  			    |
+| Proxy Username      | `proxy_username`      | Default : `null`			    |
+| Proxy Password      | `proxy_password`      | Default : `null`			    |
+| LWA Client ID       | `client_id`           | Default : `null`			    |
+| Profile Region      | `user_profile_region` | Default : `us`<br>Other: `de`,`uk`,`jp`	    |
+| Handle Throttle     | `handle_throttle`     | Default : `true`<br>Other: `false`	    |
 
 ```php
 require 'Client.php'
