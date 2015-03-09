@@ -23,11 +23,11 @@ Client Takes in parameters in the following format
 ##Parameters List
 
 ####Mandatory Parameters
-| Parameter           | variable name       | mandatory | values          |
-|---------------------|---------------------|:---------:|-----------------|
-| Seller Id           | `seller_id`         |    yes    | Default : `null`|
-| Access Key          | `access_key`        |    yes    | Default : `null`|
-| Secret Key          | `secret_key`        |    yes    | Default : `null`|
+| Parameter  | variable name | values          |
+|----------- |---------------|-----------------|
+| Seller Id  | `seller_id`   | Default : `null`|
+| Access Key | `access_key`  | Default : `null`|
+| Secret Key | `secret_key`  | Default : `null`|
 
 ####Optional Parameters
 | Parameter           | variable name       | values                                       |
