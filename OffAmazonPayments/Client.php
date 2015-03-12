@@ -1118,7 +1118,7 @@ class OffAmazonPaymentsService_Client
 	    }
 	}
 	else{
-	    throw new Exception("requestParameters['amazon_reference_id']". 'is null and is a required parameter');
+	    throw new Exception('key amazon_reference_id is null and is a required parameter');
 	}
 	
 	if(!empty($OrderParameters['charge_amount'])){
@@ -1136,9 +1136,8 @@ class OffAmazonPaymentsService_Client
 	    $authorizeParameters['seller_order_id'] = $OrderParameters['charge_order_id'];
 	    
 	}
-	if(!empty($OrderParameters['charge_reference_id'])){
-	    $authorizeParameters['authorization_reference_id'] = $OrderParameters['charge_reference_id'];
-	}
+	
+	$authorizeParameters['capture_now'] = true;
 	
 	if($oro){
 		$response = $this->setOrderReferenceDetails($setParameters);
