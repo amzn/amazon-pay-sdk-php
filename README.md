@@ -100,55 +100,32 @@ Also you can set the sandbox variable in the _config() array of the Client class
 
 $client->sandbox = true;
 ```
-### Adjusting Region and Currency Code
-
-```php
-## PHP Associative array
-$config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
-                'access_key'    => 'YOUR_ACCESS_KEY',
-                'secret_key'    => 'YOUR_SECRET_KEY',
-                'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'region'        => 'uk',
-                'currency_code' => 'GBP');
-                
-You can also set the region parameter with the setter funtion which can be simply accessed by
-$client->region = 'uk';
-```
-
 ### Making an API Call
 
 Below is an example on how to make the GetOrderReferenceDetails API call:
 
 ```php
-require 'off_amazon_payments'
-
-# Your Login and Pay with Amazon keys are
-# available in your Seller Central account
-merchant_id = 'YOUR_MERCHANT_ID'
-access_key = 'YOUR_ACCESS_KEY'
-secret_key = 'YOUR_SECRET_KEY'
-
-client = OffAmazonPayments::Client.new(
-  merchant_id,
-  access_key,
-  secret_key,
-  sandbox: true
-)
-
+$requestParameters = array();
 # These values are grabbed from the Login and Pay
 # with Amazon Address and Wallet widgets
-amazon_order_reference_id = 'AMAZON_ORDER_REFERENCE_ID'
-address_consent_token = 'ADDRESS_CONSENT_TOKEN'
+$requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
+$requestParameters['address_consent_token']    = 'ACCESS_TOKEN';
 
-client.get_order_reference_details(
-  amazon_order_reference_id,
-  address_consent_token: address_consent_token
-)
+$response = $client->getOrderReferenceDetails($requestParameters);
 
 ```
 
 ### Response Parsing
+$response = $client->getOrderReferenceDetails($requestParameters);
 
+#XML response
+$response->_xmlResponse;
+
+#Associate array response
+$response->toArray();
+
+#JSON response
+$response->toJson();
 ```php
 
 ```
