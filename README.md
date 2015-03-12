@@ -44,7 +44,6 @@ Client Takes in parameters in the following format
 | Handle Throttle     | `handle_throttle`     | Default : `true`<br>Other: `false`	    |
 
 ## Setting Configuration
-There are two ways of setting configuration
 
 Setting configuration while instantiating the OffAmazonPayments_Client object
 ```php
@@ -64,26 +63,6 @@ $config = 'PATH_TO_JSON_FILE';
 #####Instantiate the client class with the config type
 $client = new OffAmazonPayments_Client($config);
 ```
-Setting configuration after instantiating the OffAmazonPayments_Client object
-```php
-require 'Client.php'
-# Your Login and Pay with Amazon keys are
-# available in your Seller Central account
-
-## PHP Associative array
-$config = array('merchant_id' => 'YOUR_MERCHANT_ID',
-                'access_key'  => 'YOUR_ACCESS_KEY',
-                'secret_key'  => 'YOUR_SECRET_KEY',
-                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID');
-
-## JSON file path            
-$config = 'PATH_TO_JSON_FILE';
-
-#####Instantiate the client class with the config type
-$client = new OffAmazonPayments_Client($config);
-
-```
-
 ### Testing in Sandbox Mode
 
 The sandbox parameter is defaulted to false if not specified:
