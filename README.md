@@ -116,6 +116,7 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 ```
 
 ### Response Parsing
+```php
 $response = $client->getOrderReferenceDetails($requestParameters);
 
 #XML response
@@ -126,6 +127,4 @@ $response->toArray();
 
 #JSON response
 $response->toJson();
-```php
-
 ```
