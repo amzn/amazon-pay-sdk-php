@@ -46,7 +46,7 @@ Client Takes in parameters in the following format
 ## Setting Configuration
 There are two ways of setting configuration
 
-1. Setting configuration while instantiating the OffAmazonPayments_Client object
+Setting configuration while instantiating the OffAmazonPayments_Client object
 ```php
 require 'Client.php'
 # Your Login and Pay with Amazon keys are
@@ -64,7 +64,7 @@ $config = 'PATH_TO_JSON_FILE';
 #####Instantiate the client class with the config type
 $client = new OffAmazonPayments_Client($config);
 ```
-2. Setting configuration after instantiating the OffAmazonPayments_Client object
+Setting configuration after instantiating the OffAmazonPayments_Client object
 ```php
 require 'Client.php'
 # Your Login and Pay with Amazon keys are
@@ -80,9 +80,8 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
 $config = 'PATH_TO_JSON_FILE';
 
 #####Instantiate the client class with the config type
-$client = new OffAmazonPayments_Client();
+$client = new OffAmazonPayments_Client($config);
 
-$client->config = $config;
 ```
 
 ### Testing in Sandbox Mode
@@ -120,7 +119,7 @@ $client->region = 'uk';
 
 Below is an example on how to make the GetOrderReferenceDetails API call:
 
-```ruby
+```php
 require 'off_amazon_payments'
 
 # Your Login and Pay with Amazon keys are
@@ -150,34 +149,6 @@ client.get_order_reference_details(
 
 ### Response Parsing
 
-```ruby
-# These values are grabbed from the Login and Pay
-# with Amazon Address and Wallet widgets
-amazon_order_reference_id = 'AMAZON_ORDER_REFERENCE_ID'
-address_consent_token = 'ADDRESS_CONSENT_TOKEN'
+```php
 
-response = client.get_order_reference_details(
-  amazon_order_reference_id,
-  address_consent_token: address_consent_token
-)
-
-# This will return the original response body as a String
-response.body
-
-# This will return a REXML object
-response.to_xml
-
-# The 'get_element' method is an extension of the
-# REXML/Document class and allows quick parsing
-# of the REXML object. This will return a String value
-# for the specified element.
-xpath = 'XPath for the node you would like to extract'
-element = 'Node/Element name you would like to extract the value from'
-response.to_xml.get_element(xpath, element)
-
-# This will return the status code of the response
-response.code
-
-# This will return true or false depending on the status code
-response.success
 ```
