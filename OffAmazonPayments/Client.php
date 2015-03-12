@@ -14,20 +14,22 @@
  *  License.
  * *****************************************************************************
  */
+require_once 'ResponseParser.php';
 
 class OffAmazonPaymentsService_Client
 {
     const MWS_CLIENT_VERSION = '2013-01-01';
     const SERVICE_VERSION = '2013-01-01';
     
+    //construct User agent string based off of the application_name,application_version,PHP platform
     private $_userAgent = null;
+    
     private $_mwsEndpointPath = null;
     private $_mwsEndpointUrl = null;
     private $_profileEndpoint = null;
-    private $_config = array('seller_id' 	   => null,
+    private $_config = array('merchant_id'	   => null,
 			     'secret_key' 	   => null,
 			     'access_key' 	   => null,
-			     'mws_auth_token' 	   => null,
 			     'region' 		   => 'na',
 			     'currency_code' 	   => 'USD',
 			     'sandbox' 		   => false,
@@ -40,7 +42,7 @@ class OffAmazonPaymentsService_Client
 			     'proxy_username' 	   => null,
 			     'proxy_password' 	   => null,
 			     'client_id' 	   => null,
-			     'user_profile_region' => null,
+			     'user_profile_region' => 'na',
 			     'handle_throttle' 	   => true);
     private $_modePath = null;
     
@@ -50,12 +52,14 @@ class OffAmazonPaymentsService_Client
 				     'na' => 'mws.amazonservices.com',
 				     'jp' => 'mws.amazonservices.jp');
     
+    //Prooduction profile end points to get the user information
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'na' => 'https://api.amazon.com',
 					  'us' => 'https://api.amazon.com',
 					  'de' => 'https://api.amazon.de',
 					  'jp' => 'https://api.amazon.co.jp');
     
+    //sandbox profile end points to get the user information
     private $_sandboxProfileEndpoint = array('uk' => 'https://api.sandbox.amazon.co.uk',
 					     'na' => 'https://api.sandbox.amazon.com',
 					     'us' => 'https://api.sandbox.amazon.com',
@@ -67,18 +71,19 @@ class OffAmazonPaymentsService_Client
 				     'uk' => 'eu',
 				     'us' => 'na',
 				     'jp' => 'jp');
+    private $_success = false;
     
+    /* Takes user configuration array from the user as input
+     * Takes JSON file path with configuration information as input
+     * Validates the user configuation array against existing _config array
+     */ 
     public function __construct($config = null)
     {
         if (!is_null($config)) {
             
             if (is_array($config)) {
                 $configArray = $config;
-            }
-            
-            elseif ((json_decode($config) != $config) && json_decode($config)) {
-                $configArray = json_decode($config, true);
-            } elseif ((!is_array($config)) && file_exists($config)) {
+            }elseif ((!is_array($config)) && file_exists($config)) {
                 $jsonString  = file_get_contents($config);
                 $configArray = json_decode($jsonString, true);
             } else {
@@ -92,6 +97,10 @@ class OffAmazonPaymentsService_Client
         }
     }
     
+    /* Checks if the keys of the input configuration matches the keys in the _config array
+     * if they match the values are taken else throws exception
+     * strict case match is not performed
+     */
     private function _checkConfigKeys($config)
     {
         $config = array_change_key_case($config, CASE_LOWER);
@@ -106,29 +115,39 @@ class OffAmazonPaymentsService_Client
         }
     }
     
-    /* Setter
-     * 1. If input is $name=key,value=$value type pair,sets the value for the key if the key exists in _config array
-     * 2. if the input $value is an array,sets the value(s) for the _config array with the provided value
-     * 3. if the input $value is path to JSON file, sets the _config array values through _checkConfigKeys funtion.
+    /* Setter for sandbox
+     * sets the boolean value for _config['sandbox'] variable
      */
-    public function __set($name, $value)
+    public function setSandbox($value)
     {
-      if(is_array($value)) {
-	    
-	    $this->_checkConfigKeys($value);
-        
-	} elseif (array_key_exists(strtolower($name), $this->_config)) {
-                $this->_config[strtolower($name)] = $value;
-        
-	} elseif ((!is_array($value)) && file_exists($value)) {
-                $jsonString  = file_get_contents($value);
-                $configArray = json_decode($jsonString, true);
-		$this->_checkConfigKeys($configArray);
-        }else{
-            throw new Exception('1. Key ' . $name . ' is either not a part of the configuration array _config or the' . $name
-				. 'does not match the key name in the _config array'.PHP_EOL.
-				'2. input is not a valid JSON file or the path to JSON file is incorrect',1);
-	}
+	if(is_bool($value)){
+	    $this->_config['sandbox'] = $value;
+	} else{
+	throw new Exception($value . ' is of type ' . gettype($value) . ' and should be a boolean value ');
+    }
+    }
+    
+    /* Setter for Proxy
+     * input $proxy [array]
+     * @param $proxy['proxy_user_host'] - hostname for the proxy
+     * @param $proxy['proxy_user_port'] - hostname for the proxy
+     * @param $proxy['proxy_user_name'] - if your proxy requeired a username
+     * @param $proxy['proxy_user_password'] - if your proxy requeired a passowrd
+     */
+    public function setProxy($proxy)
+    {
+	
+	if(!empty($proxy['proxy_user_host']));
+	$this->_config['proxy_user_host'] = $proxy['proxy_user_host'];
+	
+	if(!empty($proxy['proxy_user_port']))
+	$this->_config['proxy_user_port'] = $proxy['proxy_user_port'];
+	
+	if(!empty($proxy['proxy_user_name']))
+	$this->_config['proxy_user_name'] = $proxy['proxy_user_name'];
+	
+	if(!empty($proxy['proxy_user_password']))
+	$this->_config['proxy_user_password'] = $proxy['proxy_user_password'];
     }
     
     /* Getter
@@ -136,6 +155,14 @@ class OffAmazonPaymentsService_Client
      */
     public function __get($name)
     {
+	$nonGetterKeys = array('access_key',
+			    'secret_key',
+			    'proxy_username',
+			    'proxy_password');
+	if(in_array(strtolower($name),$nonGetterKeys))
+	{
+	    throw new Exception('The value for '. $name .' cannot be returned for security' );
+	}
         if (array_key_exists(strtolower($name), $this->_config)) {
             return $this->_config[strtolower($name)];
         } else {
@@ -152,6 +179,7 @@ class OffAmazonPaymentsService_Client
     public function getUserInfo($access_token)
     {
         //Get the correct Profile Endpoint URL based off the country/region provided in the _config['user_profile_region']
+	
         if (!empty($this->_config['user_profile_region'])) {
             $this->_profileEndpointUrl();
         } else {
@@ -160,7 +188,8 @@ class OffAmazonPaymentsService_Client
         if (empty($access_token)) {
             throw new InvalidArgumentException('Access Token is a required parameter and is not set');
         }
-        //to make sure double encoding doesn't occur decode first and encode again.
+        
+	//to make sure double encoding doesn't occur decode first and encode again.
         $access_token = urldecode($access_token);
         
         $c = curl_init($this->_profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlencode($access_token));
@@ -196,608 +225,950 @@ class OffAmazonPaymentsService_Client
     }
     
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
-     * 
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetOrderReferenceDetails.html
-     * @param AmazonOrderReferenceId [String]
-     * @optional AddressConsentToken [String] 
+     *
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['address_consent_token'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function getOrderReferenceDetails($requestParameters = null)
     {
-	print_r($this->_config);
         $parameters           = array();
         $parameters['Action'] = 'GetOrderReferenceDetails';
+	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
         
-        if (!empty($requestParameters['AmazonOrderReferenceId']))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	if (!empty($requestParameters['amazon_order_reference_id']))
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
         
-        if (!empty($requestParameters['AddressConsentToken']))
-            $parameters['AddressConsentToken'] = $requestParameters['AddressConsentToken'];
+        if (!empty($requestParameters['address_consent_token']))
+            $parameters['AddressConsentToken'] = $requestParameters['address_consent_token'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+	$responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetOrderReferenceDetails.html
      *
-     *  
-     * @param AmazonOrderReferenceId [String]
-     * @param Amount [String]
-     * @param CurrencyCode [String]
-     * @optional PlatformId [String]
-     * @optional SellerNote [String]
-     * @optional SellerOrderId [String]
-     * @optional StoreName [String]
-     * @optional CustomInformation [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @param requestParameters['amount'] - [String]
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters['platform_id'] - [String]
+     * @optional requestParameters['seller_note'] - [String]
+     * @optional requestParameters['seller_order_id'] - [String]
+     * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function setOrderReferenceDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'SetOrderReferenceDetails';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	
+        if (!empty($requestParameters['amazon_order_reference_id']))
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
         
-        
-        if (!empty($requestParameters['AmazonOrderReferenceId']))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
-        
-        if (!empty($requestParameters['Amount']))
-            $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
+        if (!empty($requestParameters['amount']))
+            $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['amount'];
         
         $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
-        if (!empty($requestParameters['SellerNote']))
-            $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['SellerNote'];
-        if (!empty($requestParameters['SellerOrderId']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId'] = $requestParameters['SellerOrderId'];
-        if (!empty($requestParameters['StoreName']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.StoreName'] = $requestParameters['StoreName'];
-        if (!empty($requestParameters['CustomInformation']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.CustomInformation'] = $requestParameters['CustomInformation'];
+        if (!empty($requestParameters['seller_note']))
+            $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['seller_note'];
+        if (!empty($requestParameters['seller_order_id']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId'] = $requestParameters['seller_order_id'];
+        if (!empty($requestParameters['store_name']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.StoreName'] = $requestParameters['store_name'];
+        if (!empty($requestParameters['custom_information']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.CustomInformation'] = $requestParameters['custom_information'];
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* ConfirmOrderReferenceDetails API call - Confirms that the order reference is free of constraints and all required information has been set on the order reference.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmOrderReference.html
      
-     *  
-     * @param AmazonOrderReferenceId [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function confirmOrderReference($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'ConfirmOrderReference';
-        
-        
-        if (!empty($requestParameters['AmazonOrderReferenceId']))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	   
+        if (!empty($requestParameters['amazon_order_reference_id']))
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
+	
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* CancelOrderReferenceDetails API call - Cancels a previously confirmed order reference.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CancelOrderReference.html
      *
-     *  
-     * @param AmazonOrderReferenceId [String]
-     * @optional CancelationReason [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['cancel_reason'] [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function cancelOrderReference($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'CancelOrderReference';
-        
-        
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
         if (!empty($AmazonOrderReferenceId))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
         
-        if (!empty($requestParameters['CancelReason']))
-            $parameters['CancelationReason'] = $requestParameters['CancelReason'];
+        if (!empty($requestParameters['cancel_reason']))
+            $parameters['CancelationReason'] = $requestParameters['cancel_reason'];
+	
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* CloseOrderReferenceDetails API call - Confirms that an order reference has been fulfilled (fully or partially)
      * and that you do not expect to create any new authorizations on this order reference.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseOrderReference.html
      *
-     *  
-     * @param AmazonOrderReferenceId [String]
-     * @optional ClosureReason [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['closure_reason'] [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     public function closeOrderReference($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseOrderReference';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
+        if (!empty($requestParameters['amazon_order_reference_id']))
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
         
-        
-        if (!empty($requestParameters['AmazonOrderReferenceId']))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
-        
-        if (!empty($requestParameters['ClosureReason']))
-            $parameters['ClosureReason'] = $requestParameters['ClosureReason'];
+        if (!empty($requestParameters['closure_reason']))
+            $parameters['ClosureReason'] = $requestParameters['closure_reason'];
+	
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* CloseAuthorization API call - Closes an authorization.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseOrderReference.html
-     * @param AmazonOrderReferenceId [String]
-     * @optional ClosureReason [String]
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_authorization_id'] - [String]
+     * @optional requestParameters['closure_reason'] [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     public function closeAuthorization($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseAuthorization';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
+        if (!empty($requestParameters['amazon_authorization_id']))
+            $parameters['AmazonAuthorizationId'] = $requestParameters['amazon_authorization_id'];
         
-        
-        if (!empty($requestParameters['AmazonAuthorizationId']))
-            $parameters['AmazonAuthorizationId'] = $requestParameters['AmazonAuthorizationId'];
-        
-        if (!empty($requestParameters['ClosureReason']))
-            $parameters['ClosureReason'] = $requestParameters['ClosureReason'];
+        if (!empty($requestParameters['closure_reason']))
+            $parameters['ClosureReason'] = $requestParameters['closure_reason'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Authorize.html
      *
-     *  
-     * @param AmazonOrderReferenceId [String]
-     * @param AuthorizeAmount [String]
-     * @param CurrencyCode [String]
-     * @optional AuthorizationReferenceId [String]
-     * @optional CaptureNow [String]
-     *  
-     * @optional SellerAuthorizationNote [String]
-     * @optional TransactionTimeout [String]
-     * @optional SoftDescriptor [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @param requestParameters['authorization_amount'] [String]
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters['authorization_reference_id'] [String]
+     * @optional requestParameters['capture_now'] [String]
+     * @optional requestParameters['seller_authorization_note'] [String]
+     * @optional requestParameters['transaction_timeout'] [String]
+     * @optional requestParameters['soft_descriptor'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function authorize($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'Authorize';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+        if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
+        if (!empty($requestParameters['amazon_order_reference_id']))
+            $parameters['AmazonOrderReferenceId'] = $requestParameters['amazon_order_reference_id'];
         
-        
-        if (!empty($requestParameters['AmazonOrderReferenceId']))
-            $parameters['AmazonOrderReferenceId'] = $requestParameters['AmazonOrderReferenceId'];
-        
-        if (!empty($requestParameters['AuthorizeAmount']))
-            $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizeAmount'];
+        if (!empty($requestParameters['authorization_amount']))
+            $parameters['AuthorizationAmount.Amount'] = $requestParameters['authorization_amount'];
         
         $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
-        if (!empty($requestParameters['AuthorizationReferenceId'])) {
-            $parameters['AuthorizationReferenceId'] = $requestParameters['AuthorizationReferenceId'];
+        if (!empty($requestParameters['authorization_reference_id'])) {
+            $parameters['AuthorizationReferenceId'] = $requestParameters['authorization_reference_id'];
         } else {
             $parameters['AuthorizationReferenceId'] = uniqid('A01_REF_');
         }
         
-        if (!empty($requestParameters['CaptureNow']))
-            $parameters['CaptureNow'] = strtolower($requestParameters['CaptureNow']);
+        if (!empty($requestParameters['capture_now']))
+            $parameters['CaptureNow'] = strtolower($requestParameters['capture_now']);
         
-        if (!empty($requestParameters['SellerAuthorizationNote']))
-            $parameters['SellerAuthorizationNote'] = $requestParameters['SellerAuthorizationNote'];
+        if (!empty($requestParameters['seller_authorization_note']))
+            $parameters['SellerAuthorizationNote'] = $requestParameters['seller_authorization_note'];
         
-        if (!empty($requestParameters['TransactionTimeout']))
-            $parameters['TransactionTimeout'] = $requestParameters['TransactionTimeout'];
+        if (!empty($requestParameters['transaction_timeout']))
+            $parameters['TransactionTimeout'] = $requestParameters['transaction_timeout'];
         
-        if (!empty($requestParameters['SoftDescriptor']))
-            $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
+        if (!empty($requestParameters['soft_descriptor']))
+            $parameters['SoftDescriptor'] = $requestParameters['soft_descriptor'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* Authorize API call - Returns the status of a particular authorization and the total amount captured on the authorization.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetAuthorizationDetails.html
      *
-     *  
-     * @param AmazonAuthorizationId [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_authorization_id'] [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     public function getAuthorizationDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'GetAuthorizationDetails';
+	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
-        if (!empty($requestParameters['AmazonAuthorizationId']))
-            $parameters['AmazonAuthorizationId'] = $requestParameters['AmazonAuthorizationId'];
+        if (!empty($requestParameters['amazon_authorization_id']))
+            $parameters['AmazonAuthorizationId'] = $requestParameters['amazon_authorization_id'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* Capture API call - Captures funds from an authorized payment instrument.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Capture.html
      *
-     *  
-     * @param AmazonAuthorizationId [String]
-     * @param CaptureAmount [String]
-     * @param CurrencyCode [String]
-     * @optional CaptureReferenceId [String]
-     *  
-     * @optional SellerCaptureNote [String]
-     * @optional SoftDescriptor [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_authorization_id'] - [String]
+     * @param requestParameters['capture_amount'] - [String]
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters[capture_reference_id'] - [String]
+     * @optional requestParameters['seller_capture_note'] - [String]
+     * @optional requestParameters['soft_descriptor'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function capture($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'Capture';
+	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
-        if (!empty($requestParameters['AmazonAuthorizationId']))
-            $parameters['AmazonAuthorizationId'] = $requestParameters['AmazonAuthorizationId'];
+        if (!empty($requestParameters['amazon_authorization_id']))
+            $parameters['AmazonAuthorizationId'] = $requestParameters['amazon_authorization_id'];
         
-        if (!empty($requestParameters['CaptureAmount']))
-            $parameters['CaptureAmount.Amount'] = $requestParameters['CaptureAmount'];
+        if (!empty($requestParameters['capture_amount']))
+            $parameters['CaptureAmount.Amount'] = $requestParameters['capture_amount'];
         
         $parameters['CaptureAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
-        if (!empty($requestParameters['CaptureReferenceId'])) {
-            $parameters['CaptureReferenceId'] = $requestParameters['CaptureReferenceId'];
+        if (!empty($requestParameters['capture_reference_id'])) {
+            $parameters['CaptureReferenceId'] = $requestParameters['capture_reference_id'];
         } else {
             $parameters['CaptureReferenceId'] = uniqid('C01_REF_');
         }
         
-        if (!empty($requestParameters['SellerCaptureNote']))
-            $parameters['SellerCaptureNote'] = $requestParameters['SellerCaptureNote'];
-        if (!empty($requestParameters['SoftDescriptor']))
-            $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
+        if (!empty($requestParameters['seller_capture_note']))
+            $parameters['SellerCaptureNote'] = $requestParameters['seller_capture_note'];
+        
+	if (!empty($requestParameters['soft_descriptor']))
+            $parameters['SoftDescriptor'] = $requestParameters['soft_descriptor'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* GetCaptureDetails API call - Returns the status of a particular capture and the total amount refunded on the capture.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetCaptureDetails.html
      *
-     *  
-     * @param AmazonCaptureId [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_capture_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     
     public function getCaptureDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'GetCaptureDetails';
+	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
         
-        if (!empty($requestParameters['AmazonCaptureId']))
-            $parameters['AmazonCaptureId'] = $requestParameters['AmazonCaptureId'];
+        if (!empty($requestParameters['amazon_capture_id']))
+            $parameters['AmazonCaptureId'] = $requestParameters['amazon_capture_id'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* Refund API call - Refunds a previously captured amount.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_Refund.html
      *
-     *  
-     * @param AmazonCaptureId [String]
-     * @param RefundReferenceId [String]
-     * @param RefundAmount [String]
-     * @param CurrencyCode [String]
-     *  
-     * @optional SellerRefundNote [String]
-     * @optional SoftDescriptor [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_capture_id'] - [String]
+     * @param requestParameters['refund_reference_id'] - [String]
+     * @param requestParameters['refund_amount'] - [String]
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters['seller_refund_note'] [String]
+     * @optional requestParameters['soft_descriptor'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function refund($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'Refund';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_capture_id']))
+            $parameters['AmazonCaptureId'] = $requestParameters['amazon_capture_id'];
         
-        if (!empty($requestParameters['AmazonCaptureId']))
-            $parameters['AmazonCaptureId'] = $requestParameters['AmazonCaptureId'];
-        
-        if (!empty($requestParameters['RefundReferenceId'])) {
-            $parameters['RefundReferenceId'] = $requestParameters['RefundReferenceId'];
+        if (!empty($requestParameters['refund_reference_id'])) {
+            $parameters['RefundReferenceId'] = $requestParameters['refund_reference_id'];
         } else {
             $parameters['RefundReferenceId'] = uniqid('R01_REF_');
         }
         
-        if (!empty($requestParameters['RefundAmount']))
-            $parameters['RefundAmount.Amount'] = $requestParameters['RefundAmount'];
+        if (!empty($requestParameters['refund_amount']))
+            $parameters['RefundAmount.Amount'] = $requestParameters['refund_amount'];
         
         $parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
-        if (!empty($requestParameters['SellerRefundNote']))
-            $parameters['SellerRefundNote'] = $requestParameters['SellerRefundNote'];
-        if (!empty($requestParameters['SoftDescriptor']))
-            $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
+        if (!empty($requestParameters['seller_refund_note']))
+            $parameters['SellerRefundNote'] = $requestParameters['seller_refund_note'];
+        
+	if (!empty($requestParameters['soft_descriptor']))
+            $parameters['SoftDescriptor'] = $requestParameters['soft_descriptor'];
+	
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
+	    
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* GetRefundDetails API call - Returns the status of a particular refund.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetRefundDetails.html
      *
-     *  
-     * @param AmazonRefundId [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_refund_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     
     public function getRefundDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'GetRefundDetails';
-        
-        if (!empty($requestParameters['AmazonRefundId']))
-            $parameters['AmazonRefundId'] = $requestParameters['AmazonRefundId'];
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_refund_id']))
+            $parameters['AmazonRefundId'] = $requestParameters['amazon_refund_id'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* GetServiceStatus API Call - Returns the operational status of the Off-Amazon Payments API section
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetServiceStatus.html
      *
-     *The GetServiceStatus operation returns the operational status of the Off-Amazon Payments API
-     *section of Amazon Marketplace Web Service (Amazon MWS).
-     *Status values are GREEN, GREEN_I, YELLOW, and RED.
+     * The GetServiceStatus operation returns the operational status of the Off-Amazon Payments API
+     * section of Amazon Marketplace Web Service (Amazon MWS).
+     * Status values are GREEN, GREEN_I, YELLOW, and RED.
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     
     public function getServiceStatus($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'GetServiceStatus';
-        
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
+	    
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* CreateOrderReferenceForId API Call - Creates an order reference for the given object
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CreateOrderReferenceForId.html
      *
-     * @param Id [String]
-     * @optional InheritShippingAddress [Boolean]
-     * @optional ConfirmNow [Boolean]
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['Id'] - [String]
+     * @optional requestParameters['inherit_shipping_address'] [Boolean]
+     * @optional requestParameters['ConfirmNow'] - [Boolean]
      * @optional Amount [Float] (required when confirm_now is set to true)
-     * @optional CurrencyCode [String]
-     * @optional SellerNote [String]
-     * @optional SellerOrderId [String]
-     * @optional StoreName [String]
-     * @optional CustomInformation [String]
+     * @optional requestParameters['currency_code'] - [String]
+     * @optional requestParameters['seller_note'] - [String]
+     * @optional requestParameters['seller_order_id'] - [String]
+     * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     
     public function createOrderReferenceForId($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'CreateOrderReferenceForId';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['id']))
+            $parameters['Id'] = $requestParameters['id'];
         
-        if (!empty($requestParameters['Id']))
-            $parameters['Id'] = $requestParameters['Id'];
-        
-        if (!empty($requestParameters['InheritShippingAddress'])) {
-            $parameters['InheritShippingAddress'] = strtolower($requestParameters['InheritShippingAddress']);
+        if (!empty($requestParameters['inherit_shipping_address'])) {
+            $parameters['InheritShippingAddress'] = strtolower($requestParameters['inherit_shipping_address']);
         } else {
             $parameters['InheritShippingAddress'] = true;
         }
-        if (!empty($requestParameters['ConfirmNow'])) {
-            $parameters['ConfirmNow'] = strtolower($requestParameters['ConfirmNow']);
+        if (!empty($requestParameters['confirm_now'])) {
+            $parameters['ConfirmNow'] = strtolower($requestParameters['confirm_now']);
         } else {
             $parameters['ConfirmNow'] = false;
         }
-        if (!empty($requestParameters['Amount']))
-            $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['Amount'];
+        if (!empty($requestParameters['amount']))
+            $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['amount'];
         
         $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
-        if (!empty($requestParameters['SellerNote']))
-            $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['SellerNote'];
-        if (!empty($requestParameters['SellerOrderId']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId'] = $requestParameters['SellerOrderId'];
-        if (!empty($requestParameters['StoreName']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.StoreName'] = $requestParameters['StoreName'];
-        if (!empty($requestParameters['CustomInformation']))
-            $parameters['OrderReferenceAttributes.SellerOrderAttributes.CustomInformation'] = $requestParameters['CustomInformation'];
+        
+	if (!empty($requestParameters['seller_note']))
+            $parameters['OrderReferenceAttributes.SellerNote'] = $requestParameters['seller_note'];
+        
+	if (!empty($requestParameters['seller_order_id']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId'] = $requestParameters['seller_order_id'];
+        
+	if (!empty($requestParameters['store_name']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.StoreName'] = $requestParameters['store_name'];
+        
+	if (!empty($requestParameters['custom_information']))
+            $parameters['OrderReferenceAttributes.SellerOrderAttributes.CustomInformation'] = $requestParameters['custom_information'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* GetBillingAgreementDetails API Call - Returns details about the Billing Agreement object and its current state.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetBillingAgreementDetails.html
-     * @param AmazonBillingAgreementId [String] 
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     
     public function getBillingAgreementDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'GetBillingAgreementDetails';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
         
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
-        
-        if (!empty($requestParameters['AddressConsentToken']))
-            $parameters['AddressConsentToken'] = $requestParameters['AddressConsentToken'];
+        if (!empty($requestParameters['address_consent_token']))
+            $parameters['AddressConsentToken'] = $requestParameters['address_consent_token'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* SetBillingAgreementDetails API call - Sets billing agreement details such as a description of the agreement and other information about the seller.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetBillingAgreementDetails.html
      *
-     *  
-     * @param AmazonBillingAgreementId [String]
-     * @param Amount [String]
-     * @param CurrencyCode [String]
-     * @optional PlatformId [String]
-     * @optional SellerNote [String]
-     * @optional SellerBillingAgreementId [String]
-     * @optional StoreName [String]
-     * @optional CustomInformation [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @param requestParameters['amount'] - [String]
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters['platform_id'] - [String]
+     * @optional requestParameters['seller_note'] - [String]
+     * @optional requestParameters['seller_billing_agreement_id'] - [String]
+     * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     
     public function setBillingAgreementDetails($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'SetBillingAgreementDetails';
-        
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
         
         if (!empty($this->_config['platform_id']))
             $parameters['BillingAgreementAttributes.PlatformId'] = $this->_config['platform_id'];
-        if (!empty($requestParameters['SellerNote']))
-            $parameters['BillingAgreementAttributes.SellerNote'] = $requestParameters['SellerNote'];
-        if (!empty($requestParameters['SellerBillingAgreementId']))
-            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.SellerBillingAgreementId'] = $requestParameters['SellerBillingAgreementId'];
-        if (!empty($requestParameters['CustomInformation']))
-            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation'] = $requestParameters['CustomInformation'];
-        if (!empty($requestParameters['StoreName']))
-            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName'] = $requestParameters['StoreName'];
+       
+        if (!empty($requestParameters['seller_note']))
+            $parameters['BillingAgreementAttributes.SellerNote'] = $requestParameters['seller_note'];
+       
+        if (!empty($requestParameters['seller_billing_agreement_id']))
+            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.SellerBillingAgreementId'] = $requestParameters['seller_billing_agreement_id'];
+        
+	if (!empty($requestParameters['custom_information']))
+            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation'] = $requestParameters['custom_information'];
+        
+	if (!empty($requestParameters['store_name']))
+            $parameters['BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName'] = $requestParameters['store_name'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* ConfirmBillingAgreement API Call - Confirms that the billing agreement is free of constraints and all required information has been set on the billing agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
-     * @param AmazonBillingAgreementId [String] 
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function confirmBillingAgreement($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'ConfirmBillingAgreement';
-        
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* ValidateBillignAgreement API Call - Validates the status of the BillingAgreement object and the payment method associated with it.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ValidateBillignAgreement.html
      *
-     *  
-     * @param AmazonBillingAgreementId [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String] 
      */
     public function validateBillignAgreement($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'ValidateBillingAgreement';
-        
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the billing agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_AuthorizeOnBillingAgreement.html
      *
-     *  
-     * @param AmazonBillingAgreementId [String]
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @param AuthorizationReferenceId [String]
      * @param AuthorizationAmount [String]
-     * @param CurrencyCode [String]
-     * @optional SellerAuthorizationNote [String]
-     * @optional TransactionTimeout - Defaults to 0 -Synchronous
-     * @optional CaptureNow [String]
-     * @optional SoftDescriptor [String]
-     * @optional SellerNote [String]
-     * @optional PlatformId [String]
-     * @optional CustomInformation [String]
-     * @optional SellerOrderId [String]
-     * @optional StoreName [String]
-     * @optional InheritShippingAddress [Boolean] - Defaults to true
-     *  
+     * @param requestParameters['currency_code'] - [String]
+     * @optional requestParameters['seller_authorization_note'] [String]
+     * @optional requestParameters['transaction_timeout'] - Defaults to 0
+     * @optional requestParameters['capture_now'] [String]
+     * @optional requestParameters['soft_descriptor'] - - [String]
+     * @optional requestParameters['seller_note'] - [String]
+     * @optional requestParameters['platform_id'] - [String]
+     * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['seller_order_id'] - [String]
+     * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['inherit_shipping_address'] [Boolean] - Defaults to true
+     * @optional requestParameters['mws_auth_token'] - [String]  
      */
     public function authorizeOnBillingAgreement($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'AuthorizeOnBillingAgreement';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
         
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
-        
-        if (!empty($requestParameters['AuthorizationReferenceId'])) {
-            $parameters['AuthorizationReferenceId'] = $requestParameters['AuthorizationReferenceId'];
+        if (!empty($requestParameters['authorization_reference_id'])) {
+            $parameters['AuthorizationReferenceId'] = $requestParameters['authorization_reference_id'];
         } else {
             $parameters['AuthorizationReferenceId'] = uniqid('A01_REF_');
         }
         
-        if (!empty($requestParameters['AuthorizationAmount']))
-            $parameters['AuthorizationAmount.Amount'] = $requestParameters['AuthorizationAmount'];
+        if (!empty($requestParameters['authorization_amount']))
+            $parameters['AuthorizationAmount.Amount'] = $requestParameters['authorization_amount'];
         
         $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
         
         
-        if (!empty($requestParameters['SellerAuthorizationNote']))
-            $parameters['SellerAuthorizationNote'] = $requestParameters['SellerAuthorizationNote'];
-        if (!empty($requestParameters['TransactionTimeout']))
-            $parameters['TransactionTimeout'] = $requestParameters['TransactionTimeout'];
-        if (!empty($requestParameters['CaptureNow']))
-            $parameters['CaptureNow'] = strtolower($requestParameters['CaptureNow']);
-        if (!empty($requestParameters['SoftDescriptor']))
-            $parameters['SoftDescriptor'] = $requestParameters['SoftDescriptor'];
-        if (!empty($requestParameters['SellerNote']))
-            $parameters['SellerNote'] = $requestParameters['SellerNote'];
+        if (!empty($requestParameters['seller_authorization_note']))
+            $parameters['SellerAuthorizationNote'] = $requestParameters['seller_authorization_note'];
+       
+        if (!empty($requestParameters['transaction_timeout']))
+            $parameters['TransactionTimeout'] = $requestParameters['transaction_timeout'];
+       
+        if (!empty($requestParameters['capture_now']))
+            $parameters['CaptureNow'] = strtolower($requestParameters['capture_now']);
+       
+        if (!empty($requestParameters['soft_descriptor']))
+            $parameters['SoftDescriptor'] = $requestParameters['soft_descriptor'];
+        
+	if (!empty($requestParameters['seller_note']))
+            $parameters['SellerNote'] = $requestParameters['seller_note'];
+       
         if (!empty($this->_config['platform_id']))
             $parameters['PlatformId'] = $this->_config['platform_id'];
-        if (!empty($requestParameters['CustomInformation']))
-            $parameters['SellerOrderAttributes.CustomInformation'] = $requestParameters['CustomInformation'];
-        if (!empty($requestParameters['SellerOrderId']))
-            $parameters['SellerOrderAttributes.SellerOrderId'] = $requestParameters['SellerOrderId'];
-        if (!empty($requestParameters['StoreName']))
-            $parameters['SellerOrderAttributes.StoreName'] = $requestParameters['StoreName'];
-        if (!empty($requestParameters['InheritShippingAddress'])) {
-            $parameters['InheritShippingAddress'] = strtolower($requestParameters['InheritShippingAddress']);
+       
+        if (!empty($requestParameters['custom_information']))
+            $parameters['SellerOrderAttributes.CustomInformation'] = $requestParameters['custom_information'];
+       
+        if (!empty($requestParameters['seller_order_id']))
+            $parameters['SellerOrderAttributes.SellerOrderId'] = $requestParameters['seller_order_id'];
+       
+        if (!empty($requestParameters['store_name']))
+            $parameters['SellerOrderAttributes.StoreName'] = $requestParameters['store_name'];
+       
+        if (!empty($requestParameters['inherit_shipping_address'])) {
+            $parameters['InheritShippingAddress'] = strtolower($requestParameters['inherit_shipping_address']);
         } else {
             $parameters['InheritShippingAddress'] = true;
         }
+	
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
         $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
     /* CloseBillingAgreement API Call - Returns details about the Billing Agreement object and its current state.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CloseBillingAgreement.html
      *
-     *  
-     * @param AmazonBillingAgreementId [String]
-     * @optional ClosureReason [String]
-     *  
+     * @param requestParameters['merchant_id'] - [String] 
+     * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @optional requestParameters['closure_reason'] [String]
+     * @optional requestParameters['mws_auth_token'] - [String]  
      */
     public function CloseBillingAgreement($requestParameters = null)
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseBillingAgreement';
+        $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	
+	if (!empty($requestParameters['merchant_id'])){
+            $parameters['SellerId'] = $requestParameters['merchant_id'];
+        }
+	else{
+	    $parameters['SellerId'] = $this->_config['merchant_id'];
+	}
+	    
+        if (!empty($requestParameters['amazon_billing_agreement_id']))
+            $parameters['AmazonBillingAgreementId'] = $requestParameters['amazon_billing_agreement_id'];
         
-        if (!empty($requestParameters['AmazonBillingAgreementId']))
-            $parameters['AmazonBillingAgreementId'] = $requestParameters['AmazonBillingAgreementId'];
-        if (!empty($requestParameters['ClosureReason']))
-            $parameters['ClosureReason'] = $requestParameters['ClosureReason'];
+	if (!empty($requestParameters['closure_reason']))
+            $parameters['ClosureReason'] = $requestParameters['closure_reason'];
+	    
+	if (!empty($requestParameters['mws_auth_token']))
+            $parameters['MWSAuthToken'] = $requestParameters['mws_auth_token'];
         
-        
-        $response = $this->_calculateSignatureAndPost($parameters);
-        return ($response);
+	$response = $this->_calculateSignatureAndPost($parameters);
+        $responseObject  = new ResponseParser($response);
+        return ($responseObject);
     }
     
-    /*Create an Array of required parameters, sort them
-     *calculate signature and invoke the POST them to the MWS Service URL
+    public function Charge($requestParameters = null)
+    {
+	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	$OrderParameters = $requestParameters;
+	
+	$oro = false;
+	$ba = false;
+	
+	$setParameters = $requestParameters;
+	$authorizeParameters = $requestParameters;
+	$confirmParameters = $requestParameters;
+	
+	if(!empty($OrderParameters['amazon_reference_id'])){
+	    if(substr( $OrderParameters['amazon_reference_id'], 0, 3 ) === 'P01' || substr( $OrderParameters['amazon_reference_id'], 0, 3 ) ==='S01'){
+		$oro = true;
+		$setParameters['amazon_order_reference_id'] = $OrderParameters['amazon_reference_id'];
+		$authorizeParameters['amazon_order_reference_id'] = $OrderParameters['amazon_reference_id'];
+		$confirmParameters['amazon_order_reference_id'] = $OrderParameters['amazon_reference_id'];
+	    }
+	    elseif(substr( $OrderParameters['amazon_reference_id'], 0, 3 ) === 'B01' || substr( $OrderParameters['amazon_reference_id'], 0, 3 ) ==='C01'){
+		$ba = true;
+		$setParameters['amazon_billing_agreement_id'] = $OrderParameters['amazon_reference_id'];
+		$authorizeParameters['amazon_billing_agreement_id'] = $OrderParameters['amazon_reference_id'];
+		$confirmParameters['amazon_billing_agreement_id'] = $OrderParameters['amazon_reference_id'];
+	    }
+	}
+	else{
+	    throw new Exception("requestParameters['amazon_reference_id']". 'is null and is a required parameter');
+	}
+	
+	if(!empty($OrderParameters['charge_amount'])){
+	    $setParameters['amount'] = $OrderParameters['charge_amount'];
+	    $authorizeParameters['authorization_amount'] = $OrderParameters['charge_amount'];
+	}
+	if(!empty($OrderParameters['charge_note'])){
+	    $setParameters['seller_note'] = $OrderParameters['charge_note'];
+	    $authorizeParameters['seller_authorization_note'] = $OrderParameters['charge_note'];
+	    $authorizeParameters['seller_note'] = $OrderParameters['charge_note'];
+	}
+	if(!empty($OrderParameters['charge_order_id'])){
+	    $setParameters['seller_order_id'] = $OrderParameters['charge_order_id'];
+	    $setParameters['seller_billing_agreement_id'] = $OrderParameters['charge_order_id'];
+	    $authorizeParameters['seller_order_id'] = $OrderParameters['charge_order_id'];
+	    
+	}
+	if(!empty($OrderParameters['charge_reference_id'])){
+	    $authorizeParameters['authorization_reference_id'] = $OrderParameters['charge_reference_id'];
+	}
+	
+	if($oro){
+		$response = $this->setOrderReferenceDetails($setParameters);
+	    
+	    if($this->_success){
+		$this->confirmOrderReference($confirmParameters);
+	    }
+	    if($this->_success){
+		$response = $this->Authorize($authorizeParameters);
+	    }
+	    return $response;
+	    
+	}elseif($ba){
+		$response = $this->SetBillingAgreementDetails($setParameters);
+	    
+	    if($this->_success){
+		$response = $this->ConfirmBillingAgreement($confirmParameters);
+	    }
+	    if($this->_success){
+		$response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
+	    }
+	    return $response;
+	}
+	
+	
+    }
+    
+    /* Create an Array of required parameters, sort them
+     * calculate signature and invoke the POST them to the MWS Service URL
+     *
      * @param AWSAccessKeyId [String]
      * @param Version [String]
      * @param SignatureMethod [String]
@@ -806,13 +1177,6 @@ class OffAmazonPaymentsService_Client
      */
     private function _calculateSignatureAndPost($parameters)
     {
-        if (!empty($this->_config['mws_auth_token'])) {
-            $parameters['MWSAuthToken'] = $this->_config['mws_auth_token'];
-        }
-        if (!empty($this->_config['seller_id'])) {
-            $parameters['SellerId'] = $this->_config['seller_id'];
-        }
-        
         $parameters['AWSAccessKeyId']   = $this->_config['access_key'];
         $parameters['Version']          = self::SERVICE_VERSION;
         $parameters['SignatureMethod']  = 'HmacSHA256';
@@ -828,42 +1192,6 @@ class OffAmazonPaymentsService_Client
         return $response;
     }
     
-    /* toJson  - converts XML into Json
-     * @param $response [XML]
-     */
-    public function toJson($response)
-    {
-        //Getting the HttpResponse Status code to the output as a string
-        $status = strval($response['Status']);
-        
-        //Getting the Simple XML element object of the XML Response Body
-        $response = simplexml_load_string((string) $response['ResponseBody']);
-        
-        //Adding the HttpResponse Status code to the output as a string
-        $response->addChild('ResponseStatus', $status);
-        
-        return (json_encode($response));
-    }
-    
-    /* toArray  - converts XML into associative array
-     * @param $response [XML]
-     */
-    public function toArray($response)
-    {
-        //Getting the HttpResponse Status code to the output as a string
-        $status = strval($response['Status']);
-        
-        //Getting the Simple XML element object of the XML Response Body
-        $response = simplexml_load_string((string) $response['ResponseBody']);
-        
-        //Adding the HttpResponse Status code to the output as a string
-        $response->addChild('ResponseStatus', $status);
-        
-        //Converting the SimpleXMLElement Object to array()
-        $response = json_encode($response);
-        
-        return (json_decode($response, true));
-    }
     /**
      * Computes RFC 2104-compliant HMAC signature for request parameters
      * Implements AWS Signature, as per following spec:
@@ -978,6 +1306,7 @@ class OffAmazonPaymentsService_Client
     {
         $response   = array();
         $statusCode = 200;
+	$this->_success = false;
         /* Submit the request and read response body */
         try {
             $shouldRetry = true;
@@ -990,6 +1319,7 @@ class OffAmazonPaymentsService_Client
                     
                     if ($statusCode == 200) {
                         $shouldRetry = false;
+			$this->_success = true;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
                         $shouldRetry = ($response['ErrorCode'] === 'RequestThrottled') ? false : true;
                         if ($shouldRetry && strtolower($this->_config['handle_throttle'])) {
