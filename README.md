@@ -12,8 +12,7 @@ Instantiating the client:
 Client Takes in parameters in the following format
 
 1. Associative array
-2. JSON string
-3. Path to the JSON file
+2. Path to the JSON file containing configuration information.
 
 ##Parameters List
 
