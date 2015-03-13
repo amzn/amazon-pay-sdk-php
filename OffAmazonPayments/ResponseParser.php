@@ -3,11 +3,11 @@
 class ResponseParser
 {
     public $_response = null;
-    public $_xmlResponse = null;
+    public $xmlResponse = null;
     public function __construct($response=null)
     {
         $this->_response = $response;
-        $this->_xmlResponse = $response['ResponseBody'];
+        $this->xmlResponse = $response['ResponseBody'];
     }
     
 
