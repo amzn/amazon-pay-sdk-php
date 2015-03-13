@@ -4,7 +4,7 @@ Login and Pay with Amazon API Integration
 ## Requirements
 
 * PHP 5.3 or higher
-* Curl
+* Curl 7.8
 
 ## Quick Start
 
@@ -95,11 +95,19 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 ```
 
 ### Response Parsing
+
+Responses are provided in 3 formats
+
+1. Raw XML response
+2. Associative array
+3. JSON format
+
 ```php
+//Returns an object($response) of the class ResponseParser.php
 $response = $client->getOrderReferenceDetails($requestParameters);
 
 #XML response
-$response->_xmlResponse;
+$response->xmlResponse;
 
 #Associate array response
 $response->toArray();
