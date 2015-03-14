@@ -110,7 +110,25 @@ $body       = file_get_contents('php://input');
 $ipnHandler = new IpnHandler($headers, $body);
 
 ```
+### Convenience Methods
 
+#####Charge Method
+
+Charge method combines the following API calls 
+
+Standard Payments
+1. SetOrderReferenceDetails
+2. ConfirmOrderReference
+3. Authorize (With capture)
+
+Recurring Payments
+1. SetBillingAgreement
+2. ConfirmBillingAgreement
+3. AuthorizeOnBillingAgreement (With capture)
+
+```php
+
+```
 ### Response Parsing
 
 Responses are provided in 3 formats
