@@ -109,14 +109,6 @@ $body       = file_get_contents('php://input');
 //create an  object($ipnHandler) of the IpnHandler class 
 $ipnHandler = new IpnHandler($headers, $body);
 
-#XML response
-$ipnHandler->returnMessage();
-
-#Associate array response
-$ipnHandler->toArray();
-
-#JSON response
-$ipnHandler->toJson();
 ```
 
 ### Response Parsing
@@ -127,6 +119,7 @@ Responses are provided in 3 formats
 2. Associative array
 3. JSON format
 
+#####API Response
 ```php
 //Returns an object($response) of the class ResponseParser.php
 $response = $client->getOrderReferenceDetails($requestParameters);
@@ -139,4 +132,16 @@ $response->toArray();
 
 #JSON response
 $response->toJson();
+```
+
+#####IPN Response
+```php
+#XML response
+$ipnHandler->returnMessage();
+
+#Associate array response
+$ipnHandler->toArray();
+
+#JSON response
+$ipnHandler->toJson();
 ```
