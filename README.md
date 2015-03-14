@@ -93,6 +93,32 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 
 ```
 
+### IPN Handling
+
+1. To receive IPN's successfully you will need an valid SSL on your domain.
+2. You can set up your Notification endpoints in Seller Central by accessing the Integration Settings page in the Settings tab.
+3. IpnHandler.php class handles verifiication of the source and the data of the IPN
+
+```php
+require_once 'IpnHandler.php';
+
+//get the IPN headers and Message body
+$headers    = getallheaders();
+$body       = file_get_contents('php://input');
+
+//create an  object($ipnHandler) of the IpnHandler class 
+$ipnHandler = new IpnHandler($headers, $body);
+
+#XML response
+$ipnHandler->returnMessage();
+
+#Associate array response
+$ipnHandler->toArray();
+
+#JSON response
+$ipnHandler->toJson();
+```
+
 ### Response Parsing
 
 Responses are provided in 3 formats
