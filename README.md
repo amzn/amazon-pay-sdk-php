@@ -136,6 +136,8 @@ $response->toJson();
 
 #####IPN Response
 ```php
+$ipnHandler = new IpnHandler($headers, $body);
+
 #XML response
 $ipnHandler->returnMessage();
 
