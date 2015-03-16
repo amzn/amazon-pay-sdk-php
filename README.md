@@ -50,16 +50,16 @@ require 'Client.php'
 # Your Login and Pay with Amazon keys are
 # available in your Seller Central account
 
-## PHP Associative array
+// PHP Associative array
 $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'access_key'  => 'YOUR_ACCESS_KEY',
                 'secret_key'  => 'YOUR_SECRET_KEY',
                 'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID');
 
-## JSON file path            
+// JSON file path            
 $config = 'PATH_TO_JSON_FILE';
 
-#####Instantiate the client class with the config type
+//Instantiate the client class with the config type
 $client = new OffAmazonPayments_Client($config);
 ```
 ### Testing in Sandbox Mode
@@ -76,8 +76,20 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
 
 Also you can set the sandbox variable in the _config() array of the Client class by 
 
-$client->sandbox = true;
+$client->setSandbox(true);
 ```
+### Setting Proxy values
+Proxy parameters can be set after Instantiating the Client Object with the following setter
+```php
+$proxy =  array();
+$proxy['proxy_user_host'] // hostname for the proxy
+$proxy['proxy_user_port'] // hostname for the proxy
+$proxy['proxy_user_name'] // if your proxy requires a username
+$proxy['proxy_user_password'] // if your proxy requires a password
+
+$client->setProxy($proxy);
+```
+
 ### Making an API Call
 
 Below is an example on how to make the GetOrderReferenceDetails API call:
