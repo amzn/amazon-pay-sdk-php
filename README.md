@@ -133,9 +133,26 @@ Charge method combines the following API calls
 | Store Name          | `store_name`          | no        | Name of the store                                                                                   |
 | Platform ID         | `platform_id`         | no        | Platform ID of the Solution provider                                                                |
 | Custom Information  | `custom_information`  | no        | Any custom string                                                                                   |
+| MWS Auth Token      | `mws_auth_token`      | no        | MWS Auth Token required if API call is made on behalf of the seller                                                                                   |
 
 ```php
+//create an array that will contain the parameters for the Charge API call
+$requestParameters = array();
 
+//Adding the parameters values to the respective keys in the array
+$requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
+$requestParameters['seller_id'] = null;
+$requestParameters['charge_amount'] = '100.50';
+$requestParameters['currency_code'] = 'USD';
+$requestParameters['charge_note'] = 'Example item note';
+$requestParameters['charge_order_id'] = '1234-Example-Order';
+$requestParameters['Store_Name'] = 'Example Store';
+$requestParameters['Platform_Id'] = null;
+$requestParameters['Custom_Information'] = "Any_Custom_String";
+$requestParameters['mws_auth_token'] = null;
+
+//get the Authorization response from the charge method
+$response = $client->charge($requestParameters);
 ```
 ### Response Parsing
 
