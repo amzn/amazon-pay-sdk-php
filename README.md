@@ -116,7 +116,7 @@ $ipnHandler = new IpnHandler($headers, $body);
 
 Charge method combines the following API calls 
 
-Standard Payments
+**Standard Payments / Recurring Payments**
 
 1. SetOrderReferenceDetails / SetBillingAgreementDetails
 2. ConfirmOrderReference / ConfirmBillingAgreement
