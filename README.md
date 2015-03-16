@@ -19,7 +19,7 @@ Client Takes in parameters in the following format
 ####Mandatory Parameters
 | Parameter  | variable name | Values          |
 |----------- |---------------|-----------------|
-| Seller Id  | `seller_id`   | Default : `null`|
+| Merchant Id  | `merchant_id`   | Default : `null`|
 | Access Key | `access_key`  | Default : `null`|
 | Secret Key | `secret_key`  | Default : `null`|
 
