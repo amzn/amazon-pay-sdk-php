@@ -178,11 +178,8 @@ $response = $client->charge($requestParameters);
 | LWA Client ID       | `client_id`           | yes       | Defaulf: null<br>Value should be set in _config array                        |
 
 ```php
-//create an array that will contain the parameters for the Charge API call
-$config = array('merchant_id'        => 'YOUR_MERCHANT_ID',
-                'access_key'         => 'YOUR_ACCESS_KEY',
-                'secret_key'         => 'YOUR_SECRET_KEY',
-                'client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+//config array parameters that need to be instantiated
+$config = array('client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'user_profile_region => 'PROFILE_REGION' );
 
 $client = new OffAmazonPayments_Client($config);
