@@ -139,7 +139,7 @@ Charge method combines the following API calls
 | Amazon Reference ID | `amazon_reference_id` | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`) |
 | Merchant ID         | `merchant_id`         | no        | value taken from _config array in Client.php                                                        |
 | Charge Amount       | `charge_amount`       | yes       | Amount that needs to be captured.                                                                   |
-| Currency code       | `currency_code`       | no        | value is taken form the _config array in Client.php                                                 |
+| Currency code       | `currency_code`       | no        | if no value is provided, value is taken from the _config array in Client.php      			|
 | Charge Note         | `charge_note`         | no        | Note that is sent to the buyer                                                                      |
 | Charge Order ID     | `charge_order_id`     | no        | custom order ID provided                                                                            |
 | Store Name          | `store_name`          | no        | Name of the store                                                                                   |
