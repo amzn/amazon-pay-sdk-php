@@ -66,13 +66,13 @@ $client = new OffAmazonPayments_Client($config);
 
 The sandbox parameter is defaulted to false if not specified:
 ```php
-$client = new OffAmazonPayments_Client($config)
-
 $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'access_key'    => 'YOUR_ACCESS_KEY',
                 'secret_key'    => 'YOUR_SECRET_KEY',
                 'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'sandbox'       => true );
+
+$client = new OffAmazonPayments_Client($config);
 
 Also you can set the sandbox variable in the _config() array of the Client class by 
 
@@ -165,6 +165,39 @@ $requestParameters['mws_auth_token'] = null;
 
 //get the Authorization response from the charge method
 $response = $client->charge($requestParameters);
+```
+#####Obtain profile information (getUserInfo method)
+1. obtains the user's profile information from Amazon using the access token returned by the Button widget. 
+2. An access token is granted by the authorization server when a user logs in to a site. 
+3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data. 
+
+| Parameter           | Variable Name         | Mandatory | Values                                                                       |
+|---------------------|-----------------------|-----------|------------------------------------------------------------------------------|
+| Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      |
+| User Profile Region | `user_profile_region` | no        | Default :`na` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config array |
+| LWA Client ID       | `client_id`           | yes       | Defaulf: null<br>Value should be set in _config array                        |
+
+```php
+//create an array that will contain the parameters for the Charge API call
+$config = array('merchant_id'        => 'YOUR_MERCHANT_ID',
+                'access_key'         => 'YOUR_ACCESS_KEY',
+                'secret_key'         => 'YOUR_SECRET_KEY',
+                'client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+                'user_profile_region => 'PROFILE_REGION' );
+
+$client = new OffAmazonPayments_Client($config);
+
+//Get the Access Token from the URL
+$access_token = 'ACCESS_TOKEN';
+//calling the function getUserInfo with the access token parameter returns object
+$userInfoObject = $client->getUserInfo($access_token);
+
+//Buyer name
+$userInfoObject->name;
+//Buyer Email
+$userInfoObject->email;
+//Buyer User Id
+$userInfoObject->user_id;
 ```
 ### Response Parsing
 
