@@ -291,8 +291,12 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['amount'];
         
-        $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
-        
+	if (!empty($requestParameters['currency_code'])){
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
+	
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
         if (!empty($requestParameters['seller_note']))
@@ -484,7 +488,11 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['authorization_amount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['authorization_amount'];
         
-        $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        if (!empty($requestParameters['currency_code'])){
+	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
         
         if (!empty($requestParameters['authorization_reference_id'])) {
             $parameters['AuthorizationReferenceId'] = $requestParameters['authorization_reference_id'];
@@ -574,9 +582,13 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['capture_amount']))
             $parameters['CaptureAmount.Amount'] = $requestParameters['capture_amount'];
         
-        $parameters['CaptureAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+	if (!empty($requestParameters['currency_code'])){
+	    $parameters['CaptureAmount.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['CaptureAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
         
-        if (!empty($requestParameters['capture_reference_id'])) {
+	if (!empty($requestParameters['capture_reference_id'])) {
             $parameters['CaptureReferenceId'] = $requestParameters['capture_reference_id'];
         } else {
             $parameters['CaptureReferenceId'] = uniqid('C01_REF_');
@@ -665,7 +677,12 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['refund_amount']))
             $parameters['RefundAmount.Amount'] = $requestParameters['refund_amount'];
         
-        $parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+	if (!empty($requestParameters['currency_code'])){
+	    $parameters['RefundAmount.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['RefundAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
+        
         
         if (!empty($requestParameters['seller_refund_note']))
             $parameters['SellerRefundNote'] = $requestParameters['seller_refund_note'];
@@ -790,7 +807,11 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['amount']))
             $parameters['OrderReferenceAttributes.OrderTotal.Amount'] = $requestParameters['amount'];
         
-        $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        if (!empty($requestParameters['currency_code'])){
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['OrderReferenceAttributes.OrderTotal.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
         
         if (!empty($this->_config['platform_id']))
             $parameters['OrderReferenceAttributes.PlatformId'] = $this->_config['platform_id'];
@@ -1012,8 +1033,11 @@ class OffAmazonPaymentsService_Client
         if (!empty($requestParameters['authorization_amount']))
             $parameters['AuthorizationAmount.Amount'] = $requestParameters['authorization_amount'];
         
-        $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
-        
+	if (!empty($requestParameters['currency_code'])){
+	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($requestParameters['currency_code']);
+	} else {
+	    $parameters['AuthorizationAmount.CurrencyCode'] = strtoupper($this->_config['currency_code']);
+        }
         
         if (!empty($requestParameters['seller_authorization_note']))
             $parameters['SellerAuthorizationNote'] = $requestParameters['seller_authorization_note'];
@@ -1124,6 +1148,10 @@ class OffAmazonPaymentsService_Client
 	if(!empty($OrderParameters['charge_amount'])){
 	    $setParameters['amount'] = $OrderParameters['charge_amount'];
 	    $authorizeParameters['authorization_amount'] = $OrderParameters['charge_amount'];
+	}
+	if(!empty($OrderParameters['charge_currency_code'])){
+	    $setParameters['currency_code'] = $OrderParameters['charge_currency_code'];
+	    $authorizeParameters['currency_code'] = $OrderParameters['charge_currency_code'];
 	}
 	if(!empty($OrderParameters['charge_note'])){
 	    $setParameters['seller_note'] = $OrderParameters['charge_note'];
