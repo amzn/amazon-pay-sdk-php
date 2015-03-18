@@ -127,6 +127,18 @@ class OffAmazonPaymentsService_Client
     }
     }
     
+    /* Setter for _config['client_id']
+     * sets the  value for _config['client_id'] variable
+     */
+    public function setClientId($value)
+    {
+	if(!empty($value)){
+	    $this->_config['client_id'] = $value;
+	} else{
+	throw new Exception('setter value for client ID provided is empty');
+    }
+    }
+    
     /* Setter for Proxy
      * input $proxy [array]
      * @param $proxy['proxy_user_host'] - hostname for the proxy
