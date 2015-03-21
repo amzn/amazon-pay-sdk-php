@@ -339,7 +339,6 @@ class IpnHandler
     
     /* returnMessage() - JSON decode the raw [Message] portion of the IPN
      */
-    
     public function returnMessage()
     {
         return json_decode($this->_snsMessage['Message'], true);
