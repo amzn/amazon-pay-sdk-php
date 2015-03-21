@@ -181,9 +181,12 @@ $response = $client->charge($requestParameters);
 ```php
 //config array parameters that need to be instantiated
 $config = array('client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'user_profile_region => 'PROFILE_REGION' );
+                'user_profile_region’ => 'PROFILE_REGION' );
 
 $client = new OffAmazonPayments_Client($config);
+
+//Client ID can also be set using the setter function setClientId($client_id)
+$client->setClientId(‘YOUR_LWA_CLIENT_ID’);
 
 //Get the Access Token from the URL
 $access_token = 'ACCESS_TOKEN';
