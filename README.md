@@ -135,18 +135,19 @@ Charge method combines the following API calls
 2. ConfirmOrderReference / ConfirmBillingAgreement
 3. Authorize (With capture) / AuthorizeOnBillingAgreement (With capture)
 
-| Parameter           | Variable Name         | Mandatory | Values                                                                                              |
-|---------------------|-----------------------|-----------|-----------------------------------------------------------------------------------------------------|
-| Amazon Reference ID | `amazon_reference_id` | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`) |
-| Merchant ID         | `merchant_id`         | no        | value taken from _config array in Client.php                                                        |
-| Charge Amount       | `charge_amount`       | yes       | Amount that needs to be captured.                                                                   |
-| Currency code       | `currency_code`       | no        | if no value is provided, value is taken from the _config array in Client.php      			|
-| Charge Note         | `charge_note`         | no        | Note that is sent to the buyer                                                                      |
-| Charge Order ID     | `charge_order_id`     | no        | custom order ID provided                                                                            |
-| Store Name          | `store_name`          | no        | Name of the store                                                                                   |
-| Platform ID         | `platform_id`         | no        | Platform ID of the Solution provider                                                                |
-| Custom Information  | `custom_information`  | no        | Any custom string                                                                                   |
-| MWS Auth Token      | `mws_auth_token`      | no        | MWS Auth Token required if API call is made on behalf of the seller                                                                                   |
+| Parameter           | Variable Name         | Mandatory  | Values                                                                                              	     |
+|---------------------|-----------------------|------------|-----------------------------------------------------------------------------------------------------------------|
+| Amazon Reference ID 	     | `amazon_reference_id` 	   | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`) |
+| Merchant ID         	     | `merchant_id`         	   | no        | value taken from _config array in Client.php                                                        |
+| Charge Amount       	     | `charge_amount`       	   | yes       | Amount that needs to be captured.                                                                   |
+| Currency code       	     | `currency_code`       	   | no        | if no value is provided, value is taken from the _config array in Client.php      		     |
+| Authorization Reference ID | `authorization_reference_id`| yes       | Unique string to be passed									     |
+| Charge Note         	     | `charge_note`         	   | no        | Note that is sent to the buyer                                                                      |
+| Charge Order ID     	     | `charge_order_id`     	   | no        | custom order ID provided                                                                            |
+| Store Name          	     | `store_name`          	   | no        | Name of the store                                                                                   |
+| Platform ID         	     | `platform_id`         	   | no        | Platform ID of the Solution provider                                                                |
+| Custom Information  	     | `custom_information`  	   | no        | Any custom string                                                                                   |
+| MWS Auth Token      	     | `mws_auth_token`      	   | no        | MWS Auth Token required if API call is made on behalf of the seller                                                                                   |
 
 ```php
 //create an array that will contain the parameters for the Charge API call
