@@ -47,8 +47,8 @@ Client Takes in parameters in the following format
 Setting configuration while instantiating the OffAmazonPayments_Client object
 ```php
 require 'Client.php'
-# Your Login and Pay with Amazon keys are
-# available in your Seller Central account
+// Your Login and Pay with Amazon keys are
+// available in your Seller Central account
 
 // PHP Associative array
 $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
@@ -74,7 +74,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
 
 $client = new OffAmazonPayments_Client($config);
 
-Also you can set the sandbox variable in the _config() array of the Client class by 
+//Also you can set the sandbox variable in the _config() array of the Client class by 
 
 $client->setSandbox(true);
 ```
@@ -96,8 +96,9 @@ Below is an example on how to make the GetOrderReferenceDetails API call:
 
 ```php
 $requestParameters = array();
-# These values are grabbed from the Login and Pay
-# with Amazon Address and Wallet widgets
+
+// These values are grabbed from the Login and Pay
+// with Amazon Address and Wallet widgets
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 $requestParameters['address_consent_token']    = 'ACCESS_TOKEN';
 
@@ -209,13 +210,13 @@ Responses are provided in 3 formats
 //Returns an object($response) of the class ResponseParser.php
 $response = $client->getOrderReferenceDetails($requestParameters);
 
-#XML response
+//XML response
 $response->xmlResponse;
 
-#Associate array response
+//Associate array response
 $response->toArray();
 
-#JSON response
+//JSON response
 $response->toJson();
 ```
 
@@ -223,12 +224,12 @@ $response->toJson();
 ```php
 $ipnHandler = new IpnHandler($headers, $body);
 
-#XML response
+//XML response
 $ipnHandler->returnMessage();
 
-#Associate array response
+//Associate array response
 $ipnHandler->toArray();
 
-#JSON response
+//JSON response
 $ipnHandler->toJson();
 ```
