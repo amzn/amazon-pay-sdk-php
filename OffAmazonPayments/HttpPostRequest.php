@@ -6,7 +6,6 @@
 class HttpCurl
 {
     private $_url = null;
-    private $_userAgent = null;
     private $_response;
     private $_config = array();
     private $_header = false;
