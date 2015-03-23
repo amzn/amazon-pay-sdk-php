@@ -44,7 +44,7 @@ Client Takes in parameters in the following format
 
 ## Setting Configuration
 
-Setting configuration while instantiating the OffAmazonPayments_Client object
+Setting configuration while instantiating the OffAmazonPaymentsService_Client object
 ```php
 require 'Client.php'
 // Your Login and Pay with Amazon keys are
@@ -60,7 +60,7 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
 $config = 'PATH_TO_JSON_FILE';
 
 //Instantiate the client class with the config type
-$client = new OffAmazonPayments_Client($config);
+$client = new OffAmazonPaymentsService_Client($config);
 ```
 ### Testing in Sandbox Mode
 
@@ -72,7 +72,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'sandbox'       => true );
 
-$client = new OffAmazonPayments_Client($config);
+$client = new OffAmazonPaymentsService_Client($config);
 
 //Also you can set the sandbox variable in the _config() array of the Client class by 
 
@@ -184,7 +184,7 @@ $response = $client->charge($requestParameters);
 $config = array('client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'user_profile_region' => 'PROFILE_REGION' );
 
-$client = new OffAmazonPayments_Client($config);
+$client = new OffAmazonPaymentsService_Client($config);
 
 //Client ID can also be set using the setter function setClientId($client_id)
 $client->setClientId(‘YOUR_LWA_CLIENT_ID’);
