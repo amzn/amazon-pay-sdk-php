@@ -16,16 +16,7 @@ class ResponseParser
      */
     public function toJson()
     {
-        $response = $this->_response;
-        
-        //Getting the HttpResponse Status code to the output as a string
-        $status = strval($response['Status']);
-        
-        //Getting the Simple XML element object of the XML Response Body
-        $response = simplexml_load_string((string) $response['ResponseBody']);
-        
-        //Adding the HttpResponse Status code to the output as a string
-        $response->addChild('ResponseStatus', $status);
+        $response = $this->_simpleXmlObject();
         
         return (json_encode($response));
     }
@@ -34,6 +25,16 @@ class ResponseParser
      * @param $this->_response [XML]
      */
     public function toArray()
+    {
+        $response = $this->_simpleXmlObject();
+        
+        //Converting the SimpleXMLElement Object to array()
+        $response = json_encode($response);
+        
+        return (json_decode($response, true));
+    }
+    
+    private function _simpleXmlObject()
     {
         $response = $this->_response;
         //Getting the HttpResponse Status code to the output as a string
@@ -45,9 +46,6 @@ class ResponseParser
         //Adding the HttpResponse Status code to the output as a string
         $response->addChild('ResponseStatus', $status);
         
-        //Converting the SimpleXMLElement Object to array()
-        $response = json_encode($response);
-        
-        return (json_decode($response, true));
+        return $response;
     }
 }

@@ -15,6 +15,7 @@
  * *****************************************************************************
  */
 require_once 'ResponseParser.php';
+require_once 'HttpPostRequest.php';
 
 class OffAmazonPaymentsService_Client
 {
@@ -235,35 +236,29 @@ class OffAmazonPaymentsService_Client
 
         //to make sure double encoding doesn't occur decode first and encode again.
         $access_token = urldecode($access_token);
-
-        $c = curl_init($this->_profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlencode($access_token));
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-        if (!$response = curl_exec($c)) {
-            $error_msg = 'Unable to post request, underlying exception of ' . curl_error($c);
-            curl_close($c);
-            throw new Exception($error_msg);
-        }
-        curl_close($c);
-        $data = json_decode($response);
+	$url = $this->_profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlencode($access_token);
+	
+	$httpPostRequest  = new HttpCurl();
+	
+	$httpPostRequest->_httpPost($url);
+	$response = $httpPostRequest->getResponse();
+        $data 	  = json_decode($response);
 
         if ($data->aud != $this->_config['client_id']) {
             // the access token does not belong to us
-            header('HTTP/1.1 404 Not Found');
             throw new Exception('The Access token entered is incorrect');
         }
 
         // exchange the access token for user profile
-        $c = curl_init($this->_profileEndpoint . '/user/profile');
-        curl_setopt($c, CURLOPT_HTTPHEADER, array(
-            'Authorization: bearer ' . $access_token
-        ));
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-        if (!$response = curl_exec($c)) {
-            $error_msg = 'Unable to post request, underlying exception of ' . curl_error($c);
-            curl_close($c);
-            throw new Exception($error_msg);
-        }
-        curl_close($c);
+	$url = $this->_profileEndpoint . '/user/profile';
+	$httpPostRequest  = new HttpCurl();
+	
+	$httpPostRequest->setAccessToken($access_token);
+	$httpPostRequest->setHttpHeader(true);
+	$httpPostRequest->_httpPost($url);
+	
+	
+	$response = $httpPostRequest->getResponse();
         $userInfo = json_decode($response, true);
         return $userInfo;
     }
@@ -988,7 +983,8 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_reference_id'] - [String] : Order Reference ID /Billing Agreement ID
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
-     * @optional requestParameters['charge_currency_code'] - [String] : Currency Code for the Amount
+     * @param requestParameters['charge_currency_code'] - [String] : Currency Code for the Amount
+     * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
      * @optional requestParameters['charge_note'] - [String] : seller note sent to the buyer
      * @optional requestParameters['charge_order_id'] - [String] : Custom Order ID provided
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -1221,8 +1217,18 @@ class OffAmazonPaymentsService_Client
             do {
                 try {
                     $this->_constructUserAgentHeader();
-                    $response   = $this->_httpPost($parameters);
-                    $statusCode = $response['Status'];
+		    
+		    $httpPostRequest  = new HttpCurl($this->_config);
+		    $httpPostRequest->_httpPost($this->_mwsServiceUrl,$this->_userAgent,$parameters);
+		    $response   = $httpPostRequest->getResponse();
+		    
+		    list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
+		    $other = preg_split("/\r\n|\n|\r/", $other);
+
+		    list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
+		    $response =  array('Status' => (int) $code,'ResponseBody' => $responseBody);
+		    
+		    $statusCode = $response['Status'];
 
                     if ($statusCode == 200) {
                         $shouldRetry    = false;
@@ -1248,57 +1254,6 @@ class OffAmazonPaymentsService_Client
         }
 
         return $response;
-    }
-
-    /**
-     * Perform HTTP post using Curl
-     *
-     */
-    private function _httpPost($parameters)
-    {
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->_mwsServiceUrl);
-        curl_setopt($ch, CURLOPT_PORT, 443);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
-        // if a ca bundle is configured, use it as opposed to the default ca
-        // configured for the server
-
-        if (!is_null($this->_config['cabundle_file'])) {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->_config['cabundle_file']);
-        }
-
-        curl_setopt($ch, CURLOPT_USERAGENT, $this->_userAgent);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        if ($this->_config['proxy_host'] != null && $this->_config['proxy_port'] != -1) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->_config['proxy_host'] . ':' . $this->_config['proxy_port']);
-        }
-
-        if ($this->_config['proxy_username'] != null && $this->_config['proxy_password'] != null) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_config['proxy_username'] . ':' . $this->_config['proxy_password']);
-        }
-
-        $response = '';
-        if (!$response = curl_exec($ch)) {
-            $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
-            curl_close($ch);
-            throw new Exception($error_msg);
-        }
-
-        curl_close($ch);
-        list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
-        $other = preg_split("/\r\n|\n|\r/", $other);
-
-        list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
-        return array(
-            'Status' => (int) $code,
-            'ResponseBody' => $responseBody
-        );
     }
 
     /**
