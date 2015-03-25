@@ -74,7 +74,10 @@ class OffAmazonPaymentsService_Client
 				     'us' => 'na',
 				     'jp' => 'jp');
     private $_success = false;
-
+    
+    private $_logRequests = false;
+    private $_logResponses = false;
+	
     /* Takes user configuration array from the user as input
      * Takes JSON file path with configuration information as input
      * Validates the user configuation array against existing _config array
@@ -215,6 +218,39 @@ class OffAmazonPaymentsService_Client
         }
     }
 
+	 
+    
+    /* Enables or disables the logging of API requests
+     * 
+     * @param log - [Boolean]
+     */
+    public function logRequests($log)
+    {
+        $this->_logRequests = $log;
+    }
+    
+    
+    /* Enables or disables the logging of API responses
+     * 
+     * @param log - [Boolean]
+     */
+    public function logResponses($log)
+    {
+        $this->_logResponses = $log;
+    }
+    
+    
+    /* Enables or disables the logging of API requests and responses.
+     *
+     * @param log - [Boolean]
+     */
+     public function log($log)
+     {
+        $this->_logResponses = $log;
+        $this->_logRequests = $log;
+     }
+	 
+	 
     /* GetUserInfo convenience funtion - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
      * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
@@ -1218,17 +1254,25 @@ class OffAmazonPaymentsService_Client
                 try {
                     $this->_constructUserAgentHeader();
 		    
-		    $httpPostRequest  = new HttpCurl($this->_config);
-		    $httpPostRequest->_httpPost($this->_mwsServiceUrl,$this->_userAgent,$parameters);
-		    $response   = $httpPostRequest->getResponse();
-		    
-		    list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
-		    $other = preg_split("/\r\n|\n|\r/", $other);
+					if($this->_logRequests) {
+						$this->_log($parameters);
+					}
+					
+					$httpPostRequest  = new HttpCurl($this->_config);
+					$httpPostRequest->_httpPost($this->_mwsServiceUrl,$this->_userAgent,$parameters);
+					$response   = $httpPostRequest->getResponse();
+					
+					if($this->_logResponses) {
+						$this->_log($response);
+					}
+					
+					list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
+					$other = preg_split("/\r\n|\n|\r/", $other);
 
-		    list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
-		    $response =  array('Status' => (int) $code,'ResponseBody' => $responseBody);
-		    
-		    $statusCode = $response['Status'];
+					list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
+					$response =  array('Status' => (int) $code,'ResponseBody' => $responseBody);
+					
+					$statusCode = $response['Status'];
 
                     if ($statusCode == 200) {
                         $shouldRetry    = false;
@@ -1244,12 +1288,14 @@ class OffAmazonPaymentsService_Client
                 }
 
                 catch (Exception $e) {
+                    $this->_log($e->getMessage(), true);
                     throw $e;
                 }
             } while ($shouldRetry);
         }
 
         catch (Exception $se) {
+            $this->_log($se->getMessage(), true);
             throw $se;
         }
 
@@ -1339,5 +1385,17 @@ class OffAmazonPaymentsService_Client
         $quotedString = preg_replace('/\\\\/', '\\\\\\\\', $quotedString);
         $quotedString = preg_replace('/\\(/', '\\(', $quotedString);
         return $quotedString;
+    }
+	
+	/**
+     * Simple logging to a debug file
+     */
+    private function _log($s, $error = false)
+    {
+        $date = new DateTime();
+        if($error) {
+            error_log($date->format('U = Y-m-d H:i:s'). "  ERROR:" . "\n", 3, "debug.log");
+        }
+        error_log($date->format('U = Y-m-d H:i:s'). "\n  Service Url: " . $this->_mwsServiceUrl . "\n  User Agent: " . $this->_userAgent . "\n  Data:\n". $s ."\n\n\n", 3, "debug.log");
     }
 }
