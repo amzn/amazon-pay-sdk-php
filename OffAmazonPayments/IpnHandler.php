@@ -25,7 +25,7 @@ class IpnHandler
 
     public function __construct($headers, $body, $ipnConfig = null)
     {
-        $this->_headers = $headers;
+        $this->_headers = array_change_key_case($headers);
         $this->_body    = $body;
 
         if ($ipnConfig != null) {
