@@ -70,7 +70,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'access_key'    => 'YOUR_ACCESS_KEY',
                 'secret_key'    => 'YOUR_SECRET_KEY',
                 'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-	        	'region'     	=> 'REGION',
+                'region'     	=> 'REGION',
                 'sandbox'       => true );
 
 $client = new OffAmazonPaymentsService_Client($config);
@@ -178,7 +178,7 @@ $response = $client->charge($requestParameters);
 | Parameter           | Variable Name         | Mandatory | Values                                                                       	     |
 |---------------------|-----------------------|-----------|------------------------------------------------------------------------------------------|
 | Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      	     |
-| Region              | `region`              | no        | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config['region'] array |
+| Region              | `region`              | yes       | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config['region'] array |
 | LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in _config array                        	     |
 
 ```php
