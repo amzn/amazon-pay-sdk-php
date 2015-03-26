@@ -29,7 +29,6 @@ Client Takes in parameters in the following format
 |---------------------|-----------------------|----------------------------------------------------|
 | Currency Code       | `currency_code`       | Default : `null`<br>Other: `USD`,`EUR`,`GBP`,`JPY` |
 | Environment         | `sandbox`             | Default : `false`<br>Other: `true`	    	   |
-| MWS Auth token      | `mws_auth_token`      | Default : `null` 			    	   |
 | Platform ID         | `platform_id`         | Default : `null` 			    	   |
 | CA Bundle File      | `cabundle_file`       | Default : `null`			    	   |
 | Application Name    | `application_name`    | Default : `null`			    	   |
