@@ -98,9 +98,13 @@ Below is an example on how to make the GetOrderReferenceDetails API call:
 ```php
 $requestParameters = array();
 
-// These values are grabbed from the Login and Pay
-// with Amazon Address and Wallet widgets
+// AMAZON_ORDER_REFERENCE_ID is obtained grabbed from the Login and Pay with Amazon Address and Wallet widgets
+// ACCESS_TOKEN is obtained from the GET parameter from the URL.
+
+//Required Parameter
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
+
+//Optional Parameter
 $requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
