@@ -485,7 +485,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['authorization_reference_id'] [String]
      * @optional requestParameters['capture_now'] [String]
      * @optional requestParameters['seller_authorization_note'] [String]
-     * @optional requestParameters['transaction_timeout'] [String]
+     * @optional requestParameters['transaction_timeout'] [String] - Defaults to 1440 minutes
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
@@ -845,7 +845,7 @@ class OffAmazonPaymentsService_Client
      * @param AuthorizationAmount [String]
      * @param requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_authorization_note'] [String]
-     * @optional requestParameters['transaction_timeout'] - Defaults to 0
+     * @optional requestParameters['transaction_timeout'] - Defaults to 1440 minutes
      * @optional requestParameters['capture_now'] [String]
      * @optional requestParameters['soft_descriptor'] - - [String]
      * @optional requestParameters['seller_note'] - [String]
@@ -924,6 +924,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['charge_currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
      * @optional requestParameters['charge_note'] - [String] : seller note sent to the buyer
+     * @optional requestParameters['transaction_timeout'] - [String] : Defaults to 1440 minutes
      * @optional requestParameters['charge_order_id'] - [String] : Custom Order ID provided
      * @optional requestParameters['mws_auth_token'] - [String]
      */
@@ -1008,7 +1009,7 @@ class OffAmazonPaymentsService_Client
                     $response = $this->ConfirmBillingAgreement($confirmParameters);
                 }
             }
-            if ($this->_success || $baStatus['State'] === 'Open') {
+            if ($this->_success && $baStatus['State'] === 'Open') {
                 $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
             }
             return $response;
