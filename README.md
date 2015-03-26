@@ -105,6 +105,7 @@ $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 
 //Optional Parameter
 $requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
+$requestParameters['mws_auth_token']     	= 'MWS_AUTH_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
