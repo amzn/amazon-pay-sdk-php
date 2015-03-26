@@ -41,14 +41,8 @@ class HttpCurl
         $this->_accessToken = $accesstoken;
     }
     
-    /* POST using curl for the following situations
-     * 1. API calls
-     * 2. IPN certificate retrieval
-     * 3. Get User Info
-     */
-    public function _httpPost($url, $userAgent = null, $parameters = null)
+    private  function _commonCurlParams($url,$userAgent)
     {
-        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_PORT, 443);
@@ -56,30 +50,12 @@ class HttpCurl
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
-        // if a ca bundle is configured, use it as opposed to the default ca
-        // configured for the server
-        
         if (!is_null($this->_config['cabundle_file'])) {
             curl_setopt($ch, CURLOPT_CAINFO, $this->_config['cabundle_file']);
         }
         
         if (!empty($userAgent))
             curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
-        
-        /*
-         * setting the HTTP header with the Access Token only for Getting user info
-         */
-        if ($this->_header) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization: bearer ' . $this->_accessToken
-            ));
-        }
-        
-        if (!empty($parameters)) {
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
-            curl_setopt($ch, CURLOPT_HEADER, true);
-        }
         
         if ($this->_config['proxy_host'] != null && $this->_config['proxy_port'] != -1) {
             curl_setopt($ch, CURLOPT_PROXY, $this->_config['proxy_host'] . ':' . $this->_config['proxy_port']);
@@ -89,13 +65,52 @@ class HttpCurl
             curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_config['proxy_username'] . ':' . $this->_config['proxy_password']);
         }
         
+        return $ch;
+    }
+    /* POST using curl for the following situations
+     * 1. API calls
+     * 2. IPN certificate retrieval
+     * 3. Get User Info
+     */
+    public function _httpPost($url, $userAgent = null, $parameters = null)
+    {
+        $ch = $this->_commonCurlParams($url,$userAgent);
+        
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        
+       $this->_execute($ch);
+    }
+    
+    /* GET using curl for the following situations
+     * 1. IPN certificate retrieval
+     * 3. Get User Info
+     */
+    public function _httpGet($url, $userAgent = null)
+    {
+        $ch = $this->_commonCurlParams($url,$userAgent);
+        /*
+         * setting the HTTP header with the Access Token only for Getting user info
+         */
+        if ($this->_header) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: bearer ' . $this->_accessToken
+            ));
+        }
+        
+        $this->_execute($ch);
+    }
+    
+    private function _execute($ch)
+    {
+        
         $response = '';
         if (!$response = curl_exec($ch)) {
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
             curl_close($ch);
             throw new Exception($error_msg);
         }
-        
         curl_close($ch);
         $this->_response = $response;
     }

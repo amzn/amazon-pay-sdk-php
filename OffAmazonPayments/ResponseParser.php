@@ -3,14 +3,19 @@
 class ResponseParser
 {
     public $_response = null;
-    public $xmlResponse = null;
+    
     public function __construct($response=null)
     {
         $this->_response = $response;
-        $this->xmlResponse = $response['ResponseBody'];
     }
-    
-
+   
+    /*
+     * returns the XML portion of the response
+     */ 
+    public function toXml()
+    {
+        return $this->_response['ResponseBody'];
+    }
     /* toJson  - converts XML into Json
      * @param $response [XML]
      */
@@ -47,5 +52,20 @@ class ResponseParser
         $response->addChild('ResponseStatus', $status);
         
         return $response;
+    }
+    
+    public function GetBillingAgreementDetailsStatus($response)
+    {
+       $data= new SimpleXMLElement($response);
+        $namespaces = $data->getNamespaces(true);
+        foreach($namespaces as $key=>$value){
+            $namespace = $value;
+        }
+        $data->registerXPathNamespace('GetBA', $namespace);
+        foreach ($data->xpath('//GetBA:BillingAgreementStatus') as $value) {
+            $baStatus = json_decode(json_encode((array)$value), TRUE);
+        }
+        
+        return $baStatus ;
     }
 }

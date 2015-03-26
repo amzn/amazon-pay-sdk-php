@@ -224,10 +224,10 @@ class IpnHandler
      */
     private function _getCertificate($certificatePath)
     {
-        $httpPostRequest  = new HttpCurl($this->_ipnConfig);
+        $httpCurlRequest  = new HttpCurl($this->_ipnConfig);
 
-	$httpPostRequest->_httpPost($certificatePath);
-	$response = $httpPostRequest->getResponse();
+	$httpCurlRequest->_httpGet($certificatePath);
+	$response = $httpCurlRequest->getResponse();
 
         return $response;
     }
