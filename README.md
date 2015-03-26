@@ -181,8 +181,8 @@ $response = $client->charge($requestParameters);
 
 ```php
 //config array parameters that need to be instantiated
-$config = array('client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'region' 	     => 'PROFILE_REGION' );
+$config = array('client_id' => 'LWA Client ID',
+                'region'    => 'Region' );
 
 $client = new OffAmazonPaymentsService_Client($config);
 
