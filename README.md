@@ -53,7 +53,7 @@ require 'Client.php'
 $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'access_key'  => 'YOUR_ACCESS_KEY',
                 'secret_key'  => 'YOUR_SECRET_KEY',
-                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID’,
+                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'region'      => 'REGION');
 
 // JSON file path            
