@@ -26,7 +26,7 @@ Client Takes in parameters in the following format
 ####Optional Parameters
 | Parameter           | Variable name         | Values                                      	   |
 |---------------------|-----------------------|----------------------------------------------------|
-| Region              | `region`              | Default : `null`<br>Other: `us`,`de`,`uk`,`na`,`eu`|
+| Region              | `region`              | Default : `null`<br>Other: `us`,`de`,`uk`,`jp`     |
 | Currency Code       | `currency_code`       | Default : `null`<br>Other: `USD`,`EUR`,`GBP`,`JPY` |
 | Environment         | `sandbox`             | Default : `false`<br>Other: `true`	    	   |
 | MWS Auth token      | `mws_auth_token`      | Default : `null` 			    	   |
@@ -39,7 +39,6 @@ Client Takes in parameters in the following format
 | Proxy Username      | `proxy_username`      | Default : `null`			    	   |
 | Proxy Password      | `proxy_password`      | Default : `null`			    	   |
 | LWA Client ID       | `client_id`           | Default : `null`			    	   |
-| Profile Region      | `user_profile_region` | Default : `null`<br>Other: `na`,`de`,`uk`,`us`,`jp`|
 | Handle Throttle     | `handle_throttle`     | Default : `true`<br>Other: `false`	    	   |
 
 ## Setting Configuration
@@ -158,11 +157,12 @@ $requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
 $requestParameters['seller_id'] = null;
 $requestParameters['charge_amount'] = '100.50';
 $requestParameters['currency_code'] = 'USD';
+$requestParameters['authorization_reference_id'] = 'UNIQUE STRING';
 $requestParameters['charge_note'] = 'Example item note';
 $requestParameters['charge_order_id'] = '1234-Example-Order';
 $requestParameters['Store_Name'] = 'Example Store';
 $requestParameters['Platform_Id'] = null;
-$requestParameters['Custom_Information'] = "Any_Custom_String";
+$requestParameters['Custom_Information'] = 'Any_Custom_String';
 $requestParameters['mws_auth_token'] = null;
 
 //get the Authorization response from the charge method
@@ -173,16 +173,16 @@ $response = $client->charge($requestParameters);
 2. An access token is granted by the authorization server when a user logs in to a site. 
 3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data. 
 
-| Parameter           | Variable Name         | Mandatory | Values                                                                       	|
-|---------------------|-----------------------|-----------|-------------------------------------------------------------------------------------|
-| Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      	|
-| User Profile Region | `user_profile_region` | no        | Default :`null` <br>Other:`us`,`na`,`de`,`uk`,`jp`<br>Value is set in _config array |
-| LWA Client ID       | `client_id`           | yes       | Defaulf: null<br>Value should be set in _config array                        	|
+| Parameter           | Variable Name         | Mandatory | Values                                                                       	     |
+|---------------------|-----------------------|-----------|------------------------------------------------------------------------------------------|
+| Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      	     |
+| Region              | `region`              | no        | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config['region'] array |
+| LWA Client ID       | `client_id`           | yes       | Defaulf: null<br>Value should be set in _config array                        	     |
 
 ```php
 //config array parameters that need to be instantiated
 $config = array('client_id'          => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'user_profile_region' => 'PROFILE_REGION' );
+                'region' 	     => 'PROFILE_REGION' );
 
 $client = new OffAmazonPaymentsService_Client($config);
 
@@ -205,7 +205,7 @@ $userInfoObject->user_id;
 
 Responses are provided in 3 formats
 
-1. Raw XML response
+1. XML response
 2. Associative array
 3. JSON format
 
@@ -215,7 +215,7 @@ Responses are provided in 3 formats
 $response = $client->getOrderReferenceDetails($requestParameters);
 
 //XML response
-$response->xmlResponse;
+$response->toXml();
 
 //Associate array response
 $response->toArray();
