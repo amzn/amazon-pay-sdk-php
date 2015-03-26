@@ -53,7 +53,8 @@ require 'Client.php'
 $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'access_key'  => 'YOUR_ACCESS_KEY',
                 'secret_key'  => 'YOUR_SECRET_KEY',
-                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID');
+                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID'
+		‘region'      => ‘REGION');
 
 // JSON file path            
 $config = 'PATH_TO_JSON_FILE';
@@ -69,6 +70,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'access_key'    => 'YOUR_ACCESS_KEY',
                 'secret_key'    => 'YOUR_SECRET_KEY',
                 'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+		‘region'     	=> ‘REGION',
                 'sandbox'       => true );
 
 $client = new OffAmazonPaymentsService_Client($config);
@@ -99,7 +101,7 @@ $requestParameters = array();
 // These values are grabbed from the Login and Pay
 // with Amazon Address and Wallet widgets
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
-$requestParameters['address_consent_token']    = 'ACCESS_TOKEN';
+$requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
@@ -177,12 +179,12 @@ $response = $client->charge($requestParameters);
 |---------------------|-----------------------|-----------|------------------------------------------------------------------------------------------|
 | Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      	     |
 | Region              | `region`              | no        | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config['region'] array |
-| LWA Client ID       | `client_id`           | yes       | Defaulf: null<br>Value should be set in _config array                        	     |
+| LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in _config array                        	     |
 
 ```php
 //config array parameters that need to be instantiated
-$config = array('client_id' => 'LWA Client ID',
-                'region'    => 'Region' );
+$config = array('client_id' => 'YOUR_LWA_CLIENT_ID',
+                'region'    => 'REGION' );
 
 $client = new OffAmazonPaymentsService_Client($config);
 
