@@ -187,7 +187,7 @@ class OffAmazonPaymentsService_Client
     public function setProxy($proxy)
     {
         if (!empty($proxy['proxy_user_host']));
-        $this->_config['proxy_user_host'] = $proxy['proxy_user_host'];
+	    $this->_config['proxy_user_host'] = $proxy['proxy_user_host'];
         
         if (!empty($proxy['proxy_user_port']))
             $this->_config['proxy_user_port'] = $proxy['proxy_user_port'];
