@@ -198,14 +198,14 @@ $client->setClientId(‘YOUR_LWA_CLIENT_ID’);
 //Get the Access Token from the URL
 $access_token = 'ACCESS_TOKEN';
 //calling the function getUserInfo with the access token parameter returns object
-$userInfoObject = $client->getUserInfo($access_token);
+$userInfo = $client->getUserInfo($access_token);
 
 //Buyer name
-$userInfoObject->name;
+$userInfo['name'];
 //Buyer Email
-$userInfoObject->email;
+$userInfo['email'];
 //Buyer User Id
-$userInfoObject->user_id;
+$userInfo['user_id'];
 ```
 ### Response Parsing
 
