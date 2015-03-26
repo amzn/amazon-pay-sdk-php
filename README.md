@@ -113,6 +113,8 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 2. You can set up your Notification endpoints in Seller Central by accessing the Integration Settings page in the Settings tab.
 3. IpnHandler.php class handles verification of the source and the data of the IPN
 
+Add the below code into any file and set the URL to the file location in Merchant/Integrator URL by accessing Integration Settings page in the Settings tab.
+
 ```php
 require_once 'IpnHandler.php';
 
