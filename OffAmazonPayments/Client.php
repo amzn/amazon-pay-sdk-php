@@ -24,7 +24,7 @@ class OffAmazonPaymentsService_Client
     
     //construct User agent string based off of the application_name,application_version,PHP platform
     private $_userAgent = null;
-    
+    private $_parameters = null;
     private $_mwsEndpointPath = null;
     private $_mwsEndpointUrl = null;
     private $_profileEndpoint = null;
@@ -81,29 +81,34 @@ class OffAmazonPaymentsService_Client
             
             if (is_array($config)) {
                 $configArray = $config;
-            } elseif ((!is_array($config)) && file_exists($config)) {
-                $jsonString  = file_get_contents($config);
-                $configArray = json_decode($jsonString, true);
+            } elseif (!is_array($config)) {
+		
+		if(file_exists($config))
+		{
+		    $jsonString  = file_get_contents($config);
+		    $configArray = json_decode($jsonString, true);
                 
-                $json_error = json_last_error();
+		    $json_error = json_last_error();
                 
-                if ($json_error != 0) {
-                    $errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $configArray;
-                    throw new Exception($errorMsg);
-                }
+		    if ($json_error != 0) {
+			$errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $configArray;
+			throw new Exception($errorMsg);
+		    }
+		} else {
+		    $errorMsg ='$config is not a Json File path or the Json File was not found in the path provided';
+		    throw new Exception($errorMsg);
+		}
                 
-            } else {
-                throw new Exception($config . ' is not a supported type or the JSON file is not found in the specified path' . PHP_EOL .
-				    'Supported Input types are:' . PHP_EOL .
-				    '1.' . $config . ' can be a JSON file name containing config data in JSON format' . PHP_EOL .
-				    '2 ' . $config . ' can be a PHP associative array' . PHP_EOL);
             }
             if (is_array($configArray)) {
                 $this->_checkConfigKeys($configArray);
             } else {
-                throw new Exception($configArray . ' is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
+                throw new Exception('$config is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
             }
         }
+	else{
+	    throw new Exception('$config cannot be null.');
+	}
     }
     
     /* Checks if the keys of the input configuration matches the keys in the _config array
@@ -211,6 +216,11 @@ class OffAmazonPaymentsService_Client
         }
     }
     
+    public function getParameters()
+    {
+	return trim($this->_parameters);
+    }
+    
     /* GetUserInfo convenience funtion - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
      * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
@@ -275,7 +285,10 @@ class OffAmazonPaymentsService_Client
         $parameters = $this->_setDefaultValues($parameters, $fieldMappings, $requestParameters);
         
 	// Call the signature and Post function to perform the actions. Returns XML in array format
-        $response = $this->_calculateSignatureAndPost($parameters);
+        $parametersString = $this->_calculateSignatureAndParametersToString($parameters);
+	
+	//POST using curl the String converted Parameters
+	$response = $this->_invokePost($parametersString);
 	
 	//send this response as a args to ResponseParser class which will return the object of the class.
         $responseObject = new ResponseParser($response);
@@ -295,8 +308,10 @@ class OffAmazonPaymentsService_Client
         if (empty($requestParameters['merchant_id']))
             $parameters['SellerId'] = $this->_config['merchant_id'];
         
-        if (array_key_exists('platform_id', $fieldMappings) && !empty($this->_config['platform_id']))
+        if (array_key_exists('platform_id', $fieldMappings)) {
+	    if (empty($requestParameters['platform_id']) && !empty($this->_config['platform_id']))
             $parameters[$fieldMappings['platform_id']] = $this->_config['platform_id'];
+	}
 	    
         if (array_key_exists('currency_code', $fieldMappings)) {
             if (!empty($requestParameters['currency_code'])) {
@@ -317,7 +332,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['address_consent_token'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function getOrderReferenceDetails($requestParameters = null)
+    public function getOrderReferenceDetails($requestParameters = array())
     {
         
         $parameters['Action'] = 'GetOrderReferenceDetails';
@@ -348,7 +363,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function setOrderReferenceDetails($requestParameters = null)
+    public function setOrderReferenceDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'SetOrderReferenceDetails';
@@ -379,7 +394,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['amazon_order_reference_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function confirmOrderReference($requestParameters = null)
+    public function confirmOrderReference($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'ConfirmOrderReference';
@@ -404,7 +419,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['cancel_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function cancelOrderReference($requestParameters = null)
+    public function cancelOrderReference($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CancelOrderReference';
@@ -431,7 +446,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function closeOrderReference($requestParameters = null)
+    public function closeOrderReference($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseOrderReference';
@@ -457,7 +472,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function closeAuthorization($requestParameters = null)
+    public function closeAuthorization($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseAuthorization';
@@ -489,7 +504,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function authorize($requestParameters = null)
+    public function authorize($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'Authorize';
@@ -520,7 +535,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['amazon_authorization_id'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function getAuthorizationDetails($requestParameters = null)
+    public function getAuthorizationDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'GetAuthorizationDetails';
@@ -549,7 +564,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function capture($requestParameters = null)
+    public function capture($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'Capture';
@@ -579,7 +594,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function getCaptureDetails($requestParameters = null)
+    public function getCaptureDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'GetCaptureDetails';
@@ -608,7 +623,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function refund($requestParameters = null)
+    public function refund($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'Refund';
@@ -638,7 +653,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function getRefundDetails($requestParameters = null)
+    public function getRefundDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'GetRefundDetails';
@@ -666,7 +681,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function getServiceStatus($requestParameters = null)
+    public function getServiceStatus($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'GetServiceStatus';
@@ -698,7 +713,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function createOrderReferenceForId($requestParameters = null)
+    public function createOrderReferenceForId($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CreateOrderReferenceForId';
@@ -733,7 +748,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function getBillingAgreementDetails($requestParameters = null)
+    public function getBillingAgreementDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'GetBillingAgreementDetails';
@@ -766,7 +781,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function setBillingAgreementDetails($requestParameters = null)
+    public function setBillingAgreementDetails($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'SetBillingAgreementDetails';
@@ -795,7 +810,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function confirmBillingAgreement($requestParameters = null)
+    public function confirmBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'ConfirmBillingAgreement';
@@ -819,7 +834,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function validateBillignAgreement($requestParameters = null)
+    public function validateBillignAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'ValidateBillingAgreement';
@@ -856,7 +871,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['inherit_shipping_address'] [Boolean] - Defaults to true
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function authorizeOnBillingAgreement($requestParameters = null)
+    public function authorizeOnBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'AuthorizeOnBillingAgreement';
@@ -894,7 +909,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function CloseBillingAgreement($requestParameters = null)
+    public function CloseBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseBillingAgreement';
@@ -929,7 +944,7 @@ class OffAmazonPaymentsService_Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function Charge($requestParameters = null)
+    public function Charge($requestParameters = array())
     {
         $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
         
@@ -938,7 +953,6 @@ class OffAmazonPaymentsService_Client
         
         //boolean to check if the input was Amazon Billing Agreement ID
         $ba            = false;
-        $setParameters = array();
         
         $setParameters       = $requestParameters;
         $authorizeParameters = $requestParameters;
@@ -1027,7 +1041,7 @@ class OffAmazonPaymentsService_Client
      * @param Timestamp [String]
      * @param Signature [String]
      */
-    private function _calculateSignatureAndPost($parameters)
+    private function _calculateSignatureAndParametersToString($parameters = array())
     {
         $parameters['AWSAccessKeyId']   = $this->_config['access_key'];
         $parameters['Version']          = self::SERVICE_VERSION;
@@ -1040,8 +1054,10 @@ class OffAmazonPaymentsService_Client
         
         $parameters['Signature'] = $this->_signParameters($parameters);
         $parameters              = $this->_getParametersAsString($parameters);
-        $response                = $this->_invokePost($parameters);
-        return $response;
+	
+	//save these parameters in the _parameters variable so that it can be returned for unit testing.
+	$this->_parameters 	 = $parameters;
+        return $parameters;
     }
     
     /**
