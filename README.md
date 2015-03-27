@@ -17,19 +17,18 @@ Client Takes in parameters in the following format
 ##Parameters List
 
 ####Mandatory Parameters
-| Parameter    | variable name | Values          |
-|--------------|---------------|-----------------|
-| Merchant Id  | `merchant_id` | Default : `null`|
-| Access Key   | `access_key`  | Default : `null`|
-| Secret Key   | `secret_key`  | Default : `null`|
+| Parameter    | variable name | Values          				|
+|--------------|---------------|------------------------------------------------|
+| Merchant Id  | `merchant_id` | Default : `null`				|
+| Access Key   | `access_key`  | Default : `null`				|
+| Secret Key   | `secret_key`  | Default : `null`				|
+| Region       | `region`      | Default : `null`<br>Other: `us`,`de`,`uk`,`jp`	|
 
 ####Optional Parameters
 | Parameter           | Variable name         | Values                                      	   |
 |---------------------|-----------------------|----------------------------------------------------|
-| Region              | `region`              | Default : `null`<br>Other: `us`,`de`,`uk`,`jp`     |
 | Currency Code       | `currency_code`       | Default : `null`<br>Other: `USD`,`EUR`,`GBP`,`JPY` |
 | Environment         | `sandbox`             | Default : `false`<br>Other: `true`	    	   |
-| MWS Auth token      | `mws_auth_token`      | Default : `null` 			    	   |
 | Platform ID         | `platform_id`         | Default : `null` 			    	   |
 | CA Bundle File      | `cabundle_file`       | Default : `null`			    	   |
 | Application Name    | `application_name`    | Default : `null`			    	   |
@@ -98,10 +97,15 @@ Below is an example on how to make the GetOrderReferenceDetails API call:
 ```php
 $requestParameters = array();
 
-// These values are grabbed from the Login and Pay
-// with Amazon Address and Wallet widgets
+// AMAZON_ORDER_REFERENCE_ID is obtained from the Pay with Amazon Address/Wallet widgets
+// ACCESS_TOKEN is obtained from the GET parameter from the URL.
+
+//Required Parameter
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
+
+//Optional Parameter
 $requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
+$requestParameters['mws_auth_token']     	= 'MWS_AUTH_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
@@ -145,12 +149,13 @@ Charge method combines the following API calls
 | Charge Amount       	     | `charge_amount`       	   | yes       | Amount that needs to be captured.                                                                   |
 | Currency code       	     | `currency_code`       	   | no        | if no value is provided, value is taken from the _config array in Client.php      		     |
 | Authorization Reference ID | `authorization_reference_id`| yes       | Unique string to be passed									     |
+| Transaction Timeout 	     | `transaction_timeout`       | no        | Timeout for Authorization - Defaults to 1440 minutes						     |
 | Charge Note         	     | `charge_note`         	   | no        | Note that is sent to the buyer                                                                      |
 | Charge Order ID     	     | `charge_order_id`     	   | no        | custom order ID provided                                                                            |
 | Store Name          	     | `store_name`          	   | no        | Name of the store                                                                                   |
 | Platform ID         	     | `platform_id`         	   | no        | Platform ID of the Solution provider                                                                |
 | Custom Information  	     | `custom_information`  	   | no        | Any custom string                                                                                   |
-| MWS Auth Token      	     | `mws_auth_token`      	   | no        | MWS Auth Token required if API call is made on behalf of the seller                                                                                   |
+| MWS Auth Token      	     | `mws_auth_token`      	   | no        | MWS Auth Token required if API call is made on behalf of the seller                                 |
 
 ```php
 //create an array that will contain the parameters for the Charge API call
@@ -162,6 +167,7 @@ $requestParameters['seller_id'] = null;
 $requestParameters['charge_amount'] = '100.50';
 $requestParameters['currency_code'] = 'USD';
 $requestParameters['authorization_reference_id'] = 'UNIQUE STRING';
+$requestParameters['transaction_timeout'] = 0;
 $requestParameters['charge_note'] = 'Example item note';
 $requestParameters['charge_order_id'] = '1234-Example-Order';
 $requestParameters['Store_Name'] = 'Example Store';
@@ -196,20 +202,20 @@ $client->setClientId(‘YOUR_LWA_CLIENT_ID’);
 //Get the Access Token from the URL
 $access_token = 'ACCESS_TOKEN';
 //calling the function getUserInfo with the access token parameter returns object
-$userInfoObject = $client->getUserInfo($access_token);
+$userInfo = $client->getUserInfo($access_token);
 
 //Buyer name
-$userInfoObject->name;
+$userInfo['name'];
 //Buyer Email
-$userInfoObject->email;
+$userInfo['email'];
 //Buyer User Id
-$userInfoObject->user_id;
+$userInfo['user_id'];
 ```
 ### Response Parsing
 
 Responses are provided in 3 formats
 
-1. XML response
+1. XML/Raw response
 2. Associative array
 3. JSON format
 
@@ -221,7 +227,7 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 //XML response
 $response->toXml();
 
-//Associate array response
+//Associative array response
 $response->toArray();
 
 //JSON response
@@ -232,10 +238,10 @@ $response->toJson();
 ```php
 $ipnHandler = new IpnHandler($headers, $body);
 
-//XML response
+//Raw message response
 $ipnHandler->returnMessage();
 
-//Associate array response
+//Associative array response
 $ipnHandler->toArray();
 
 //JSON response
