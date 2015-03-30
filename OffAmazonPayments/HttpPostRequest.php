@@ -40,6 +40,15 @@ class HttpCurl
     {
         $this->_accessToken = $accesstoken;
     }
+
+    /* Add the common Curl Parameters to the curl handler $ch
+     * also checks for optional parameters if provided in the config
+     * _config['cabundle_file']
+     * _config['proxy_port']
+     * _config['proxy_host']
+     * _config['proxy_username']
+     * _config['proxy_password']
+     */
     
     private  function _commonCurlParams($url,$userAgent)
     {

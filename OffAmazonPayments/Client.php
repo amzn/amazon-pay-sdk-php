@@ -21,6 +21,7 @@ class OffAmazonPaymentsService_Client
 {
     const MWS_CLIENT_VERSION = '2013-01-01';
     const SERVICE_VERSION = '2013-01-01';
+    const MAX_ERROR_RETRY = 3;
     
     //construct User agent string based off of the application_name,application_version,PHP platform
     private $_userAgent = null;
@@ -204,6 +205,15 @@ class OffAmazonPaymentsService_Client
             $this->_config['proxy_user_password'] = $proxy['proxy_user_password'];
     }
     
+    /* Setter for $_mwsServiceUrl
+     * Set the URL to which the post request has to be made for unit testing 
+     */
+    
+    public function setMwsServiceUrl($url)
+    {
+	$this->_mwsServiceUrl = $url;
+    }
+    
     /* Getter
      * Gets the value for the key if the key exists in _config
      */
@@ -215,6 +225,10 @@ class OffAmazonPaymentsService_Client
             throw new Exception('Key ' . $name . ' is either not a part of the configuration array _config or the' . $name . 'does not match the key name in the _config array', 1);
         }
     }
+    
+    /* Getterfor parameters string
+     * Gets the value for the parameters string for unit testing
+     */
     
     public function getParameters()
     {
@@ -1186,7 +1200,8 @@ class OffAmazonPaymentsService_Client
                     $httpCurlRequest = new HttpCurl($this->_config);
                     $httpCurlRequest->_httpPost($this->_mwsServiceUrl, $this->_userAgent, $parameters);
                     $response = $httpCurlRequest->getResponse();
-                    
+		    
+		    //split the API response into Response Body and the other parts of the response into other
                     list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
                     $other = preg_split("/\r\n|\n|\r/", $other);
 		    
@@ -1195,14 +1210,15 @@ class OffAmazonPaymentsService_Client
                         'Status' => (int) $code,
                         'ResponseBody' => $responseBody
                     );
-                    
-                    $statusCode = $response['Status'];
-                    
-                    if ($statusCode == 200) {
+		    
+		    $statusCode = $response['Status'];
+		    
+		    if ($statusCode == 200) {
                         $shouldRetry    = false;
                         $this->_success = true;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
-                        $shouldRetry = ($response['ErrorCode'] === 'RequestThrottled') ? false : true;
+                        
+			$shouldRetry = true;
                         if ($shouldRetry && strtolower($this->_config['handle_throttle'])) {
                             $this->_pauseOnRetry(++$retries, $statusCode);
                         }
@@ -1227,7 +1243,7 @@ class OffAmazonPaymentsService_Client
     /**
      * Exponential sleep on failed request
      * @param retries current retry
-     * @throws OffAmazonPaymentsService_Exception if maximum number of retries has been reached
+     * @throws Exception if maximum number of retries has been reached
      */
     private function _pauseOnRetry($retries, $status)
     {
@@ -1235,10 +1251,7 @@ class OffAmazonPaymentsService_Client
             $delay = (int) (pow(4, $retries) * 100000);
             usleep($delay);
         } else {
-            throw new Exception(array(
-                'Message' => "Maximum number of retry attempts reached :  $retries",
-                'StatusCode' => $status
-            ));
+            throw new Exception('Error Code: '. $status.PHP_EOL.'Maximum number of retry attempts - '. $retries .' reached');
         }
     }
     
