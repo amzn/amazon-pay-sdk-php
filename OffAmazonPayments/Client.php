@@ -848,7 +848,7 @@ class OffAmazonPaymentsService_Client
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function validateBillignAgreement($requestParameters = array())
+    public function validateBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'ValidateBillingAgreement';
@@ -902,7 +902,7 @@ class OffAmazonPaymentsService_Client
             'capture_now' 			=> 'CaptureNow',
             'soft_descriptor' 			=> 'SoftDescriptor',
             'seller_note' 			=> 'SellerNote',
-            'PlatformId' 			=> 'PlatformId',
+            'platform_id' 			=> 'PlatformId',
             'custom_information' 		=> 'SellerOrderAttributes.CustomInformation',
             'seller_order_id' 			=> 'SellerOrderAttributes.SellerOrderId',
             'store_name' 			=> 'SellerOrderAttributes.StoreName',
@@ -984,7 +984,9 @@ class OffAmazonPaymentsService_Client
                 $setParameters['amazon_billing_agreement_id']       = $requestParameters['amazon_reference_id'];
                 $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
                 $confirmParameters['amazon_billing_agreement_id']   = $requestParameters['amazon_reference_id'];
-            }
+            } else{
+		throw new Exception('Invalid Amazon Reference ID');
+	    }
         } else {
             throw new Exception('key amazon_reference_id is null and is a required parameter');
         }
