@@ -35,6 +35,7 @@ class OffAmazonPaymentsService_Client
     
     private $_modePath = null;
     
+    //final URL to where the API parameters POST done, based off the _config['region'] and respective $_mwsServiceUrls
     private $_mwsServiceUrl = null;
     
     private $_mwsServiceUrls = array('eu' => 'mws-eu.amazonservices.com',
@@ -57,6 +58,8 @@ class OffAmazonPaymentsService_Client
 				     'uk' => 'eu',
 				     'us' => 'na',
 				     'jp' => 'jp');
+    
+    //boolean variable to check if the API call was a success
     private $_success = false;
     
     /* Takes user configuration array from the user as input
@@ -340,10 +343,10 @@ class OffAmazonPaymentsService_Client
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
         
         $fieldMappings = array(
-            'merchant_id' => 'SellerId',
+            'merchant_id' 		=> 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
-            'address_consent_token' => 'AddressConsentToken',
-            'mws_auth_token' => 'MWSAuthToken'
+            'address_consent_token' 	=> 'AddressConsentToken',
+            'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
         $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
@@ -543,9 +546,9 @@ class OffAmazonPaymentsService_Client
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
         
         $fieldMappings = array(
-            'merchant_id' => 'SellerId',
-            'amazon_authorization_id' => 'AmazonAuthorizationId',
-            'mws_auth_token' => 'MWSAuthToken'
+            'merchant_id' 		=> 'SellerId',
+            'amazon_authorization_id' 	=> 'AmazonAuthorizationId',
+            'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
         $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
