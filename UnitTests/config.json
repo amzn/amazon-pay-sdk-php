@@ -1,0 +1,15 @@
+{
+   "merchant_id":"A4LXPEO191LC1",
+   "access_Key":"AKIAIRCFYF5PZU5KSJTA",
+   "secret_Key":"zjMQNvckLHGv+HIRMwr96MVhBdvvuppnl4\/FIPuV",
+   "currency_Code":"USD",
+   "client_Id":"amzn1.application-oa2-client.9c45c0aa4011425192e097f98caf3381",
+   "region":"na",
+   "sandbox":true,
+   "application_Name":"sdk testing",
+   "application_Version":"1.0",
+   "proxy_Host":null,
+   "proxy_Port":-1,
+   "proxy_Username":null,
+   "proxy_Password":null
+}

@@ -113,7 +113,7 @@ class IpnHandler
         $json_error = json_last_error();
 
         if ($json_error != 0) {
-            $errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $json;
+            $errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $this->_snsMessage;
             throw new Exception($errorMsg);
         }
     }
