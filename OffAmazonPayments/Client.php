@@ -1013,11 +1013,11 @@ class OffAmazonPaymentsService_Client
             
         } elseif ($ba) {
             //Get the Billing Agreement details and feed the response object to the ResponseParser
-            $response = $this->getBillingAgreementDetails($setParameters);
+            $responseObj = $this->getBillingAgreementDetails($setParameters);
             
             // Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
             // $baStatus is an aray containing the State of the Billing Agreement
-            $baStatus = $response->GetBillingAgreementDetailsStatus($response->toXml());
+            $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
             
             if ($baStatus['State'] != 'Open') {
                 $response = $this->SetBillingAgreementDetails($setParameters);
@@ -1026,6 +1026,10 @@ class OffAmazonPaymentsService_Client
                     $response = $this->ConfirmBillingAgreement($confirmParameters);
                 }
             }
+	    //check the Billing agreement status again before making the Authorization.
+	    $responseObj = $this->getBillingAgreementDetails($setParameters);
+            $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
+	    
             if ($this->_success && $baStatus['State'] === 'Open') {
                 $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
             }
