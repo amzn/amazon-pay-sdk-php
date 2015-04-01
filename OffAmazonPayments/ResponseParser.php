@@ -1,4 +1,4 @@
-<?php
+<?php namespace OffAmazonPayments;
 
 class ResponseParser
 {
