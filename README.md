@@ -44,7 +44,9 @@ Client Takes in parameters in the following format
 
 Setting configuration while instantiating the OffAmazonPaymentsService_Client object
 ```php
-require 'Client.php'
+<?php namespace OffAmazonPayments;
+
+require_once 'Client.php'
 // Your Login and Pay with Amazon keys are
 // available in your Seller Central account
 
@@ -65,6 +67,8 @@ $client = new OffAmazonPaymentsService_Client($config);
 
 The sandbox parameter is defaulted to false if not specified:
 ```php
+<?php namespace OffAmazonPayments;
+
 $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'access_key'    => 'YOUR_ACCESS_KEY',
                 'secret_key'    => 'YOUR_SECRET_KEY',
@@ -95,6 +99,8 @@ $client->setProxy($proxy);
 Below is an example on how to make the GetOrderReferenceDetails API call:
 
 ```php
+<?php namespace OffAmazonPayments;
+
 $requestParameters = array();
 
 // AMAZON_ORDER_REFERENCE_ID is obtained from the Pay with Amazon Address/Wallet widgets
@@ -120,6 +126,8 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 Add the below code into any file and set the URL to the file location in Merchant/Integrator URL by accessing Integration Settings page in the Settings tab.
 
 ```php
+<?php namespace OffAmazonPayments;
+
 require_once 'IpnHandler.php';
 
 //get the IPN headers and Message body
@@ -190,6 +198,8 @@ $response = $client->charge($requestParameters);
 | LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in _config array                        	     |
 
 ```php
+<?php namespace OffAmazonPayments;
+
 //config array parameters that need to be instantiated
 $config = array('client_id' => 'YOUR_LWA_CLIENT_ID',
                 'region'    => 'REGION' );
