@@ -42,9 +42,9 @@ Client Takes in parameters in the following format
 
 ## Setting Configuration
 
-Setting configuration while instantiating the OffAmazonPaymentsService_Client object
+Setting configuration while instantiating the Client object
 ```php
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 require_once 'Client.php'
 // Your Login and Pay with Amazon keys are
@@ -61,13 +61,13 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
 $config = 'PATH_TO_JSON_FILE';
 
 //Instantiate the client class with the config type
-$client = new OffAmazonPaymentsService_Client($config);
+$client = new Client($config);
 ```
 ### Testing in Sandbox Mode
 
 The sandbox parameter is defaulted to false if not specified:
 ```php
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'access_key'    => 'YOUR_ACCESS_KEY',
@@ -76,7 +76,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
                 'region'     	=> 'REGION',
                 'sandbox'       => true );
 
-$client = new OffAmazonPaymentsService_Client($config);
+$client = new Client($config);
 
 //Also you can set the sandbox variable in the _config() array of the Client class by 
 
@@ -99,7 +99,7 @@ $client->setProxy($proxy);
 Below is an example on how to make the GetOrderReferenceDetails API call:
 
 ```php
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 $requestParameters = array();
 
@@ -126,7 +126,7 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 Add the below code into any file and set the URL to the file location in Merchant/Integrator URL by accessing Integration Settings page in the Settings tab.
 
 ```php
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 require_once 'IpnHandler.php';
 
@@ -198,13 +198,13 @@ $response = $client->charge($requestParameters);
 | LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in _config array                        	     |
 
 ```php
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 //config array parameters that need to be instantiated
 $config = array('client_id' => 'YOUR_LWA_CLIENT_ID',
                 'region'    => 'REGION' );
 
-$client = new OffAmazonPaymentsService_Client($config);
+$client = new Client($config);
 
 //Client ID can also be set using the setter function setClientId($client_id)
 $client->setClientId(‘YOUR_LWA_CLIENT_ID’);
