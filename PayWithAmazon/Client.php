@@ -1,9 +1,9 @@
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
 
-class OffAmazonPaymentsService_Client
+class Client
 {
     const MWS_CLIENT_VERSION = '1.0.0';
     const SERVICE_VERSION = '2013-01-01';

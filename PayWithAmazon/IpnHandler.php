@@ -1,4 +1,4 @@
-<?php namespace OffAmazonPayments;
+<?php namespace PayWithAmazon;
 /**
  * Class IPN_Handler
  * Takes headers and body of the IPN message as input in the constructor
