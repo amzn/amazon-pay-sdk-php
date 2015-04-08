@@ -1,7 +1,7 @@
 <?php namespace PayWithAmazon;
 
-require_once '../PayWithAmazon/PayWithAmazon/Client.php';
-require_once '../PayWithAmazon/PayWithAmazon/ResponseParser.php';
+require_once '../PayWithAmazon/Client.php';
+require_once '../PayWithAmazon/ResponseParser.php';
 require_once 'Signature.php';
 
 class ClientTest extends \PHPUnit_Framework_TestCase
