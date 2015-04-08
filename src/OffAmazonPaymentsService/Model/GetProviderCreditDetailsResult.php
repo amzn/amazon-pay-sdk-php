@@ -19,71 +19,74 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_GetProviderCreditDetailsResult
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>ProviderCreditDetails: OffAmazonPaymentsService_Model_ProviderCreditDetails</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_GetProviderCreditDetailsResult extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_GetProviderCreditDetailsResult
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>ProviderCreditDetails: OffAmazonPaymentsService_Model_ProviderCreditDetails</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'ProviderCreditDetails' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditDetails'),
-
+        $this->_fields = array(
+            
+            'ProviderCreditDetails' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditDetails'
+            )
+            
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the ProviderCreditDetails.
-     * 
-     * @return ProviderCreditDetails ProviderCreditDetails
+     *
+     * @return OffAmazonPaymentsService_Model_ProviderCreditDetails ProviderCreditDetails
      */
-    public function getProviderCreditDetails() 
+    public function getProviderCreditDetails()
     {
         return $this->_fields['ProviderCreditDetails']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderCreditDetails.
-     * 
-     * @param ProviderCreditDetails ProviderCreditDetails
+     *
+     * @param OffAmazonPaymentsService_Model_ProviderCreditDetails ProviderCreditDetails
      * @return void
      */
-    public function setProviderCreditDetails($value) 
+    public function setProviderCreditDetails($value)
     {
         $this->_fields['ProviderCreditDetails']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the ProviderCreditDetails  and returns this instance
-     * 
-     * @param ProviderCreditDetails $value ProviderCreditDetails
+     *
+     * @param OffAmazonPaymentsService_Model_ProviderCreditDetails $value ProviderCreditDetails
      * @return OffAmazonPaymentsService_Model_GetProviderCreditDetailsResult instance
      */
     public function withProviderCreditDetails($value)
@@ -91,20 +94,17 @@ class OffAmazonPaymentsService_Model_GetProviderCreditDetailsResult extends OffA
         $this->setProviderCreditDetails($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderCreditDetails  is set
-     * 
+     *
      * @return bool true if ProviderCreditDetails property is set
      */
     public function isSetProviderCreditDetails()
     {
         return !is_null($this->_fields['ProviderCreditDetails']['FieldValue']);
-
+        
     }
-
-
-
-
+    
 }

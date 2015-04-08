@@ -86,4 +86,3 @@ abstract class OffAmazonPaymentsNotifications_NotificationImpl
         return $this->_notificationMetadata;
     }
 }
-?>

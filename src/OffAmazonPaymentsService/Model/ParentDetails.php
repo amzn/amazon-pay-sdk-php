@@ -22,10 +22,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
 
 /**
  * OffAmazonPaymentsService_Model_ParentDetails
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>Id: string</li>
  * <li>Type: string</li>
  *
@@ -33,21 +33,21 @@ require_once 'OffAmazonPaymentsService/Model.php';
  */
 class OffAmazonPaymentsService_Model_ParentDetails extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ParentDetails
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>Id: string</li>
      * <li>Type: string</li>
      *
      * </ul>
      */
-    public function __construct ($data = null)
+    public function __construct($data = null)
     {
         $this->_fields = array(
             'Id' => array(
@@ -61,93 +61,93 @@ class OffAmazonPaymentsService_Model_ParentDetails extends OffAmazonPaymentsServ
         );
         parent::__construct($data);
     }
-
+    
     /**
      * Gets the value of the Id property.
-     * 
+     *
      * @return string Id
      */
-    public function getId ()
+    public function getId()
     {
         return $this->_fields['Id']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the Id property.
-     * 
+     *
      * @param string Id
      * @return this instance
      */
-    public function setId ($value)
+    public function setId($value)
     {
         $this->_fields['Id']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the Id and returns this instance
-     * 
+     *
      * @param string $value Id
      * @return OffAmazonPaymentsService_Model_ParentDetails instance
      */
-    public function withId ($value)
+    public function withId($value)
     {
         $this->setId($value);
         return $this;
     }
-
+    
     /**
      * Checks if Id is set
-     * 
+     *
      * @return bool true if Id  is set
      */
-    public function isSetId ()
+    public function isSetId()
     {
-        return ! is_null($this->_fields['Id']['FieldValue']);
+        return !is_null($this->_fields['Id']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the Type property.
-     * 
+     *
      * @return string Type
      */
-    public function getType ()
+    public function getType()
     {
         return $this->_fields['Type']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the Type property.
-     * 
+     *
      * @param string Type
      * @return this instance
      */
-    public function setType ($value)
+    public function setType($value)
     {
         $this->_fields['Type']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the Type and returns this instance
-     * 
+     *
      * @param string $value Type
      * @return OffAmazonPaymentsService_Model_ParentDetails instance
      */
-    public function withType ($value)
+    public function withType($value)
     {
         $this->setType($value);
         return $this;
     }
-
+    
     /**
      * Checks if Type is set
-     * 
+     *
      * @return bool true if Type  is set
      */
-    public function isSetType ()
+    public function isSetType()
     {
-        return ! is_null($this->_fields['Type']['FieldValue']);
+        return !is_null($this->_fields['Type']['FieldValue']);
     }
+    
 }
-?>

@@ -149,7 +149,4 @@ class OffAmazonPaymentsNotifications_Model_ProviderCreditReversalSummary extends
         return !is_null($this->fields['ProviderCreditReversalId']['FieldValue']);
     }
 
-
-
-
 }

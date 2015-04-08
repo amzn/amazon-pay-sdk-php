@@ -66,4 +66,3 @@ class IpnNotificationParser
         $ipnMsg->setNotificationMetadata($ipnMetadata);
     }
 }
-?>

@@ -60,6 +60,8 @@ require_once 'OffAmazonPaymentsNotifications/Model/SolutionProviderMerchantNotif
 require_once 'OffAmazonPaymentsNotifications/Model/MerchantRegistrationDetails.php';
 require_once 'OffAmazonPaymentsNotifications/Model/SolutionProviderOptions.php';
 require_once 'OffAmazonPaymentsNotifications/Model/SolutionProviderOption.php';
+require_once 'OffAmazonPaymentsService/MerchantValuesBuilder.php';
+require_once 'OffAmazonPayments/HttpRequest/Impl/HttpRequestFactoryCurlImpl.php';
 
 /**
  * Implementation of the OffAmazonPaymentsNotifications
@@ -76,16 +78,21 @@ class OffAmazonPaymentsNotifications_Client
      * @var SnsMessageValidator
      */
     private $_snsMessageValidator = null;
-    
+
     /**
      * Create an instance of the client class
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct($config = null)
     {
+        $merchantValues = OffAmazonPaymentsService_MerchantValuesBuilder::create($config)->build();
         $this->_snsMessageValidator 
-            = new SnsMessageValidator(new OpenSslVerifySignature());  
+            = new SnsMessageValidator(
+                new OpenSslVerifySignature($merchantValues->getCnName(), 
+                new HttpRequestFactoryCurlImpl($merchantValues)
+                )
+            );  
     }
     
     /**
@@ -114,4 +121,3 @@ class OffAmazonPaymentsNotifications_Client
         return XmlNotificationParser::parseIpnMessage($ipnMessage);
     }
 }
-?>

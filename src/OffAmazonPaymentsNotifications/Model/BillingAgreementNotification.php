@@ -146,4 +146,3 @@ class OffAmazonPaymentsNotifications_Model_BillingAgreementNotification extends 
         return $xml;
     }
 }
-?>

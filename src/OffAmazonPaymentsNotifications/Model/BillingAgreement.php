@@ -352,4 +352,3 @@ class OffAmazonPaymentsNotifications_Model_BillingAgreement extends OffAmazonPay
         return ! is_null($this->fields['BillingAgreementConsent']['FieldValue']);
     }
 }
-?>

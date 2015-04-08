@@ -16,164 +16,223 @@
  */
 
 
-require_once 'OffAmazonPaymentsService.config.inc.php';
-require_once 'RegionSpecificProperties.php';
-
-define('MERCHANT_ID', isset($merchantId) ? $merchantId : null);
-define('ACCESS_KEY', isset($accessKey) ? $accessKey : null);
-define('SECRET_KEY', isset($secretKey) ? $secretKey : null);
-define('APPLICATION_NAME', isset($applicationName) ? $applicationName : null);
-define('APPLICATION_VERSION', isset($applicationVersion) ? $applicationVersion : null);
-define('REGION', isset($region) ? $region : null);
-define('ENVIRONMENT', isset($environment) ? $environment : null);
-define('SERVICE_URL', isset($serviceUrl) ? $serviceUrl : null);
-define('WIDGET_URL', isset($widgetUrl) ? $widgetUrl : null);
-define('CA_BUNDLEFILE', isset($caBundleFile) ? $caBundleFile : null);
-define('CLIENT_ID', isset($clientId) ? $clientId : null);
+require_once 'OffAmazonPaymentsService/OffAmazonPaymentsService.config.inc.php';
+require_once 'OffAmazonPaymentsService/RegionSpecificProperties.php';
+require_once 'OffAmazonPayments/OffAmazonPaymentsServiceUtils.php';
 
 class OffAmazonPaymentsService_MerchantValues
 {
-    private $_merchantId;
-    private $_accessKey;
-    private $_secretKey;
-    private $_serviceUrl;
-    private $_widgetUrl;
-    private $_applicationName;
-    private $_applicationVersion;
-    private $_region;
-    private $_environment;
-    private $_caBundleFile;
-    private $_regionSpecificProperties;
-    private $_clientId;
-    
-    public function __construct(
-        $merchantId, 
-        $accessKey, 
-        $secretKey, 
-        $applicationName, 
-        $applicationVersion,
-        $region,
-        $environment,
-        $serviceUrl,
-        $widgetUrl,
-        $caBundleFile,
-    	$clientId
-    ) {
-        $this->_merchantId = $merchantId;
-        $this->_accessKey = $accessKey;
-        $this->_secretKey = $secretKey;
-        $this->_applicationName = $applicationName;
-        $this->_applicationVersion = $applicationVersion;
-        $this->_region = strtoupper($region);
-        $this->_environment = strtoupper($environment);
-        $this->_caBundleFile = $caBundleFile;
-        $this->_serviceUrl = $serviceUrl;
-        $this->_widgetUrl = $widgetUrl;
-        $this->_regionSpecificProperties = new OffAmazonPaymentsService_RegionSpecificProperties();
-        $this->_clientId = $clientId;
+    private $_config;
 
-        if ($this->_merchantId == "") {
+    private $_regionSpecificProperties;
+
+    private $_utils;
+
+    public function __construct($config, $regionSpecificProperties) {
+        if (!isset($config)) {
+            throw new InvalidArgumentException("no configuration specificed, please set variables with $config variable");
+        }
+
+        if (!isset($regionSpecificProperties)) {
+            throw new InvalidArgumentException("no regionSpecificProperties object injected, check caller of OffAmazonPaymentsService_MerchantValues");
+        }
+
+        $this->_config = $config;
+        $this->_regionSpecificProperties = $regionSpecificProperties;
+
+        $this->_utils = new OffAmazonPaymentsServiceUtils();
+
+        if (empty($this->_config['merchantId'])) {
             throw new InvalidArgumentException("merchantId not set in the properties file");
         }
 
-        if ($this->_accessKey == "") {
+        if (empty($this->_config['accessKey'])) {
             throw new InvalidArgumentException("accessKey not set in the properties file");
         }
         
-        if ($this->_secretKey == "") {
+        if (empty($this->_config['secretKey'])) {
             throw new InvalidArgumentException("secretKey not set in the properties file");
         }
 
-        if ($this->_applicationName == "") {
+        if (empty($this->_config['cnName'])) {
+            throw new InvalidArgumentException("cnName not set in the properties file");
+        }
+
+        if (empty($this->_config['applicationName'])) {
             throw new InvalidArgumentException(
                 "applicationName not set in the properties file"
             );
         }
 
-        if ($this->_applicationVersion == "") {
+        if (empty($this->_config['applicationVersion'])) {
             throw new InvalidArgumentException(
                 "applicationVersion not set in the properties file"
             );
         }
         
-        if ($this->_region == "") {
+        if (empty($this->_config['region'])) {
             throw new InvalidArgumentException("region not set in the properties file");
         } 
-        $this->_region = $this->_validateRegion($this->_region);
+
+        $this->_config['region'] = $this->_validateRegion($this->_config['region']);
         
-        if ($this->_environment == "") {
+        if (empty($this->_config['environment'])) {
             throw new InvalidArgumentException("environment not set in the properties file");
         }
-        $this->_environment = $this->_validateEnvironment($this->_environment);
+        $this->_config['environment'] = $this->_validateEnvironment($this->_config['environment']);
 
-        if ($this->_caBundleFile == "") {
-            $this->_caBundleFile = null;
+        if (empty($this->_config['caBundleFile'])) {
+            $this->_config['caBundleFile'] = null;
+        }
+
+        if (empty($this->_config['serviceUrl'])) {
+            $this->_config['serviceUrl'] = null;
+        }
+
+        if (empty($this->_config['widgetUrl'])) {
+            $this->_config['widgetUrl'] = null;
+        }
+
+        if (empty($this->_config['proxyHost'])) {
+            $this->_config['proxyHost'] = null;
+        }
+
+        if (empty($this->_config['proxyPort'])) {
+            $this->_config['proxyPort'] = null;
+        }
+
+        if (empty($this->_config['proxyUsername'])) {
+            $this->_config['proxyUsername'] = null;
+        }
+
+        if (empty($this->_config['proxyPassword'])) {
+            $this->_config['proxyPassword'] = null;
         }
     }
 
     public function getMerchantId()
     {
-        return $this->_merchantId;
+        return $this->_config['merchantId'];
     }
 
     public function getAccessKey()
     {
-        return $this->_accessKey;
+        return $this->_config['accessKey'];
     }
 
     public function getSecretKey()
     {
-        return $this->_secretKey;
+        return $this->_config['secretKey'];
     }
 
     public function getServiceUrl()
     {
-        return $this->_regionSpecificProperties->getServiceUrlFor($this->_region, $this->_environment, $this->_serviceUrl);
+        return $this->_regionSpecificProperties->getServiceUrlFor(
+            $this->getRegion(), 
+            $this->getEnvironment(), 
+            $this->_config['serviceUrl']
+        );
     }
     
     public function getWidgetUrl()
     {
-    	return $this->_regionSpecificProperties->getWidgetUrlFor($this->_region, $this->_environment, $this->_merchantId, $this->_widgetUrl);
+        return $this->_regionSpecificProperties->getWidgetUrlFor(
+            $this->getRegion(), 
+            $this->getEnvironment(),
+            $this->getMerchantId(),
+            $this->_config['widgetUrl']
+        );
     }
     
     public function getCurrency()
     {
-    	return $this->_regionSpecificProperties->getCurrencyFor($this->_region);
+        return $this->_regionSpecificProperties->getCurrencyFor($this->getRegion());
     }
     
     public function getApplicationName()
     {
-        return $this->_applicationName;
+        return $this->_config['applicationName'];
     }
 
     public function getApplicationVersion()
     {
-        return $this->_applicationVersion;
+        return $this->_config['applicationVersion'];
     }
     
     public function getRegion()
     {
-        return $this->_region;
+        return $this->_config['region'];
     }
     
     public function getEnvironment()
     {
-        return $this->_environment;
+        return $this->_config['environment'];
     }
 
     public function getCaBundleFile()
     {
-        return $this->_caBundleFile;
+        return $this->_config['caBundleFile'];
     }
     
     public function getClientId()
     {
-    	return $this->_clientId;
+        return $this->_config['clientId'];
     }
     
+    public function getProxyUsername()
+    {
+        return $this->_config['proxyUsername'];
+    }
+
+    public function getProxyPassword()
+    {
+        return $this->_config['proxyPassword'];
+    }
+
+    public function getProxyHost()
+    {
+        return $this->_config['proxyHost'];
+    }
+
+    public function getProxyPort()
+    {
+        return $this->_config['proxyPort'];
+    }
+
+    public function getCnName()
+    {
+        return $this->_config['cnName'];
+    }
+
+    public function isProxyConfigured() {
+        $host = $this->getProxyHost();
+        $port = $this->getProxyPort();
+        return !empty($host) && !empty($port);
+    }
+
+    public function isProxyAuthenticationConfigured() {
+        $user = $this->getProxyUsername();
+        $pw = $this->getProxyPassword();
+        return $this->isProxyConfigured() && 
+            !empty($user) && 
+            !empty($pw);
+    }
+
+    public function isCaBundleConfigured() {
+        $file = $this->getCaBundleFile();
+        return !empty($file); 
+    }
+
+    public function getUserAgentString() {
+        return $this->_utils->buildUserAgentString(
+            $this->getApplicationName(),
+            $this->getApplicationVersion()
+        );
+    }
+
     private function _validateRegion($region)
     {
-    	include_once 'Regions.php';
+        include_once 'Regions.php';
         return self::_getValueForConstant($region, new OffAmazonPaymentsService_Regions());
     }
     
@@ -186,7 +245,7 @@ class OffAmazonPaymentsService_MerchantValues
     private static function _getValueForConstant($constant, $valuesClass)
     {
         $rc = new ReflectionClass($valuesClass);
-        $value = $rc->getConstant($constant);
+        $value = $rc->getConstant(strtoupper($constant));
         if ($value == null) {
             $allowedValues = implode(",", array_keys($rc->getConstants()));
             throw new InvalidArgumentException(
@@ -196,24 +255,4 @@ class OffAmazonPaymentsService_MerchantValues
         
         return $value;
     }
-    
-    public static function withRegionSpecificProperties(
-    		$merchantId, 
-    		$accessKey, 
-    		$secretKey, 
-    		$applicationName, 
-    		$applicationVersion, 
-    		$region, 
-    		$environment, 
-    		$serviceUrl, 
-    		$widgetUrl,
-    		$caBundleFile, 
-    		$regionSpecificProperties,
-			$clientId)
-    {
-    	$instance = new self($merchantId, $accessKey, $secretKey, $applicationName, $applicationVersion, $region, $environment, $serviceUrl, $widgetUrl, $caBundleFile, $clientId);
-    	$instance->_regionSpecificProperties = $regionSpecificProperties;
-    	return $instance;
-    }
 }
-?>

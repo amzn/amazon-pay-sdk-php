@@ -162,4 +162,3 @@ class SnsMessageValidator
         return implode("\n", $signatureFields) . "\n";
     }
 }
-?>

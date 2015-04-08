@@ -38,4 +38,3 @@ interface VerifySignature
      */
     function verifySignatureIsCorrect($data, $signature, $certificatePath);
 }
-?>

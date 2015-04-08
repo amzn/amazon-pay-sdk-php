@@ -19,16 +19,16 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ProviderCreditReversalDetails
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>AmazonProviderCreditReversalId: string</li>
  * <li>SellerId: string</li>
  * <li>ProviderId: string</li>
@@ -39,18 +39,18 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>CreditReversalNote: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ProviderCreditReversalDetails
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>AmazonProviderCreditReversalId: string</li>
      * <li>SellerId: string</li>
      * <li>ProviderId: string</li>
@@ -64,48 +64,72 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'AmazonProviderCreditReversalId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'SellerId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'ProviderId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'CreditReversalReferenceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-
-        'CreditReversalAmount' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Price'),
-
-        'CreationTimestamp' => array('FieldValue' => null, 'FieldType' => 'string'),
-
-        'CreditReversalStatus' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Status'),
-
-        'CreditReversalNote' => array('FieldValue' => null, 'FieldType' => 'string'),
+        $this->_fields = array(
+            'AmazonProviderCreditReversalId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'SellerId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'ProviderId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'CreditReversalReferenceId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            
+            'CreditReversalAmount' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_Price'
+            ),
+            
+            'CreationTimestamp' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            
+            'CreditReversalStatus' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_Status'
+            ),
+            
+            'CreditReversalNote' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the AmazonProviderCreditReversalId property.
-     * 
+     *
      * @return string AmazonProviderCreditReversalId
      */
-    public function getAmazonProviderCreditReversalId() 
+    public function getAmazonProviderCreditReversalId()
     {
         return $this->_fields['AmazonProviderCreditReversalId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AmazonProviderCreditReversalId property.
-     * 
+     *
      * @param string AmazonProviderCreditReversalId
      * @return this instance
      */
-    public function setAmazonProviderCreditReversalId($value) 
+    public function setAmazonProviderCreditReversalId($value)
     {
         $this->_fields['AmazonProviderCreditReversalId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the AmazonProviderCreditReversalId and returns this instance
-     * 
+     *
      * @param string $value AmazonProviderCreditReversalId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -114,43 +138,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setAmazonProviderCreditReversalId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if AmazonProviderCreditReversalId is set
-     * 
+     *
      * @return bool true if AmazonProviderCreditReversalId  is set
      */
     public function isSetAmazonProviderCreditReversalId()
     {
         return !is_null($this->_fields['AmazonProviderCreditReversalId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the SellerId property.
-     * 
+     *
      * @return string SellerId
      */
-    public function getSellerId() 
+    public function getSellerId()
     {
         return $this->_fields['SellerId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the SellerId property.
-     * 
+     *
      * @param string SellerId
      * @return this instance
      */
-    public function setSellerId($value) 
+    public function setSellerId($value)
     {
         $this->_fields['SellerId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the SellerId and returns this instance
-     * 
+     *
      * @param string $value SellerId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -159,43 +183,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setSellerId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if SellerId is set
-     * 
+     *
      * @return bool true if SellerId  is set
      */
     public function isSetSellerId()
     {
         return !is_null($this->_fields['SellerId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the ProviderId property.
-     * 
+     *
      * @return string ProviderId
      */
-    public function getProviderId() 
+    public function getProviderId()
     {
         return $this->_fields['ProviderId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderId property.
-     * 
+     *
      * @param string ProviderId
      * @return this instance
      */
-    public function setProviderId($value) 
+    public function setProviderId($value)
     {
         $this->_fields['ProviderId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderId and returns this instance
-     * 
+     *
      * @param string $value ProviderId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -204,43 +228,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setProviderId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderId is set
-     * 
+     *
      * @return bool true if ProviderId  is set
      */
     public function isSetProviderId()
     {
         return !is_null($this->_fields['ProviderId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the CreditReversalReferenceId property.
-     * 
+     *
      * @return string CreditReversalReferenceId
      */
-    public function getCreditReversalReferenceId() 
+    public function getCreditReversalReferenceId()
     {
         return $this->_fields['CreditReversalReferenceId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreditReversalReferenceId property.
-     * 
+     *
      * @param string CreditReversalReferenceId
      * @return this instance
      */
-    public function setCreditReversalReferenceId($value) 
+    public function setCreditReversalReferenceId($value)
     {
         $this->_fields['CreditReversalReferenceId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the CreditReversalReferenceId and returns this instance
-     * 
+     *
      * @param string $value CreditReversalReferenceId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -249,43 +273,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setCreditReversalReferenceId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreditReversalReferenceId is set
-     * 
+     *
      * @return bool true if CreditReversalReferenceId  is set
      */
     public function isSetCreditReversalReferenceId()
     {
         return !is_null($this->_fields['CreditReversalReferenceId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the CreditReversalAmount.
-     * 
+     *
      * @return Price CreditReversalAmount
      */
-    public function getCreditReversalAmount() 
+    public function getCreditReversalAmount()
     {
         return $this->_fields['CreditReversalAmount']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreditReversalAmount.
-     * 
+     *
      * @param Price CreditReversalAmount
      * @return void
      */
-    public function setCreditReversalAmount($value) 
+    public function setCreditReversalAmount($value)
     {
         $this->_fields['CreditReversalAmount']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the CreditReversalAmount  and returns this instance
-     * 
+     *
      * @param Price $value CreditReversalAmount
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -294,44 +318,44 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setCreditReversalAmount($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreditReversalAmount  is set
-     * 
+     *
      * @return bool true if CreditReversalAmount property is set
      */
     public function isSetCreditReversalAmount()
     {
         return !is_null($this->_fields['CreditReversalAmount']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the CreationTimestamp property.
-     * 
+     *
      * @return string CreationTimestamp
      */
-    public function getCreationTimestamp() 
+    public function getCreationTimestamp()
     {
         return $this->_fields['CreationTimestamp']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreationTimestamp property.
-     * 
+     *
      * @param string CreationTimestamp
      * @return this instance
      */
-    public function setCreationTimestamp($value) 
+    public function setCreationTimestamp($value)
     {
         $this->_fields['CreationTimestamp']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the CreationTimestamp and returns this instance
-     * 
+     *
      * @param string $value CreationTimestamp
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -340,43 +364,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setCreationTimestamp($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreationTimestamp is set
-     * 
+     *
      * @return bool true if CreationTimestamp  is set
      */
     public function isSetCreationTimestamp()
     {
         return !is_null($this->_fields['CreationTimestamp']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the CreditReversalStatus.
-     * 
+     *
      * @return Status CreditReversalStatus
      */
-    public function getCreditReversalStatus() 
+    public function getCreditReversalStatus()
     {
         return $this->_fields['CreditReversalStatus']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreditReversalStatus.
-     * 
+     *
      * @param Status CreditReversalStatus
      * @return void
      */
-    public function setCreditReversalStatus($value) 
+    public function setCreditReversalStatus($value)
     {
         $this->_fields['CreditReversalStatus']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the CreditReversalStatus  and returns this instance
-     * 
+     *
      * @param Status $value CreditReversalStatus
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -385,44 +409,44 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setCreditReversalStatus($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreditReversalStatus  is set
-     * 
+     *
      * @return bool true if CreditReversalStatus property is set
      */
     public function isSetCreditReversalStatus()
     {
         return !is_null($this->_fields['CreditReversalStatus']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the CreditReversalNote property.
-     * 
+     *
      * @return string CreditReversalNote
      */
-    public function getCreditReversalNote() 
+    public function getCreditReversalNote()
     {
         return $this->_fields['CreditReversalNote']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreditReversalNote property.
-     * 
+     *
      * @param string CreditReversalNote
      * @return this instance
      */
-    public function setCreditReversalNote($value) 
+    public function setCreditReversalNote($value)
     {
         $this->_fields['CreditReversalNote']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the CreditReversalNote and returns this instance
-     * 
+     *
      * @param string $value CreditReversalNote
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails instance
      */
@@ -431,19 +455,16 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalDetails extends OffAm
         $this->setCreditReversalNote($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreditReversalNote is set
-     * 
+     *
      * @return bool true if CreditReversalNote  is set
      */
     public function isSetCreditReversalNote()
     {
         return !is_null($this->_fields['CreditReversalNote']['FieldValue']);
     }
-
-
-
-
+    
 }

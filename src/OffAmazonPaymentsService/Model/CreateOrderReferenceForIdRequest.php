@@ -18,10 +18,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
 
 /**
  * OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>Id: string</li>
  * <li>SellerId: string</li>
  * <li>IdType: string</li>
@@ -33,15 +33,15 @@ require_once 'OffAmazonPaymentsService/Model.php';
  */
 class OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>Id: string</li>
      * <li>SellerId: string</li>
      * <li>IdType: string</li>
@@ -51,7 +51,7 @@ class OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest extends Of
      *
      * </ul>
      */
-    public function __construct ($data = null)
+    public function __construct($data = null)
     {
         $this->_fields = array(
             'Id' => array(
@@ -78,274 +78,310 @@ class OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest extends Of
             'OrderReferenceAttributes' => array(
                 'FieldValue' => null,
                 'FieldType' => 'OffAmazonPaymentsService_Model_OrderReferenceAttributes'
+            ),
+            
+            'MWSAuthToken' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
             )
-        )
-        ;
+        );
         parent::__construct($data);
     }
-
+    
     /**
      * Gets the value of the Id property.
-     * 
+     *
      * @return string Id
      */
-    public function getId ()
+    public function getId()
     {
         return $this->_fields['Id']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the Id property.
-     * 
+     *
      * @param string Id
      * @return this instance
      */
-    public function setId ($value)
+    public function setId($value)
     {
         $this->_fields['Id']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the Id and returns this instance
-     * 
+     *
      * @param string $value Id
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withId ($value)
+    public function withId($value)
     {
         $this->setId($value);
         return $this;
     }
-
+    
     /**
      * Checks if Id is set
-     * 
+     *
      * @return bool true if Id  is set
      */
-    public function isSetId ()
+    public function isSetId()
     {
-        return ! is_null($this->_fields['Id']['FieldValue']);
+        return !is_null($this->_fields['Id']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the SellerId property.
-     * 
+     *
      * @return string SellerId
      */
-    public function getSellerId ()
+    public function getSellerId()
     {
         return $this->_fields['SellerId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the SellerId property.
-     * 
+     *
      * @param string SellerId
      * @return this instance
      */
-    public function setSellerId ($value)
+    public function setSellerId($value)
     {
         $this->_fields['SellerId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the SellerId and returns this instance
-     * 
+     *
      * @param string $value SellerId
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withSellerId ($value)
+    public function withSellerId($value)
     {
         $this->setSellerId($value);
         return $this;
     }
-
+    
     /**
      * Checks if SellerId is set
-     * 
+     *
      * @return bool true if SellerId  is set
      */
-    public function isSetSellerId ()
+    public function isSetSellerId()
     {
-        return ! is_null($this->_fields['SellerId']['FieldValue']);
+        return !is_null($this->_fields['SellerId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the IdType property.
-     * 
+     *
      * @return string IdType
      */
-    public function getIdType ()
+    public function getIdType()
     {
         return $this->_fields['IdType']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the IdType property.
-     * 
+     *
      * @param string IdType
      * @return this instance
      */
-    public function setIdType ($value)
+    public function setIdType($value)
     {
         $this->_fields['IdType']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the IdType and returns this instance
-     * 
+     *
      * @param string $value IdType
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withIdType ($value)
+    public function withIdType($value)
     {
         $this->setIdType($value);
         return $this;
     }
-
+    
     /**
      * Checks if IdType is set
-     * 
+     *
      * @return bool true if IdType  is set
      */
-    public function isSetIdType ()
+    public function isSetIdType()
     {
-        return ! is_null($this->_fields['IdType']['FieldValue']);
+        return !is_null($this->_fields['IdType']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the InheritShippingAddress property.
-     * 
+     *
      * @return bool InheritShippingAddress
      */
-    public function getInheritShippingAddress ()
+    public function getInheritShippingAddress()
     {
         return $this->_fields['InheritShippingAddress']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the InheritShippingAddress property.
-     * 
+     *
      * @param bool InheritShippingAddress
      * @return this instance
      */
-    public function setInheritShippingAddress ($value)
+    public function setInheritShippingAddress($value)
     {
         $this->_fields['InheritShippingAddress']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the InheritShippingAddress and returns this instance
-     * 
+     *
      * @param bool $value InheritShippingAddress
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withInheritShippingAddress ($value)
+    public function withInheritShippingAddress($value)
     {
         $this->setInheritShippingAddress($value);
         return $this;
     }
-
+    
     /**
      * Checks if InheritShippingAddress is set
-     * 
+     *
      * @return bool true if InheritShippingAddress  is set
      */
-    public function isSetInheritShippingAddress ()
+    public function isSetInheritShippingAddress()
     {
-        return ! is_null($this->_fields['InheritShippingAddress']['FieldValue']);
+        return !is_null($this->_fields['InheritShippingAddress']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the ConfirmNow property.
-     * 
+     *
      * @return bool ConfirmNow
      */
-    public function getConfirmNow ()
+    public function getConfirmNow()
     {
         return $this->_fields['ConfirmNow']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ConfirmNow property.
-     * 
+     *
      * @param bool ConfirmNow
      * @return this instance
      */
-    public function setConfirmNow ($value)
+    public function setConfirmNow($value)
     {
         $this->_fields['ConfirmNow']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ConfirmNow and returns this instance
-     * 
+     *
      * @param bool $value ConfirmNow
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withConfirmNow ($value)
+    public function withConfirmNow($value)
     {
         $this->setConfirmNow($value);
         return $this;
     }
-
+    
     /**
      * Checks if ConfirmNow is set
-     * 
+     *
      * @return bool true if ConfirmNow  is set
      */
-    public function isSetConfirmNow ()
+    public function isSetConfirmNow()
     {
-        return ! is_null($this->_fields['ConfirmNow']['FieldValue']);
+        return !is_null($this->_fields['ConfirmNow']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the OrderReferenceAttributes.
-     * 
+     *
      * @return OrderReferenceAttributes OrderReferenceAttributes
      */
-    public function getOrderReferenceAttributes ()
+    public function getOrderReferenceAttributes()
     {
         return $this->_fields['OrderReferenceAttributes']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the OrderReferenceAttributes.
-     * 
+     *
      * @param OrderReferenceAttributes OrderReferenceAttributes
      * @return void
      */
-    public function setOrderReferenceAttributes ($value)
+    public function setOrderReferenceAttributes($value)
     {
         $this->_fields['OrderReferenceAttributes']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the OrderReferenceAttributes  and returns this instance
-     * 
+     *
      * @param OrderReferenceAttributes $value OrderReferenceAttributes
      * @return OffAmazonPaymentsService_Model_CreateOrderReferenceForIdRequest instance
      */
-    public function withOrderReferenceAttributes ($value)
+    public function withOrderReferenceAttributes($value)
     {
         $this->setOrderReferenceAttributes($value);
         return $this;
     }
-
+    
     /**
      * Checks if OrderReferenceAttributes  is set
-     * 
+     *
      * @return bool true if OrderReferenceAttributes property is set
      */
-    public function isSetOrderReferenceAttributes ()
+    public function isSetOrderReferenceAttributes()
     {
-        return ! is_null($this->_fields['OrderReferenceAttributes']['FieldValue']);
+        return !is_null($this->_fields['OrderReferenceAttributes']['FieldValue']);
+    }
+    
+    /**
+     * Gets the value of the MWSAuthToken property.
+     *
+     * @return string MWSAuthToken
+     */
+    public function getMWSAuthToken()
+    {
+        return $this->_fields['MWSAuthToken']['FieldValue'];
+    }
+    
+    /**
+     * Sets the value of the MWSAuthToken and returns this instance
+     *
+     * @param string $value MWSAuthToken
+     * @return OffAmazonPaymentsService_Model_GetOrderReferenceDetailsRequest instance
+     */
+    public function setMWSAuthToken($value)
+    {
+        $this->_fields['MWSAuthToken']['FieldValue'] = $value;
+        return $this;
+    }
+    
+    
+    /**
+     * Checks if MWSAuthToken is set
+     *
+     * @return bool true if MWSAuthToken is set
+     */
+    public function isSetMWSAuthToken()
+    {
+        return !is_null($this->_fields['MWSAuthToken']['FieldValue']);
     }
 }
-?>

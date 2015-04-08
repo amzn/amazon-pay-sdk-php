@@ -21,4 +21,3 @@ final class OffAmazonPaymentsService_Environments
     const SANDBOX = "sandbox";
     const LIVE = "live";
 }
-?>

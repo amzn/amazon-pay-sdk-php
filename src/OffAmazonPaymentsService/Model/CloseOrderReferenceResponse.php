@@ -19,9 +19,9 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_CloseOrderReferenceResponse
@@ -33,10 +33,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>ResponseMetadata: OffAmazonPaymentsService_Model_ResponseMetadata</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_CloseOrderReferenceResponse
      * 
@@ -52,18 +52,24 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'CloseOrderReferenceResult' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_CloseOrderReferenceResult'),
-
-
-        'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'),
-
+        $this->_fields = array(
+            
+            'CloseOrderReferenceResult' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_CloseOrderReferenceResult'
+            ),
+            
+            
+            'ResponseMetadata' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'
+            )
+            
         );
         parent::__construct($data);
     }
-
-       
+    
+    
     /**
      * Construct OffAmazonPaymentsService_Model_CloseOrderReferenceResponse from XML string
      * 
@@ -75,43 +81,43 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         $xpath = new DOMXPath($dom);
-    	$xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
+        $xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
         $response = $xpath->query('//a:CloseOrderReferenceResponse');
         if ($response->length == 1) {
-            return new OffAmazonPaymentsService_Model_CloseOrderReferenceResponse(($response->item(0))); 
+            return new OffAmazonPaymentsService_Model_CloseOrderReferenceResponse(($response->item(0)));
         } else {
-            throw new Exception ("Unable to construct OffAmazonPaymentsService_Model_CloseOrderReferenceResponse from provided XML. 
+            throw new Exception("Unable to construct OffAmazonPaymentsService_Model_CloseOrderReferenceResponse from provided XML. 
                                   Make sure that CloseOrderReferenceResponse is a root element");
         }
-          
+        
     }
     
     /**
      * Gets the value of the CloseOrderReferenceResult.
      * 
-     * @return CloseOrderReferenceResult CloseOrderReferenceResult
+     * @return OffAmazonPaymentsService_Model_CloseOrderReferenceResult CloseOrderReferenceResult
      */
-    public function getCloseOrderReferenceResult() 
+    public function getCloseOrderReferenceResult()
     {
         return $this->_fields['CloseOrderReferenceResult']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CloseOrderReferenceResult.
      * 
-     * @param CloseOrderReferenceResult CloseOrderReferenceResult
+     * @param OffAmazonPaymentsService_Model_CloseOrderReferenceResult CloseOrderReferenceResult
      * @return void
      */
-    public function setCloseOrderReferenceResult($value) 
+    public function setCloseOrderReferenceResult($value)
     {
         $this->_fields['CloseOrderReferenceResult']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the CloseOrderReferenceResult  and returns this instance
      * 
-     * @param CloseOrderReferenceResult $value CloseOrderReferenceResult
+     * @param OffAmazonPaymentsService_Model_CloseOrderReferenceResult $value CloseOrderReferenceResult
      * @return OffAmazonPaymentsService_Model_CloseOrderReferenceResponse instance
      */
     public function withCloseOrderReferenceResult($value)
@@ -119,8 +125,8 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
         $this->setCloseOrderReferenceResult($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CloseOrderReferenceResult  is set
      * 
@@ -129,35 +135,35 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
     public function isSetCloseOrderReferenceResult()
     {
         return !is_null($this->_fields['CloseOrderReferenceResult']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the ResponseMetadata.
      * 
-     * @return ResponseMetadata ResponseMetadata
+     * @return OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      */
-    public function getResponseMetadata() 
+    public function getResponseMetadata()
     {
         return $this->_fields['ResponseMetadata']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata.
      * 
-     * @param ResponseMetadata ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      * @return void
      */
-    public function setResponseMetadata($value) 
+    public function setResponseMetadata($value)
     {
         $this->_fields['ResponseMetadata']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata  and returns this instance
      * 
-     * @param ResponseMetadata $value ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata $value ResponseMetadata
      * @return OffAmazonPaymentsService_Model_CloseOrderReferenceResponse instance
      */
     public function withResponseMetadata($value)
@@ -165,8 +171,8 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
         $this->setResponseMetadata($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ResponseMetadata  is set
      * 
@@ -175,17 +181,17 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
     public function isSetResponseMetadata()
     {
         return !is_null($this->_fields['ResponseMetadata']['FieldValue']);
-
+        
     }
-
-
-
+    
+    
+    
     /**
      * XML Representation for this object
      * 
      * @return string XML for this object
      */
-    public function toXML() 
+    public function toXML()
     {
         $xml = "";
         $xml .= "<CloseOrderReferenceResponse xmlns=\"http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01\">";
@@ -193,15 +199,16 @@ class OffAmazonPaymentsService_Model_CloseOrderReferenceResponse extends OffAmaz
         $xml .= "</CloseOrderReferenceResponse>";
         return $xml;
     }
-
+    
     private $_responseHeaderMetadata = null;
-
-    public function getResponseHeaderMetadata() {
+    
+    public function getResponseHeaderMetadata()
+    {
         return $this->_responseHeaderMetadata;
     }
-
-    public function setResponseHeaderMetadata($responseHeaderMetadata) {
+    
+    public function setResponseHeaderMetadata($responseHeaderMetadata)
+    {
         return $this->_responseHeaderMetadata = $responseHeaderMetadata;
     }
 }
-?>

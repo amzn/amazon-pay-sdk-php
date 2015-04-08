@@ -19,32 +19,32 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ProviderCreditReversalSummary
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>ProviderId: string</li>
  * <li>ProviderCreditReversalId: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ProviderCreditReversalSummary extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ProviderCreditReversalSummary
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>ProviderId: string</li>
      * <li>ProviderCreditReversalId: string</li>
      *
@@ -52,38 +52,44 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalSummary extends OffAm
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'ProviderId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'ProviderCreditReversalId' => array('FieldValue' => null, 'FieldType' => 'string'),
+        $this->_fields = array(
+            'ProviderId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'ProviderCreditReversalId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the ProviderId property.
-     * 
+     *
      * @return string ProviderId
      */
-    public function getProviderId() 
+    public function getProviderId()
     {
         return $this->_fields['ProviderId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderId property.
-     * 
+     *
      * @param string ProviderId
      * @return this instance
      */
-    public function setProviderId($value) 
+    public function setProviderId($value)
     {
         $this->_fields['ProviderId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderId and returns this instance
-     * 
+     *
      * @param string $value ProviderId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalSummary instance
      */
@@ -92,43 +98,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalSummary extends OffAm
         $this->setProviderId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderId is set
-     * 
+     *
      * @return bool true if ProviderId  is set
      */
     public function isSetProviderId()
     {
         return !is_null($this->_fields['ProviderId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the ProviderCreditReversalId property.
-     * 
+     *
      * @return string ProviderCreditReversalId
      */
-    public function getProviderCreditReversalId() 
+    public function getProviderCreditReversalId()
     {
         return $this->_fields['ProviderCreditReversalId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderCreditReversalId property.
-     * 
+     *
      * @param string ProviderCreditReversalId
      * @return this instance
      */
-    public function setProviderCreditReversalId($value) 
+    public function setProviderCreditReversalId($value)
     {
         $this->_fields['ProviderCreditReversalId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderCreditReversalId and returns this instance
-     * 
+     *
      * @param string $value ProviderCreditReversalId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalSummary instance
      */
@@ -137,19 +143,16 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalSummary extends OffAm
         $this->setProviderCreditReversalId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderCreditReversalId is set
-     * 
+     *
      * @return bool true if ProviderCreditReversalId  is set
      */
     public function isSetProviderCreditReversalId()
     {
         return !is_null($this->_fields['ProviderCreditReversalId']['FieldValue']);
     }
-
-
-
-
+    
 }

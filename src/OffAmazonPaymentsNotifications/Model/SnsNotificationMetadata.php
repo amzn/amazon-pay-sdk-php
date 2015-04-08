@@ -118,4 +118,3 @@ class OffAmazonPaymentsNotifications_Model_SnsNotificationMetadata
         return self::SOURCE_MESSAGE_TYPE;
     }
 }
-?>

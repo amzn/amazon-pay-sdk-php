@@ -19,9 +19,9 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse
@@ -33,10 +33,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>ResponseMetadata: OffAmazonPaymentsService_Model_ResponseMetadata</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse
      * 
@@ -52,18 +52,24 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'GetOrderReferenceDetailsResult' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResult'),
-
-
-        'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'),
-
+        $this->_fields = array(
+            
+            'GetOrderReferenceDetailsResult' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResult'
+            ),
+            
+            
+            'ResponseMetadata' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'
+            )
+            
         );
         parent::__construct($data);
     }
-
-       
+    
+    
     /**
      * Construct OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse from XML string
      * 
@@ -75,43 +81,43 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         $xpath = new DOMXPath($dom);
-    	$xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
+        $xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
         $response = $xpath->query('//a:GetOrderReferenceDetailsResponse');
         if ($response->length == 1) {
-            return new OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse(($response->item(0))); 
+            return new OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse(($response->item(0)));
         } else {
-            throw new Exception ("Unable to construct OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse from provided XML. 
+            throw new Exception("Unable to construct OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse from provided XML. 
                                   Make sure that GetOrderReferenceDetailsResponse is a root element");
         }
-          
+        
     }
     
     /**
      * Gets the value of the GetOrderReferenceDetailsResult.
      * 
-     * @return GetOrderReferenceDetailsResult GetOrderReferenceDetailsResult
+     * @return OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResult GetOrderReferenceDetailsResult
      */
-    public function getGetOrderReferenceDetailsResult() 
+    public function getGetOrderReferenceDetailsResult()
     {
         return $this->_fields['GetOrderReferenceDetailsResult']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the GetOrderReferenceDetailsResult.
      * 
-     * @param GetOrderReferenceDetailsResult GetOrderReferenceDetailsResult
+     * @param OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResult GetOrderReferenceDetailsResult
      * @return void
      */
-    public function setGetOrderReferenceDetailsResult($value) 
+    public function setGetOrderReferenceDetailsResult($value)
     {
         $this->_fields['GetOrderReferenceDetailsResult']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the GetOrderReferenceDetailsResult  and returns this instance
      * 
-     * @param GetOrderReferenceDetailsResult $value GetOrderReferenceDetailsResult
+     * @param OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResult $value GetOrderReferenceDetailsResult
      * @return OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse instance
      */
     public function withGetOrderReferenceDetailsResult($value)
@@ -119,8 +125,8 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
         $this->setGetOrderReferenceDetailsResult($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if GetOrderReferenceDetailsResult  is set
      * 
@@ -129,35 +135,35 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
     public function isSetGetOrderReferenceDetailsResult()
     {
         return !is_null($this->_fields['GetOrderReferenceDetailsResult']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the ResponseMetadata.
      * 
-     * @return ResponseMetadata ResponseMetadata
+     * @return OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      */
-    public function getResponseMetadata() 
+    public function getResponseMetadata()
     {
         return $this->_fields['ResponseMetadata']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata.
      * 
-     * @param ResponseMetadata ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      * @return void
      */
-    public function setResponseMetadata($value) 
+    public function setResponseMetadata($value)
     {
         $this->_fields['ResponseMetadata']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata  and returns this instance
      * 
-     * @param ResponseMetadata $value ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata $value ResponseMetadata
      * @return OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse instance
      */
     public function withResponseMetadata($value)
@@ -165,8 +171,8 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
         $this->setResponseMetadata($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ResponseMetadata  is set
      * 
@@ -175,17 +181,17 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
     public function isSetResponseMetadata()
     {
         return !is_null($this->_fields['ResponseMetadata']['FieldValue']);
-
+        
     }
-
-
-
+    
+    
+    
     /**
      * XML Representation for this object
      * 
      * @return string XML for this object
      */
-    public function toXML() 
+    public function toXML()
     {
         $xml = "";
         $xml .= "<GetOrderReferenceDetailsResponse xmlns=\"http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01\">";
@@ -193,16 +199,17 @@ class OffAmazonPaymentsService_Model_GetOrderReferenceDetailsResponse extends Of
         $xml .= "</GetOrderReferenceDetailsResponse>";
         return $xml;
     }
-
+    
     private $_responseHeaderMetadata = null;
-
-    public function getResponseHeaderMetadata() {
+    
+    public function getResponseHeaderMetadata()
+    {
         return $this->_responseHeaderMetadata;
     }
-
-    public function setResponseHeaderMetadata($responseHeaderMetadata) {
+    
+    public function setResponseHeaderMetadata($responseHeaderMetadata)
+    {
         return $this->_responseHeaderMetadata = $responseHeaderMetadata;
     }
-
+    
 }
-?>

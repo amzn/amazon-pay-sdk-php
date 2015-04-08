@@ -11,7 +11,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
  Please understand that by using the Login and Pay with Amazon sample code, 
  you are agreeing to understand and abide by the terms of the license, 
  as written in NOTICE.txt & LICENSE.txt accompanying this archive. 
- This sample code has been tested with PHP 5.3.8 and Curl 7.18.1
+ This sample code has been tested with PHP 5.3.0 and Curl 7.18.1
   
 ******************************************************************************
   INCLUDED FILES
@@ -38,11 +38,25 @@ Payments seller support through Seller Central and request an LwA registration.
 
 
 Once registered for LWA to get your LWA Client ID, go to Seller Central, select
-the "Login with Amazon" marketplace on the top right switcher, click on "Register 
+the ???Login with Amazon??? marketplace on the top right switcher, click on "Register 
 Your Application" button on LWA Seller Central page. For additional information,
 please see the following step by step guide to get your Login with Amazon Client 
 ID: https://amazonpayments.s3.amazonaws.com/documents/Get_Your_Login_with_Amazon
 _Client_ID.pdf
+
+******************************************************************************
+  UPGRADE INSTRUCTIONS FOR SDK CLIENTS < 1.0.12
+******************************************************************************
+Clients upgrading from a version of the SDK prior to 1.0.12 are required to add
+a new SDK property cnName.  See src/OffAmazonPaymentsService.config.inc.php for
+reference configuration.
+
+******************************************************************************
+MWS AUTH TOKEN Usage
+******************************************************************************
+For clients who are acting as integrators or are authorized to make OffAmazonPaymentsService
+calls on behalf of another seller, you are now required to provide a MWSAuthToken for
+all requests made to the OffAmazonPaymentsService endpoint.
 
 ******************************************************************************
   USAGE INSTRUCTIONS

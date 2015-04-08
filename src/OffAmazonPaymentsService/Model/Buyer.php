@@ -57,7 +57,7 @@ class OffAmazonPaymentsService_Model_Buyer extends OffAmazonPaymentsService_Mode
         $this->_fields = array (
         'Name' => array('FieldValue' => null, 'FieldType' => 'string'),
         'Email' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'Phone' => array('FieldValue' => null, 'FieldType' => 'string'),
+        'Phone' => array('FieldValue' => null, 'FieldType' => 'string')
         );
         parent::__construct($data);
     }
@@ -197,4 +197,3 @@ class OffAmazonPaymentsService_Model_Buyer extends OffAmazonPaymentsService_Mode
         return !is_null($this->_fields['Phone']['FieldValue']);
     }
 }
-?>

@@ -109,4 +109,3 @@ class OffAmazonPaymentsNotifications_Model_OrderItemCategories extends OffAmazon
         return count($this->fields['OrderItemCategory']['FieldValue']) > 0;
     }
 }
-?>

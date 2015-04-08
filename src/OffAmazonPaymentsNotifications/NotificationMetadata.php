@@ -43,4 +43,3 @@ interface OffAmazonPaymentsNotifications_NotificationMetadata
      */
     public function hasParentNotificationMetadata();
 }
-?>

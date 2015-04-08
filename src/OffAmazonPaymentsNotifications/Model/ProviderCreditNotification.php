@@ -156,4 +156,3 @@ class OffAmazonPaymentsNotifications_Model_ProviderCreditNotification
         return $xml;
     }
 }
-?>

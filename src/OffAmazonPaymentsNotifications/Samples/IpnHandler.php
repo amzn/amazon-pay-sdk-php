@@ -27,8 +27,6 @@ require_once 'OffAmazonPaymentsNotifications/Samples/ProviderCreditNotificationS
 require_once 'OffAmazonPaymentsNotifications/Samples/ProviderCreditReversalNotificationSample.php';
 require_once 'OffAmazonPaymentsNotifications/Samples/SolutionProviderMerchantNotificationSample.php';
 
-
-
 /**
  * IPN_Handler 
  *

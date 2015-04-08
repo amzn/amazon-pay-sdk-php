@@ -29,7 +29,7 @@ require_once 'OffAmazonPaymentsService/Model.php';
  */
 class OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult
      * 
@@ -43,7 +43,7 @@ class OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult extends O
      *
      * </ul>
      */
-    public function __construct ($data = null)
+    public function __construct($data = null)
     {
         $this->_fields = array(
             
@@ -59,93 +59,92 @@ class OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult extends O
         );
         parent::__construct($data);
     }
-
+    
     /**
      * Gets the value of the AuthorizationDetails.
      * 
-     * @return AuthorizationDetails AuthorizationDetails
+     * @return OffAmazonPaymentsService_Model_AuthorizationDetails AuthorizationDetails
      */
-    public function getAuthorizationDetails ()
+    public function getAuthorizationDetails()
     {
         return $this->_fields['AuthorizationDetails']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AuthorizationDetails.
      * 
-     * @param AuthorizationDetails AuthorizationDetails
+     * @param OffAmazonPaymentsService_Model_AuthorizationDetails AuthorizationDetails
      * @return void
      */
-    public function setAuthorizationDetails ($value)
+    public function setAuthorizationDetails($value)
     {
         $this->_fields['AuthorizationDetails']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the AuthorizationDetails  and returns this instance
      * 
      * @param AuthorizationDetails $value AuthorizationDetails
      * @return OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult instance
      */
-    public function withAuthorizationDetails ($value)
+    public function withAuthorizationDetails($value)
     {
         $this->setAuthorizationDetails($value);
         return $this;
     }
-
+    
     /**
      * Checks if AuthorizationDetails  is set
      * 
-     * @return bool true if AuthorizationDetails property is set
+     * @return bool true if OffAmazonPaymentsService_Model_AuthorizationDetails property is set
      */
-    public function isSetAuthorizationDetails ()
+    public function isSetAuthorizationDetails()
     {
-        return ! is_null($this->_fields['AuthorizationDetails']['FieldValue']);
+        return !is_null($this->_fields['AuthorizationDetails']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the AmazonOrderReferenceId property.
      * 
      * @return string AmazonOrderReferenceId
      */
-    public function getAmazonOrderReferenceId ()
+    public function getAmazonOrderReferenceId()
     {
         return $this->_fields['AmazonOrderReferenceId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AmazonOrderReferenceId property.
      * 
      * @param string AmazonOrderReferenceId
      * @return this instance
      */
-    public function setAmazonOrderReferenceId ($value)
+    public function setAmazonOrderReferenceId($value)
     {
         $this->_fields['AmazonOrderReferenceId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the AmazonOrderReferenceId and returns this instance
      * 
      * @param string $value AmazonOrderReferenceId
      * @return OffAmazonPaymentsService_Model_AuthorizeOnBillingAgreementResult instance
      */
-    public function withAmazonOrderReferenceId ($value)
+    public function withAmazonOrderReferenceId($value)
     {
         $this->setAmazonOrderReferenceId($value);
         return $this;
     }
-
+    
     /**
      * Checks if AmazonOrderReferenceId is set
      * 
      * @return bool true if AmazonOrderReferenceId  is set
      */
-    public function isSetAmazonOrderReferenceId ()
+    public function isSetAmazonOrderReferenceId()
     {
-        return ! is_null($this->_fields['AmazonOrderReferenceId']['FieldValue']);
+        return !is_null($this->_fields['AmazonOrderReferenceId']['FieldValue']);
     }
 }
-?>

@@ -37,4 +37,3 @@ interface OffAmazonPaymentsNotifications_Notification
      */
     public function getNotificationMetadata();
 }
-?>

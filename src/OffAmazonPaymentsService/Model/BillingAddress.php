@@ -55,7 +55,7 @@ class OffAmazonPaymentsService_Model_BillingAddress extends OffAmazonPaymentsSer
         $this->_fields = array (
         'AddressType' => array('FieldValue' => null, 'FieldType' => 'string'),
 
-        'PhysicalAddress' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Address'),
+        'PhysicalAddress' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Address')
 
         );
         parent::__construct($data);
@@ -152,4 +152,3 @@ class OffAmazonPaymentsService_Model_BillingAddress extends OffAmazonPaymentsSer
 
     }
 }
-?>

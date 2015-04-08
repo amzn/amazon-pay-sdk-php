@@ -303,4 +303,3 @@ abstract class OffAmazonPaymentsService_Model
         return is_array($var) && array_keys($var) === range(0, sizeof($var) - 1);
     }
 }
-?>
