@@ -246,4 +246,3 @@ class OffAmazonPaymentsNotifications_Model_BillingAgreementStatus extends OffAma
         return ! is_null($this->fields['ReasonDescription']['FieldValue']);
     }
 }
-?>

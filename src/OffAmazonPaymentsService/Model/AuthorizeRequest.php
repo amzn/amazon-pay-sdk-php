@@ -19,9 +19,9 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_AuthorizeRequest
@@ -40,10 +40,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>SoftDescriptor: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_AuthorizeRequest
      * 
@@ -66,47 +66,81 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'SellerId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'AmazonOrderReferenceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'AuthorizationReferenceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-
-        'AuthorizationAmount' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Price'),
-
-        'SellerAuthorizationNote' => array('FieldValue' => null, 'FieldType' => 'string'),
-
-        'OrderItemCategories' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_OrderItemCategories'),
-
-        'TransactionTimeout' => array('FieldValue' => null, 'FieldType' => 'int'),
-        'CaptureNow' => array('FieldValue' => null, 'FieldType' => 'bool'),
-        'SoftDescriptor' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'ProviderCreditList' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditList'),
+        $this->_fields = array(
+            'SellerId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'AmazonOrderReferenceId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'AuthorizationReferenceId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            
+            'AuthorizationAmount' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_Price'
+            ),
+            
+            'SellerAuthorizationNote' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            
+            'OrderItemCategories' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_OrderItemCategories'
+            ),
+            
+            'TransactionTimeout' => array(
+                'FieldValue' => null,
+                'FieldType' => 'int'
+            ),
+            'CaptureNow' => array(
+                'FieldValue' => null,
+                'FieldType' => 'bool'
+            ),
+            'SoftDescriptor' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'MWSAuthToken' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'ProviderCreditList' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditList'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the SellerId property.
      * 
      * @return string SellerId
      */
-    public function getSellerId() 
+    public function getSellerId()
     {
         return $this->_fields['SellerId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the SellerId property.
      * 
      * @param string SellerId
      * @return this instance
      */
-    public function setSellerId($value) 
+    public function setSellerId($value)
     {
         $this->_fields['SellerId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the SellerId and returns this instance
      * 
@@ -118,8 +152,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setSellerId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if SellerId is set
      * 
@@ -129,29 +163,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['SellerId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the AmazonOrderReferenceId property.
      * 
      * @return string AmazonOrderReferenceId
      */
-    public function getAmazonOrderReferenceId() 
+    public function getAmazonOrderReferenceId()
     {
         return $this->_fields['AmazonOrderReferenceId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AmazonOrderReferenceId property.
      * 
      * @param string AmazonOrderReferenceId
      * @return this instance
      */
-    public function setAmazonOrderReferenceId($value) 
+    public function setAmazonOrderReferenceId($value)
     {
         $this->_fields['AmazonOrderReferenceId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the AmazonOrderReferenceId and returns this instance
      * 
@@ -163,8 +197,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setAmazonOrderReferenceId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if AmazonOrderReferenceId is set
      * 
@@ -174,29 +208,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['AmazonOrderReferenceId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the AuthorizationReferenceId property.
      * 
      * @return string AuthorizationReferenceId
      */
-    public function getAuthorizationReferenceId() 
+    public function getAuthorizationReferenceId()
     {
         return $this->_fields['AuthorizationReferenceId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AuthorizationReferenceId property.
      * 
      * @param string AuthorizationReferenceId
      * @return this instance
      */
-    public function setAuthorizationReferenceId($value) 
+    public function setAuthorizationReferenceId($value)
     {
         $this->_fields['AuthorizationReferenceId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the AuthorizationReferenceId and returns this instance
      * 
@@ -208,8 +242,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setAuthorizationReferenceId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if AuthorizationReferenceId is set
      * 
@@ -219,29 +253,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['AuthorizationReferenceId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the AuthorizationAmount.
      * 
      * @return Price AuthorizationAmount
      */
-    public function getAuthorizationAmount() 
+    public function getAuthorizationAmount()
     {
         return $this->_fields['AuthorizationAmount']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AuthorizationAmount.
      * 
      * @param Price AuthorizationAmount
      * @return void
      */
-    public function setAuthorizationAmount($value) 
+    public function setAuthorizationAmount($value)
     {
         $this->_fields['AuthorizationAmount']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the AuthorizationAmount  and returns this instance
      * 
@@ -253,8 +287,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setAuthorizationAmount($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if AuthorizationAmount  is set
      * 
@@ -263,31 +297,31 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     public function isSetAuthorizationAmount()
     {
         return !is_null($this->_fields['AuthorizationAmount']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the SellerAuthorizationNote property.
      * 
      * @return string SellerAuthorizationNote
      */
-    public function getSellerAuthorizationNote() 
+    public function getSellerAuthorizationNote()
     {
         return $this->_fields['SellerAuthorizationNote']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the SellerAuthorizationNote property.
      * 
      * @param string SellerAuthorizationNote
      * @return this instance
      */
-    public function setSellerAuthorizationNote($value) 
+    public function setSellerAuthorizationNote($value)
     {
         $this->_fields['SellerAuthorizationNote']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the SellerAuthorizationNote and returns this instance
      * 
@@ -299,8 +333,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setSellerAuthorizationNote($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if SellerAuthorizationNote is set
      * 
@@ -310,29 +344,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['SellerAuthorizationNote']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the OrderItemCategories.
      * 
      * @return OrderItemCategories OrderItemCategories
      */
-    public function getOrderItemCategories() 
+    public function getOrderItemCategories()
     {
         return $this->_fields['OrderItemCategories']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the OrderItemCategories.
      * 
      * @param OrderItemCategories OrderItemCategories
      * @return void
      */
-    public function setOrderItemCategories($value) 
+    public function setOrderItemCategories($value)
     {
         $this->_fields['OrderItemCategories']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the OrderItemCategories  and returns this instance
      * 
@@ -344,8 +378,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setOrderItemCategories($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if OrderItemCategories  is set
      * 
@@ -354,31 +388,31 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     public function isSetOrderItemCategories()
     {
         return !is_null($this->_fields['OrderItemCategories']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the TransactionTimeout property.
      * 
      * @return int TransactionTimeout
      */
-    public function getTransactionTimeout() 
+    public function getTransactionTimeout()
     {
         return $this->_fields['TransactionTimeout']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the TransactionTimeout property.
      * 
      * @param int TransactionTimeout
      * @return this instance
      */
-    public function setTransactionTimeout($value) 
+    public function setTransactionTimeout($value)
     {
         $this->_fields['TransactionTimeout']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the TransactionTimeout and returns this instance
      * 
@@ -390,8 +424,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setTransactionTimeout($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if TransactionTimeout is set
      * 
@@ -401,29 +435,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['TransactionTimeout']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the CaptureNow property.
      * 
      * @return bool CaptureNow
      */
-    public function getCaptureNow() 
+    public function getCaptureNow()
     {
         return $this->_fields['CaptureNow']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CaptureNow property.
      * 
      * @param bool CaptureNow
      * @return this instance
      */
-    public function setCaptureNow($value) 
+    public function setCaptureNow($value)
     {
         $this->_fields['CaptureNow']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the CaptureNow and returns this instance
      * 
@@ -435,8 +469,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setCaptureNow($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CaptureNow is set
      * 
@@ -446,29 +480,29 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
     {
         return !is_null($this->_fields['CaptureNow']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the SoftDescriptor property.
      * 
      * @return string SoftDescriptor
      */
-    public function getSoftDescriptor() 
+    public function getSoftDescriptor()
     {
         return $this->_fields['SoftDescriptor']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the SoftDescriptor property.
      * 
      * @param string SoftDescriptor
      * @return this instance
      */
-    public function setSoftDescriptor($value) 
+    public function setSoftDescriptor($value)
     {
         $this->_fields['SoftDescriptor']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the SoftDescriptor and returns this instance
      * 
@@ -480,8 +514,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
         $this->setSoftDescriptor($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if SoftDescriptor is set
      * 
@@ -499,7 +533,7 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
      */
     public function getProviderCreditList()
     {
-    	return $this->_fields['ProviderCreditList']['FieldValue'];
+        return $this->_fields['ProviderCreditList']['FieldValue'];
     }
     
     /**
@@ -510,8 +544,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
      */
     public function setProviderCreditList($value)
     {
-    	$this->_fields['ProviderCreditList']['FieldValue'] = $value;
-    	return;
+        $this->_fields['ProviderCreditList']['FieldValue'] = $value;
+        return;
     }
     
     /**
@@ -522,8 +556,8 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
      */
     public function withProviderCreditList($value)
     {
-    	$this->setProviderCreditList($value);
-    	return $this;
+        $this->setProviderCreditList($value);
+        return $this;
     }
     
     
@@ -534,8 +568,40 @@ class OffAmazonPaymentsService_Model_AuthorizeRequest extends OffAmazonPaymentsS
      */
     public function isSetProviderCreditList()
     {
-    	return !is_null($this->_fields['ProviderCreditList']['FieldValue']);
+        return !is_null($this->_fields['ProviderCreditList']['FieldValue']);
+        
+    }
     
+    /**
+     * Gets the value of the MWSAuthToken property.
+     *
+     * @return string MWSAuthToken
+     */
+    public function getMWSAuthToken()
+    {
+        return $this->_fields['MWSAuthToken']['FieldValue'];
+    }
+    
+    /**
+     * Sets the value of the MWSAuthToken and returns this instance
+     *
+     * @param string $value MWSAuthToken
+     * @return OffAmazonPaymentsService_Model_GetOrderReferenceDetailsRequest instance
+     */
+    public function setMWSAuthToken($value)
+    {
+        $this->_fields['MWSAuthToken']['FieldValue'] = $value;
+        return $this;
+    }
+    
+    
+    /**
+     * Checks if MWSAuthToken is set
+     *
+     * @return bool true if MWSAuthToken is set
+     */
+    public function isSetMWSAuthToken()
+    {
+        return !is_null($this->_fields['MWSAuthToken']['FieldValue']);
     }
 }
-?>

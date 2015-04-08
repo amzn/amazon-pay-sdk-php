@@ -19,9 +19,9 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_CloseAuthorizationResponse
@@ -33,10 +33,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>ResponseMetadata: OffAmazonPaymentsService_Model_ResponseMetadata</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_CloseAuthorizationResponse
      * 
@@ -52,18 +52,24 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'CloseAuthorizationResult' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_CloseAuthorizationResult'),
-
-
-        'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'),
-
+        $this->_fields = array(
+            
+            'CloseAuthorizationResult' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_CloseAuthorizationResult'
+            ),
+            
+            
+            'ResponseMetadata' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ResponseMetadata'
+            )
+            
         );
         parent::__construct($data);
     }
-
-       
+    
+    
     /**
      * Construct OffAmazonPaymentsService_Model_CloseAuthorizationResponse from XML string
      * 
@@ -75,43 +81,43 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         $xpath = new DOMXPath($dom);
-    	$xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
+        $xpath->registerNamespace('a', 'http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01');
         $response = $xpath->query('//a:CloseAuthorizationResponse');
         if ($response->length == 1) {
-            return new OffAmazonPaymentsService_Model_CloseAuthorizationResponse(($response->item(0))); 
+            return new OffAmazonPaymentsService_Model_CloseAuthorizationResponse(($response->item(0)));
         } else {
-            throw new Exception ("Unable to construct OffAmazonPaymentsService_Model_CloseAuthorizationResponse from provided XML. 
+            throw new Exception("Unable to construct OffAmazonPaymentsService_Model_CloseAuthorizationResponse from provided XML. 
                                   Make sure that CloseAuthorizationResponse is a root element");
         }
-          
+        
     }
     
     /**
      * Gets the value of the CloseAuthorizationResult.
      * 
-     * @return CloseAuthorizationResult CloseAuthorizationResult
+     * @return OffAmazonPaymentsService_Model_CloseAuthorizationResult CloseAuthorizationResult
      */
-    public function getCloseAuthorizationResult() 
+    public function getCloseAuthorizationResult()
     {
         return $this->_fields['CloseAuthorizationResult']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CloseAuthorizationResult.
      * 
-     * @param CloseAuthorizationResult CloseAuthorizationResult
+     * @param OffAmazonPaymentsService_Model_CloseAuthorizationResult CloseAuthorizationResult
      * @return void
      */
-    public function setCloseAuthorizationResult($value) 
+    public function setCloseAuthorizationResult($value)
     {
         $this->_fields['CloseAuthorizationResult']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the CloseAuthorizationResult  and returns this instance
      * 
-     * @param CloseAuthorizationResult $value CloseAuthorizationResult
+     * @param OffAmazonPaymentsService_Model_CloseAuthorizationResult $value CloseAuthorizationResult
      * @return OffAmazonPaymentsService_Model_CloseAuthorizationResponse instance
      */
     public function withCloseAuthorizationResult($value)
@@ -119,8 +125,8 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
         $this->setCloseAuthorizationResult($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CloseAuthorizationResult  is set
      * 
@@ -129,35 +135,35 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
     public function isSetCloseAuthorizationResult()
     {
         return !is_null($this->_fields['CloseAuthorizationResult']['FieldValue']);
-
+        
     }
-
+    
     /**
      * Gets the value of the ResponseMetadata.
      * 
-     * @return ResponseMetadata ResponseMetadata
+     * @return OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      */
-    public function getResponseMetadata() 
+    public function getResponseMetadata()
     {
         return $this->_fields['ResponseMetadata']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata.
      * 
-     * @param ResponseMetadata ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata ResponseMetadata
      * @return void
      */
-    public function setResponseMetadata($value) 
+    public function setResponseMetadata($value)
     {
         $this->_fields['ResponseMetadata']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the ResponseMetadata  and returns this instance
      * 
-     * @param ResponseMetadata $value ResponseMetadata
+     * @param OffAmazonPaymentsService_Model_ResponseMetadata $value ResponseMetadata
      * @return OffAmazonPaymentsService_Model_CloseAuthorizationResponse instance
      */
     public function withResponseMetadata($value)
@@ -165,8 +171,8 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
         $this->setResponseMetadata($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ResponseMetadata  is set
      * 
@@ -175,17 +181,16 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
     public function isSetResponseMetadata()
     {
         return !is_null($this->_fields['ResponseMetadata']['FieldValue']);
-
+        
     }
-
-
-
+    
+       
     /**
      * XML Representation for this object
      * 
      * @return string XML for this object
      */
-    public function toXML() 
+    public function toXML()
     {
         $xml = "";
         $xml .= "<CloseAuthorizationResponse xmlns=\"http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01\">";
@@ -193,15 +198,16 @@ class OffAmazonPaymentsService_Model_CloseAuthorizationResponse extends OffAmazo
         $xml .= "</CloseAuthorizationResponse>";
         return $xml;
     }
-
+    
     private $_responseHeaderMetadata = null;
-
-    public function getResponseHeaderMetadata() {
+    
+    public function getResponseHeaderMetadata()
+    {
         return $this->_responseHeaderMetadata;
     }
-
-    public function setResponseHeaderMetadata($responseHeaderMetadata) {
+    
+    public function setResponseHeaderMetadata($responseHeaderMetadata)
+    {
         return $this->_responseHeaderMetadata = $responseHeaderMetadata;
     }
 }
-?>

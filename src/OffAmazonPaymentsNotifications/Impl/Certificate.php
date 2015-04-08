@@ -76,4 +76,3 @@ class Certificate
         return $certSubject;
     }
 }
-?>

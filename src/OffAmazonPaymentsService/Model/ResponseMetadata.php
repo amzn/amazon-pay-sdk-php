@@ -19,68 +19,71 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ResponseMetadata
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>RequestId: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ResponseMetadata extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ResponseMetadata
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>RequestId: string</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'RequestId' => array('FieldValue' => null, 'FieldType' => 'string'),
+        $this->_fields = array(
+            'RequestId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the RequestId property.
-     * 
+     *
      * @return string RequestId
      */
-    public function getRequestId() 
+    public function getRequestId()
     {
         return $this->_fields['RequestId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the RequestId property.
-     * 
+     *
      * @param string RequestId
      * @return this instance
      */
-    public function setRequestId($value) 
+    public function setRequestId($value)
     {
         $this->_fields['RequestId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the RequestId and returns this instance
-     * 
+     *
      * @param string $value RequestId
      * @return OffAmazonPaymentsService_Model_ResponseMetadata instance
      */
@@ -89,20 +92,16 @@ class OffAmazonPaymentsService_Model_ResponseMetadata extends OffAmazonPaymentsS
         $this->setRequestId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if RequestId is set
-     * 
+     *
      * @return bool true if RequestId  is set
      */
     public function isSetRequestId()
     {
         return !is_null($this->_fields['RequestId']['FieldValue']);
     }
-
-
-
-
+    
 }
-?>

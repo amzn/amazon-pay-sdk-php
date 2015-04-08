@@ -58,10 +58,10 @@ class OffAmazonPaymentsService_Exception extends Exception
      */
     public function __construct(array $errorInfo = array())
     {
-        $this->_message = $errorInfo["Message"];
+        $this->_message = array_key_exists("Message", $errorInfo) ? $errorInfo["Message"] : null;
         parent::__construct($this->_message);
         if (array_key_exists("Exception", $errorInfo)) {
-            $exception = $errorInfo["Exception"];
+            $exception = array_key_exists("Exception", $errorInfo) ? $errorInfo["Exception"] : null;
             if ($exception instanceof OffAmazonPaymentsService_Exception) {
                 $this->_statusCode = $exception->getStatusCode();
                 $this->_errorCode = $exception->getErrorCode();
@@ -71,12 +71,12 @@ class OffAmazonPaymentsService_Exception extends Exception
                 $this->_responseHeaderMetadata = $exception->getResponseHeaderMetadata();
             } 
         } else {
-            $this->_statusCode = $errorInfo["StatusCode"];
-            $this->_errorCode = $errorInfo["ErrorCode"];
-            $this->_errorType = $errorInfo["ErrorType"];
-            $this->_requestId = $errorInfo["RequestId"];
-            $this->_xml= $errorInfo["XML"];
-            $this->_responseHeaderMetadata = $errorInfo["ResponseHeaderMetadata"];
+            $this->_statusCode = array_key_exists("StatusCode", $errorInfo) ? $errorInfo["StatusCode"] : null;
+            $this->_errorCode = array_key_exists("ErrorCode", $errorInfo) ? $errorInfo["ErrorCode"] : null;
+            $this->_errorType = array_key_exists("ErrorType", $errorInfo) ? $errorInfo["ErrorType"] : null;
+            $this->_requestId = array_key_exists("RequestId", $errorInfo) ? $errorInfo["RequestId"] : null;
+            $this->_xml= array_key_exists("XML", $errorInfo) ? $errorInfo["XML"] : null;
+            $this->_responseHeaderMetadata = array_key_exists("ResponseHeaderMetadata", $errorInfo) ? $errorInfo["ResponseHeaderMetadata"] : null;
         }
     }
 
@@ -142,4 +142,3 @@ class OffAmazonPaymentsService_Exception extends Exception
       return $this->_responseHeaderMetadata;
     }
 }
-?>

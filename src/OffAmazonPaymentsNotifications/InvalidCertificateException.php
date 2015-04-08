@@ -24,4 +24,3 @@ class OffAmazonPaymentsNotifications_InvalidCertificateException
     extends Exception
 {
 }
-?>

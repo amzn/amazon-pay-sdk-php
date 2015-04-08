@@ -18,10 +18,10 @@ require_once 'OffAmazonPaymentsService/Model.php';
 
 /**
  * OffAmazonPaymentsService_Model_ConfirmBillingAgreementResult
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  *
  * </ul>
  */
@@ -30,12 +30,12 @@ class OffAmazonPaymentsService_Model_ConfirmBillingAgreementResult extends OffAm
 
     /**
      * Construct new OffAmazonPaymentsService_Model_ConfirmBillingAgreementResult
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      *
      * </ul>
      */
@@ -45,4 +45,3 @@ class OffAmazonPaymentsService_Model_ConfirmBillingAgreementResult extends OffAm
         parent::__construct($data);
     }
 }
-?>

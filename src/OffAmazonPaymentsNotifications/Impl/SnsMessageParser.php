@@ -108,4 +108,3 @@ class SnsMessageParser
         $snsMsg->setNotificationMetadata($notificationMetadata);
     }
 }
-?>

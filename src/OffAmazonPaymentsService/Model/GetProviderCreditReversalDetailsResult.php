@@ -19,71 +19,74 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_GetProviderCreditReversalDetailsResult
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>ProviderCreditReversalDetails: OffAmazonPaymentsService_Model_ProviderCreditReversalDetails</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_GetProviderCreditReversalDetailsResult extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_GetProviderCreditReversalDetailsResult
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>ProviderCreditReversalDetails: OffAmazonPaymentsService_Model_ProviderCreditReversalDetails</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'ProviderCreditReversalDetails' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditReversalDetails'),
-
+        $this->_fields = array(
+            
+            'ProviderCreditReversalDetails' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_ProviderCreditReversalDetails'
+            )
+            
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the ProviderCreditReversalDetails.
-     * 
-     * @return ProviderCreditReversalDetails ProviderCreditReversalDetails
+     *
+     * @return OffAmazonPaymentsService_Model_ProviderCreditReversalDetails ProviderCreditReversalDetails
      */
-    public function getProviderCreditReversalDetails() 
+    public function getProviderCreditReversalDetails()
     {
         return $this->_fields['ProviderCreditReversalDetails']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderCreditReversalDetails.
-     * 
-     * @param ProviderCreditReversalDetails ProviderCreditReversalDetails
+     *
+     * @param OffAmazonPaymentsService_Model_ProviderCreditReversalDetails ProviderCreditReversalDetails
      * @return void
      */
-    public function setProviderCreditReversalDetails($value) 
+    public function setProviderCreditReversalDetails($value)
     {
         $this->_fields['ProviderCreditReversalDetails']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the ProviderCreditReversalDetails  and returns this instance
-     * 
-     * @param ProviderCreditReversalDetails $value ProviderCreditReversalDetails
+     *
+     * @param OffAmazonPaymentsService_Model_ProviderCreditReversalDetails $value ProviderCreditReversalDetails
      * @return OffAmazonPaymentsService_Model_GetProviderCreditReversalDetailsResult instance
      */
     public function withProviderCreditReversalDetails($value)
@@ -91,20 +94,17 @@ class OffAmazonPaymentsService_Model_GetProviderCreditReversalDetailsResult exte
         $this->setProviderCreditReversalDetails($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderCreditReversalDetails  is set
-     * 
+     *
      * @return bool true if ProviderCreditReversalDetails property is set
      */
     public function isSetProviderCreditReversalDetails()
     {
         return !is_null($this->_fields['ProviderCreditReversalDetails']['FieldValue']);
-
+        
     }
-
-
-
-
+    
 }

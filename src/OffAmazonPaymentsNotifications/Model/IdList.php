@@ -107,4 +107,3 @@ class OffAmazonPaymentsNotifications_Model_IdList extends OffAmazonPayments_Mode
         return count($this->fields['Id']['FieldValue']) > 0;
     }
 }
-?>

@@ -19,71 +19,74 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_GetAuthorizationDetailsResult
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>AuthorizationDetails: OffAmazonPaymentsService_Model_AuthorizationDetails</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_GetAuthorizationDetailsResult extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_GetAuthorizationDetailsResult
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>AuthorizationDetails: OffAmazonPaymentsService_Model_AuthorizationDetails</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'AuthorizationDetails' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_AuthorizationDetails'),
-
+        $this->_fields = array(
+            
+            'AuthorizationDetails' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_AuthorizationDetails'
+            )
+            
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the AuthorizationDetails.
-     * 
-     * @return AuthorizationDetails AuthorizationDetails
+     *
+     * @return OffAmazonPaymentsService_Model_AuthorizationDetails AuthorizationDetails
      */
-    public function getAuthorizationDetails() 
+    public function getAuthorizationDetails()
     {
         return $this->_fields['AuthorizationDetails']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the AuthorizationDetails.
-     * 
-     * @param AuthorizationDetails AuthorizationDetails
+     *
+     * @param OffAmazonPaymentsService_Model_AuthorizationDetails AuthorizationDetails
      * @return void
      */
-    public function setAuthorizationDetails($value) 
+    public function setAuthorizationDetails($value)
     {
         $this->_fields['AuthorizationDetails']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the AuthorizationDetails  and returns this instance
-     * 
-     * @param AuthorizationDetails $value AuthorizationDetails
+     *
+     * @param OffAmazonPaymentsService_Model_AuthorizationDetails $value AuthorizationDetails
      * @return OffAmazonPaymentsService_Model_GetAuthorizationDetailsResult instance
      */
     public function withAuthorizationDetails($value)
@@ -91,16 +94,16 @@ class OffAmazonPaymentsService_Model_GetAuthorizationDetailsResult extends OffAm
         $this->setAuthorizationDetails($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if AuthorizationDetails  is set
-     * 
+     *
      * @return bool true if AuthorizationDetails property is set
      */
     public function isSetAuthorizationDetails()
     {
         return !is_null($this->_fields['AuthorizationDetails']['FieldValue']);
-
+        
     }
 }

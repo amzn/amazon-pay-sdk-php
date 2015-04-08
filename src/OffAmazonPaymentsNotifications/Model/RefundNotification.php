@@ -154,4 +154,3 @@ class OffAmazonPaymentsNotifications_Model_RefundNotification
         return $xml;
     }
 }
-?>

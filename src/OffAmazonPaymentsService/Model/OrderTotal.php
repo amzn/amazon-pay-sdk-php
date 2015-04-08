@@ -19,32 +19,32 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_OrderTotal
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>CurrencyCode: string</li>
  * <li>Amount: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_OrderTotal extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_OrderTotal
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>CurrencyCode: string</li>
      * <li>Amount: string</li>
      *
@@ -52,38 +52,44 @@ class OffAmazonPaymentsService_Model_OrderTotal extends OffAmazonPaymentsService
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'CurrencyCode' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'Amount' => array('FieldValue' => null, 'FieldType' => 'string'),
+        $this->_fields = array(
+            'CurrencyCode' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'Amount' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the CurrencyCode property.
-     * 
+     *
      * @return string CurrencyCode
      */
-    public function getCurrencyCode() 
+    public function getCurrencyCode()
     {
         return $this->_fields['CurrencyCode']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CurrencyCode property.
-     * 
+     *
      * @param string CurrencyCode
      * @return this instance
      */
-    public function setCurrencyCode($value) 
+    public function setCurrencyCode($value)
     {
         $this->_fields['CurrencyCode']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the CurrencyCode and returns this instance
-     * 
+     *
      * @param string $value CurrencyCode
      * @return OffAmazonPaymentsService_Model_OrderTotal instance
      */
@@ -92,43 +98,43 @@ class OffAmazonPaymentsService_Model_OrderTotal extends OffAmazonPaymentsService
         $this->setCurrencyCode($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CurrencyCode is set
-     * 
+     *
      * @return bool true if CurrencyCode  is set
      */
     public function isSetCurrencyCode()
     {
         return !is_null($this->_fields['CurrencyCode']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the Amount property.
-     * 
+     *
      * @return string Amount
      */
-    public function getAmount() 
+    public function getAmount()
     {
         return $this->_fields['Amount']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the Amount property.
-     * 
+     *
      * @param string Amount
      * @return this instance
      */
-    public function setAmount($value) 
+    public function setAmount($value)
     {
         $this->_fields['Amount']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the Amount and returns this instance
-     * 
+     *
      * @param string $value Amount
      * @return OffAmazonPaymentsService_Model_OrderTotal instance
      */
@@ -137,20 +143,16 @@ class OffAmazonPaymentsService_Model_OrderTotal extends OffAmazonPaymentsService
         $this->setAmount($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if Amount is set
-     * 
+     *
      * @return bool true if Amount  is set
      */
     public function isSetAmount()
     {
         return !is_null($this->_fields['Amount']['FieldValue']);
     }
-
-
-
-
+    
 }
-?>

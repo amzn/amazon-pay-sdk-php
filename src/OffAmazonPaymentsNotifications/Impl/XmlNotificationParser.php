@@ -164,4 +164,3 @@ class XmlNotificationParser
         return $notification;
     }
 }
-?>

@@ -1,3 +1,15 @@
+v1.0.13 - March 2015
+- Fix regression that prevented usage on PHP 5.3 and 5.4
+
+v1.0.12 - January 2015
+- Fix for incorrect comparison operators in OffAmazonService/Client.php
+- Fix for incorrect exception variable in OpenSslVerifySignature.php
+- Add support for proxy usage in API requests
+- Modified Exception.php to check for parameter existence before assigning fields
+- Additional verification checks in place for IPN signature certificate validation
+- Change to OffAmazonPaymentsService.config.inc.php - new mandatory property cnName
+- Add support for MWSAuthToken field on all request objects
+
 v1.0.11 - September 2014
 - Added 'Login & Pay with Amazon' flow for EU.
 - Unified US and EU code samples
@@ -19,7 +31,7 @@ v1.0.8 - April 2014
 - Billing Address and AddressVerificationCode are available only to sellers pre-approved by Amazon. Contact Amazon Payments Support or your Account manager.
 
 v1.0.7 - March 2014
-- Updated library and Added AddressVerificationCode as an additional paramter in the AuthorizationDetails object
+- Updated library and Added AddressVerificationCode as an additional parameter in the AuthorizationDetails object
 - Added IdList as an additional parameter to the OrderReferenceDetails object.
 - Added ParentDetails as an additional parameter to the OrderReferenceDetails object
 - Updated sample code and webserver based examples for Billing Address use case in Billing agreement details API

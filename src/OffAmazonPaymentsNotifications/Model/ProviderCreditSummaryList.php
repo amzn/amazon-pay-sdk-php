@@ -110,7 +110,4 @@ class OffAmazonPaymentsNotifications_Model_ProviderCreditSummaryList extends Off
         return count ($this->fields['ProviderCreditSummary']['FieldValue']) > 0;
     }
 
-
-
-
 }

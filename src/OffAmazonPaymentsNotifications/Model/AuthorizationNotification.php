@@ -158,4 +158,3 @@ class OffAmazonPaymentsNotifications_Model_AuthorizationNotification
         return $xml;
     }
 }
-?>

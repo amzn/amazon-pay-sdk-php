@@ -246,4 +246,3 @@ class OffAmazonPaymentsService_Model_BillingAgreementStatus extends OffAmazonPay
         return ! is_null($this->_fields['ReasonDescription']['FieldValue']);
     }
 }
-?>

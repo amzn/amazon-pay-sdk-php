@@ -19,32 +19,32 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ProviderCreditSummary
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>ProviderId: string</li>
  * <li>ProviderCreditId: string</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ProviderCreditSummary extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ProviderCreditSummary
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>ProviderId: string</li>
      * <li>ProviderCreditId: string</li>
      *
@@ -52,38 +52,44 @@ class OffAmazonPaymentsService_Model_ProviderCreditSummary extends OffAmazonPaym
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'ProviderId' => array('FieldValue' => null, 'FieldType' => 'string'),
-        'ProviderCreditId' => array('FieldValue' => null, 'FieldType' => 'string'),
+        $this->_fields = array(
+            'ProviderId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            'ProviderCreditId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the ProviderId property.
-     * 
+     *
      * @return string ProviderId
      */
-    public function getProviderId() 
+    public function getProviderId()
     {
         return $this->_fields['ProviderId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderId property.
-     * 
+     *
      * @param string ProviderId
      * @return this instance
      */
-    public function setProviderId($value) 
+    public function setProviderId($value)
     {
         $this->_fields['ProviderId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderId and returns this instance
-     * 
+     *
      * @param string $value ProviderId
      * @return OffAmazonPaymentsService_Model_ProviderCreditSummary instance
      */
@@ -92,43 +98,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditSummary extends OffAmazonPaym
         $this->setProviderId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderId is set
-     * 
+     *
      * @return bool true if ProviderId  is set
      */
     public function isSetProviderId()
     {
         return !is_null($this->_fields['ProviderId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the ProviderCreditId property.
-     * 
+     *
      * @return string ProviderCreditId
      */
-    public function getProviderCreditId() 
+    public function getProviderCreditId()
     {
         return $this->_fields['ProviderCreditId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderCreditId property.
-     * 
+     *
      * @param string ProviderCreditId
      * @return this instance
      */
-    public function setProviderCreditId($value) 
+    public function setProviderCreditId($value)
     {
         $this->_fields['ProviderCreditId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderCreditId and returns this instance
-     * 
+     *
      * @param string $value ProviderCreditId
      * @return OffAmazonPaymentsService_Model_ProviderCreditSummary instance
      */
@@ -137,19 +143,16 @@ class OffAmazonPaymentsService_Model_ProviderCreditSummary extends OffAmazonPaym
         $this->setProviderCreditId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderCreditId is set
-     * 
+     *
      * @return bool true if ProviderCreditId  is set
      */
     public function isSetProviderCreditId()
     {
         return !is_null($this->_fields['ProviderCreditId']['FieldValue']);
     }
-
-
-
-
+    
 }

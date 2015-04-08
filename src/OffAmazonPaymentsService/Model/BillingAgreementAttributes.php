@@ -61,8 +61,7 @@ class OffAmazonPaymentsService_Model_BillingAgreementAttributes extends OffAmazo
                 'FieldValue' => null,
                 'FieldType' => 'OffAmazonPaymentsService_Model_SellerBillingAgreementAttributes'
             )
-        )
-        ;
+        );
         parent::__construct($data);
     }
 
@@ -198,4 +197,3 @@ class OffAmazonPaymentsService_Model_BillingAgreementAttributes extends OffAmazo
         return ! is_null($this->_fields['SellerBillingAgreementAttributes']['FieldValue']);
     }
 }
-?>

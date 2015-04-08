@@ -19,71 +19,74 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_SetOrderReferenceDetailsResult
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>OrderReferenceDetails: OffAmazonPaymentsService_Model_OrderReferenceDetails</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_SetOrderReferenceDetailsResult extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_SetOrderReferenceDetailsResult
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>OrderReferenceDetails: OffAmazonPaymentsService_Model_OrderReferenceDetails</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-
-        'OrderReferenceDetails' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_OrderReferenceDetails'),
-
+        $this->_fields = array(
+            
+            'OrderReferenceDetails' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_OrderReferenceDetails'
+            )
+            
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the OrderReferenceDetails.
-     * 
-     * @return OrderReferenceDetails OrderReferenceDetails
+     *
+     * @return OffAmazonPaymentsService_Model_OrderReferenceDetails OrderReferenceDetails
      */
-    public function getOrderReferenceDetails() 
+    public function getOrderReferenceDetails()
     {
         return $this->_fields['OrderReferenceDetails']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the OrderReferenceDetails.
-     * 
-     * @param OrderReferenceDetails OrderReferenceDetails
+     *
+     * @param OffAmazonPaymentsService_Model_OrderReferenceDetails OrderReferenceDetails
      * @return void
      */
-    public function setOrderReferenceDetails($value) 
+    public function setOrderReferenceDetails($value)
     {
         $this->_fields['OrderReferenceDetails']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the OrderReferenceDetails  and returns this instance
-     * 
-     * @param OrderReferenceDetails $value OrderReferenceDetails
+     *
+     * @param OffAmazonPaymentsService_Model_OrderReferenceDetails $value OrderReferenceDetails
      * @return OffAmazonPaymentsService_Model_SetOrderReferenceDetailsResult instance
      */
     public function withOrderReferenceDetails($value)
@@ -91,21 +94,17 @@ class OffAmazonPaymentsService_Model_SetOrderReferenceDetailsResult extends OffA
         $this->setOrderReferenceDetails($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if OrderReferenceDetails  is set
-     * 
+     *
      * @return bool true if OrderReferenceDetails property is set
      */
     public function isSetOrderReferenceDetails()
     {
         return !is_null($this->_fields['OrderReferenceDetails']['FieldValue']);
-
+        
     }
-
-
-
-
+    
 }
-?>

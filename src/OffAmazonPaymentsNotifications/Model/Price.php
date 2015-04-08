@@ -146,4 +146,3 @@ class OffAmazonPaymentsNotifications_Model_Price extends OffAmazonPayments_Model
         return !is_null($this->fields['CurrencyCode']['FieldValue']);
     }
 }
-?>

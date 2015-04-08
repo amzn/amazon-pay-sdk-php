@@ -119,4 +119,3 @@ class OffAmazonPaymentsNotifications_Model_IPNNotificationMetadata
         return self::SOURCE_MESSAGE_TYPE;
     }
 }
-?>

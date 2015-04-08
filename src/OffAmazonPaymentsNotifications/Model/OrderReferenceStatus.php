@@ -241,4 +241,3 @@ class OffAmazonPaymentsNotifications_Model_OrderReferenceStatus extends OffAmazo
         return !is_null($this->fields['ReasonDescription']['FieldValue']);
     }
 }
-?>

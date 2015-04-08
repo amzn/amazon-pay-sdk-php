@@ -38,7 +38,7 @@ require_once 'OffAmazonPaymentsService/Samples/ReverseProviderCreditSample.php';
 
 
 
-define(HTML_LB, "<br/>");
+define('HTML_LB', "<br/>");
 
 /**
  * Parent class for webserver based samples that contains common

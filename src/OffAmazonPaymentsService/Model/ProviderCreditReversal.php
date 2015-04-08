@@ -19,32 +19,32 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ProviderCreditReversal
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>ProviderId: string</li>
  * <li>CreditReversalAmount: OffAmazonPaymentsService_Model_Price</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ProviderCreditReversal extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ProviderCreditReversal
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>ProviderId: string</li>
      * <li>CreditReversalAmount: OffAmazonPaymentsService_Model_Price</li>
      *
@@ -52,40 +52,46 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversal extends OffAmazonPay
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'ProviderId' => array('FieldValue' => null, 'FieldType' => 'string'),
-
-        'CreditReversalAmount' => array('FieldValue' => null, 'FieldType' => 'OffAmazonPaymentsService_Model_Price'),
-
+        $this->_fields = array(
+            'ProviderId' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
+            ),
+            
+            'CreditReversalAmount' => array(
+                'FieldValue' => null,
+                'FieldType' => 'OffAmazonPaymentsService_Model_Price'
+            )
+            
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the ProviderId property.
-     * 
+     *
      * @return string ProviderId
      */
-    public function getProviderId() 
+    public function getProviderId()
     {
         return $this->_fields['ProviderId']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the ProviderId property.
-     * 
+     *
      * @param string ProviderId
      * @return this instance
      */
-    public function setProviderId($value) 
+    public function setProviderId($value)
     {
         $this->_fields['ProviderId']['FieldValue'] = $value;
         return $this;
     }
-
+    
     /**
      * Sets the value of the ProviderId and returns this instance
-     * 
+     *
      * @param string $value ProviderId
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversal instance
      */
@@ -94,43 +100,43 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversal extends OffAmazonPay
         $this->setProviderId($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if ProviderId is set
-     * 
+     *
      * @return bool true if ProviderId  is set
      */
     public function isSetProviderId()
     {
         return !is_null($this->_fields['ProviderId']['FieldValue']);
     }
-
+    
     /**
      * Gets the value of the CreditReversalAmount.
-     * 
+     *
      * @return Price CreditReversalAmount
      */
-    public function getCreditReversalAmount() 
+    public function getCreditReversalAmount()
     {
         return $this->_fields['CreditReversalAmount']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the CreditReversalAmount.
-     * 
+     *
      * @param Price CreditReversalAmount
      * @return void
      */
-    public function setCreditReversalAmount($value) 
+    public function setCreditReversalAmount($value)
     {
         $this->_fields['CreditReversalAmount']['FieldValue'] = $value;
         return;
     }
-
+    
     /**
      * Sets the value of the CreditReversalAmount  and returns this instance
-     * 
+     *
      * @param Price $value CreditReversalAmount
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversal instance
      */
@@ -139,20 +145,17 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversal extends OffAmazonPay
         $this->setCreditReversalAmount($value);
         return $this;
     }
-
-
+    
+    
     /**
      * Checks if CreditReversalAmount  is set
-     * 
+     *
      * @return bool true if CreditReversalAmount property is set
      */
     public function isSetCreditReversalAmount()
     {
         return !is_null($this->_fields['CreditReversalAmount']['FieldValue']);
-
+        
     }
-
-
-
-
+    
 }

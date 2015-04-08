@@ -335,4 +335,3 @@ interface  OffAmazonPaymentsService_Interface
     public function reverseProviderCredit($request);
 
 }
-?>

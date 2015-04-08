@@ -19,74 +19,81 @@
 /**
  *  @see OffAmazonPaymentsService_Model
  */
-require_once 'OffAmazonPaymentsService/Model.php';  
+require_once 'OffAmazonPaymentsService/Model.php';
 
-    
+
 
 /**
  * OffAmazonPaymentsService_Model_ProviderCreditReversalList
- * 
+ *
  * Properties:
  * <ul>
- * 
+ *
  * <li>member: OffAmazonPaymentsService_Model_ProviderCreditReversal</li>
  *
  * </ul>
- */ 
+ */
 class OffAmazonPaymentsService_Model_ProviderCreditReversalList extends OffAmazonPaymentsService_Model
 {
-
+    
     /**
      * Construct new OffAmazonPaymentsService_Model_ProviderCreditReversalList
-     * 
-     * @param mixed $data DOMElement or Associative Array to construct from. 
-     * 
+     *
+     * @param mixed $data DOMElement or Associative Array to construct from.
+     *
      * Valid properties:
      * <ul>
-     * 
+     *
      * <li>member: OffAmazonPaymentsService_Model_ProviderCreditReversal</li>
      *
      * </ul>
      */
     public function __construct($data = null)
     {
-        $this->_fields = array (
-        'member' => array('FieldValue' => array(), 'FieldType' => array('OffAmazonPaymentsService_Model_ProviderCreditReversal')),
+        $this->_fields = array(
+            'member' => array(
+                'FieldValue' => array(),
+                'FieldType' => array(
+                    'OffAmazonPaymentsService_Model_ProviderCreditReversal'
+                )
+            )
         );
         parent::__construct($data);
     }
-
-        /**
+    
+    /**
      * Gets the value of the member.
-     * 
+     *
      * @return array of ProviderCreditReversal member
      */
-    public function getmember() 
+    public function getmember()
     {
         return $this->_fields['member']['FieldValue'];
     }
-
+    
     /**
      * Sets the value of the member.
-     * 
+     *
      * @param mixed ProviderCreditReversal or an array of ProviderCreditReversal member
      * @return this instance
      */
-    public function setmember($member) 
+    public function setmember($member)
     {
         if (!$this->_isNumericArray($member)) {
-            $member =  array ($member);    
+            $member = array(
+                $member
+            );
         }
         $this->_fields['member']['FieldValue'] = $member;
         return $this;
     }
-
-
+    
+    
     /**
-     * Sets single or multiple values of member list via variable number of arguments. 
+     * Sets single or multiple values of member list via variable number of arguments.
      * For example, to set the list with two elements, simply pass two values as arguments to this function
      * <code>withmember($member1, $member2)</code>
-     * 
+     *
      * @param ProviderCreditReversal  $providerCreditReversalArgs one or more member
      * @return OffAmazonPaymentsService_Model_ProviderCreditReversalList  instance
      */
@@ -96,21 +103,18 @@ class OffAmazonPaymentsService_Model_ProviderCreditReversalList extends OffAmazo
             $this->_fields['member']['FieldValue'][] = $member;
         }
         return $this;
-    }   
-
-
-
+    }
+    
+    
+    
     /**
      * Checks if member list is non-empty
-     * 
+     *
      * @return bool true if member list is non-empty
      */
     public function isSetmember()
     {
-        return count ($this->_fields['member']['FieldValue']) > 0;
+        return count($this->_fields['member']['FieldValue']) > 0;
     }
-
-
-
-
+    
 }

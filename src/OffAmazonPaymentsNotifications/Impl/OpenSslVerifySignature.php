@@ -18,6 +18,8 @@
 require_once 'OffAmazonPaymentsNotifications/Impl/VerifySignature.php';
 require_once 'OffAmazonPaymentsNotifications/InvalidMessageException.php';
 require_once 'OffAmazonPaymentsNotifications/Impl/Certificate.php';
+require_once 'OffAmazonPayments/HttpRequest/IHttpRequestFactory.php';
+require_once 'OffAmazonPayments/HttpRequest/HttpException.php';
 
 /**
  * OpenSSL Implemntation of the verify signature algorithm
@@ -25,15 +27,32 @@ require_once 'OffAmazonPaymentsNotifications/Impl/Certificate.php';
  */
 class OpenSslVerifySignature implements VerifySignature
 {
+
+    /**
+     * Expected value for the CN field in an
+     * Amazon issued certificate
+     */
+    private $_expectedCnName = null;
+
+    /**
+     * IHttpRequestFactory for creating http requests
+     *
+     */
+    private $_httpRequestFactory = null;
+
     /**
      * Create a new instance of the openssl implementation of
      * verify signature
      * 
+     * @param string expectedCnName for Amazon cert
+     * @param IHttpRequestFactory httpRequestFactory factory to create http requests
+     *
      * @return void
      */    
-    public function __construct()
+    public function __construct($expectedCnName, $httpRequestFactory)
     {
-
+        $this->_expectedCnName = $expectedCnName;
+        $this->_httpRequestFactory = $httpRequestFactory;
     }
 
     /**
@@ -78,7 +97,7 @@ class OpenSslVerifySignature implements VerifySignature
 
         if ($certKey === False) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
-                "Unable to extract public key from cert " . $cert);
+                "Unable to extract public key from cert");
         }
 
         try {
@@ -116,11 +135,7 @@ class OpenSslVerifySignature implements VerifySignature
      */
     private function _verifyCertificateSubject($certificateSubject)
     {
-        if ( (strcmp($certificateSubject["CN"], "sns.amazonaws.com") !== 0) ||
-            ((strcmp($certificateSubject["O"], "Amazon.com Inc.") !== 0) && (strcmp($certificateSubject["O"], "Amazon.com, Inc.") !== 0)) ||
-             (strcmp($certificateSubject["L"], "Seattle") !== 0) ||
-             (strcmp($certificateSubject["ST"], "Washington") !== 0) ||
-             (strcmp($certificateSubject["C"], "US") !== 0) ) {
+        if ( strcmp($certificateSubject["CN"], $this->_expectedCnName) ) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
                 "Unable to verify certificate issued by Amazon - error with certificate subject"
             );
@@ -140,22 +155,12 @@ class OpenSslVerifySignature implements VerifySignature
     private function _getCertificateFromCertifcatePath($certificatePath)
     {
         try {
-            $cert = file_get_contents($certificatePath);
-        } catch (Exception $ex) {
+            return $this->_httpRequestFactory->createGetRequest($certificatePath)->execute();
+        } catch (OffAmazonPayments_HttpException $ex) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
-                "Error with signature validation - unable to request signing ".
-                "certificate at " . $certificatePath, null, $ex
-            );
+                "Error with signature validation - unable to request signing certificate at " . $certificatePath . 
+                    " - underlying exception of " . $ex->getMessage()
+                );
         }
-            
-        if ($cert === false) {
-            throw new OffAmazonPaymentsNotifications_InvalidMessageException(
-                "Error with signature validation - unable to request signing ".
-                "certificate at " . $certificatePath
-            );
-        }
-            
-        return $cert;
     }
 }
-?>

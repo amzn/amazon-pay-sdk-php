@@ -157,4 +157,3 @@ class OffAmazonPaymentsNotifications_Model_CaptureNotification
         return $xml;
     }
 }
-?>
