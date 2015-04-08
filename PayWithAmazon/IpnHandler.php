@@ -72,6 +72,7 @@ class IpnHandler
     /* Setter function
      * sets the value for the key if the key exists in _ipnConfig
      */
+    
     public function __set($name, $value)
     {
         if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
@@ -84,6 +85,7 @@ class IpnHandler
     /* Getter function
      * returns the value for the key if the key exists in _ipnConfig
      */
+    
     public function __get($name)
     {
         if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
@@ -126,6 +128,7 @@ class IpnHandler
      *
      * @return string error message
      */
+    
     private function _getErrorMessageForJsonError($json_error)
     {
         switch ($json_error) {
@@ -204,6 +207,7 @@ class IpnHandler
      *
      * @return bool true if valid
      */
+    
     private function _constructAndVerifySignature()
     {
 
@@ -222,12 +226,12 @@ class IpnHandler
      *
      * gets the certificate from the $certificatePath using Curl
      */
+    
     private function _getCertificate($certificatePath)
     {
         $httpCurlRequest  = new HttpCurl($this->_ipnConfig);
 
-	$httpCurlRequest->_httpGet($certificatePath);
-	$response = $httpCurlRequest->getResponse();
+	$response = $httpCurlRequest->httpGet($certificatePath);
 
         return $response;
     }
@@ -256,8 +260,7 @@ class IpnHandler
             if (is_null($certSubject)) {
                 throw new \Exception("Error with certificate - subject cannot be found");
             }
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             throw new \Exception("Unable to verify certificate - error with the certificate subject", null, $ex);
         }
 
@@ -268,8 +271,7 @@ class IpnHandler
         $result = -1;
         try {
             $result = openssl_verify($this->_signatureFields, $signature, $certKey, OPENSSL_ALGO_SHA1);
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             throw new \Exception("Unable to verify signature - error with the verification algorithm", null, $ex);
         }
 
@@ -286,6 +288,7 @@ class IpnHandler
      *
      * @return string field contents if found
      */
+    
     public function _getMandatoryField($fieldName)
     {
         $value = $this->_getField($fieldName);
@@ -302,6 +305,7 @@ class IpnHandler
      *
      * @return string field contents if found, null otherwise
      */
+    
     public function _getField($fieldName)
     {
         if (array_key_exists($fieldName, $this->_snsMessage)) {
@@ -313,6 +317,7 @@ class IpnHandler
 
     /* returnMessage() - JSON decode the raw [Message] portion of the IPN
      */
+    
     public function returnMessage()
     {
         return json_decode($this->_snsMessage['Message'], true);
@@ -328,6 +333,7 @@ class IpnHandler
      * Topic ARN - Topic of the IPN
      * @return response in JSON format
      */
+    
     public function toJson()
     {
         $response = $this->_simpleXmlObject();
@@ -347,6 +353,7 @@ class IpnHandler
      * Merge the rema
      * @return response in array format
      */
+    
     public function toArray()
     {
         $response = $this->_simpleXmlObject();
@@ -391,6 +398,7 @@ class IpnHandler
     /* _getRemainingIpnFields()
      * Gets the remaining fields of the IPN to be later appeded to the return message
      */
+    
     private function _getRemainingIpnFields()
     {
         $ipnMessage = $this->returnMessage();

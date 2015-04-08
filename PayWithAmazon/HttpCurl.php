@@ -3,10 +3,10 @@
 /* class HttpCurl
  * Handles Curl POST function for all requests
  */
+
 class HttpCurl
 {
     private $_url = null;
-    private $_response;
     private $_config = array();
     private $_header = false;
     private $_accessToken = null;
@@ -14,21 +14,16 @@ class HttpCurl
     /* Takes user configuration array as input
      * Takes configuration for API call or IPN config
      */
+    
     public function __construct($config = null)
     {
         $this->_config = $config;
         
     }
     
-    /* Getter for response of the curl POST
-     */
-    public function getResponse()
-    {
-        return $this->_response;
-    }
-    
     /* Setter for boolean header to get the user info
      */
+    
     public function setHttpHeader()
     {
         $this->_header = true;
@@ -76,12 +71,14 @@ class HttpCurl
         
         return $ch;
     }
+    
     /* POST using curl for the following situations
      * 1. API calls
      * 2. IPN certificate retrieval
      * 3. Get User Info
      */
-    public function _httpPost($url, $userAgent = null, $parameters = null)
+    
+    public function httpPost($url, $userAgent = null, $parameters = null)
     {
         $ch = $this->_commonCurlParams($url,$userAgent);
         
@@ -89,14 +86,16 @@ class HttpCurl
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, true);
         
-       $this->_execute($ch);
+        $response = $this->_execute($ch);
+        return $response;
     }
     
     /* GET using curl for the following situations
      * 1. IPN certificate retrieval
      * 3. Get User Info
      */
-    public function _httpGet($url, $userAgent = null)
+    
+    public function httpGet($url, $userAgent = null)
     {
         $ch = $this->_commonCurlParams($url,$userAgent);
         /*
@@ -108,12 +107,15 @@ class HttpCurl
             ));
         }
         
-        $this->_execute($ch);
+        $response = $this->_execute($ch);
+        return $response;
     }
+    
+    /* Execure Curl
+     */
     
     private function _execute($ch)
     {
-        
         $response = '';
         if (!$response = curl_exec($ch)) {
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
@@ -121,6 +123,6 @@ class HttpCurl
             throw new \Exception($error_msg);
         }
         curl_close($ch);
-        $this->_response = $response;
+        return $response;
     }
 }

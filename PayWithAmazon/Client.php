@@ -41,7 +41,7 @@ class Client
 				     'na' => 'mws.amazonservices.com',
 				     'jp' => 'mws.amazonservices.jp');
     
-    //Prooduction profile end points to get the user information
+    //Production profile end points to get the user information
     private $_liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
 					  'us' => 'https://api.amazon.com',
 					  'de' => 'https://api.amazon.de',
@@ -65,6 +65,7 @@ class Client
      * Takes JSON file path with configuration information as input
      * Validates the user configuation array against existing _config array
      */
+    
     public function __construct($config = null)
     {
         if (!is_null($config)) {
@@ -105,6 +106,7 @@ class Client
      * if they match the values are taken else throws exception
      * strict case match is not performed
      */
+    
     private function _checkConfigKeys($config)
     {
         $config = array_change_key_case($config, CASE_LOWER);
@@ -127,6 +129,7 @@ class Client
      *
      * @return string error message
      */
+    
     private function _getErrorMessageForJsonError($json_error)
     {
         switch ($json_error) {
@@ -151,6 +154,7 @@ class Client
     /* Setter for sandbox
      * sets the boolean value for _config['sandbox'] variable
      */
+    
     public function setSandbox($value)
     {
         if (is_bool($value)) {
@@ -163,6 +167,7 @@ class Client
     /* Setter for _config['client_id']
      * sets the  value for _config['client_id'] variable
      */
+    
     public function setClientId($value)
     {
         if (!empty($value)) {
@@ -179,9 +184,10 @@ class Client
      * @param $proxy['proxy_user_name'] - if your proxy requeired a username
      * @param $proxy['proxy_user_password'] - if your proxy requeired a passowrd
      */
+    
     public function setProxy($proxy)
     {
-        if (!empty($proxy['proxy_user_host']));
+        if (!empty($proxy['proxy_user_host']))
 	    $this->_config['proxy_user_host'] = $proxy['proxy_user_host'];
         
         if (!empty($proxy['proxy_user_port']))
@@ -206,6 +212,7 @@ class Client
     /* Getter
      * Gets the value for the key if the key exists in _config
      */
+    
     public function __get($name)
     {
         if (array_key_exists(strtolower($name), $this->_config)) {
@@ -229,6 +236,7 @@ class Client
      * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
      * @param $access_token [String]
      */
+    
     public function getUserInfo($access_token)
     {
         //Get the correct Profile Endpoint URL based off the country/region provided in the _config['region']
@@ -244,40 +252,42 @@ class Client
         
         $httpCurlRequest = new HttpCurl();
         
-        $httpCurlRequest->_httpGet($url);
-        $response = $httpCurlRequest->getResponse();
+        $response = $httpCurlRequest->httpGet($url);
         $data     = json_decode($response);
         
         if ($data->aud != $this->_config['client_id']) {
-            // the access token does not belong to us
+            //the access token does not belong to us
             throw new \Exception('The Access token entered is incorrect');
         }
         
-        // exchange the access token for user profile
+        //exchange the access token for user profile
         $url             = $this->_profileEndpoint . '/user/profile';
         $httpCurlRequest = new HttpCurl();
         
         $httpCurlRequest->setAccessToken($access_token);
         $httpCurlRequest->setHttpHeader(true);
-        $httpCurlRequest->_httpGet($url);
-        
-        
-        $response = $httpCurlRequest->getResponse();
+        $response = $httpCurlRequest->httpGet($url);
+	
         $userInfo = json_decode($response, true);
         return $userInfo;
     }
     
     /*
-     * _setParameters - sets the parameters array with non empty values from the requestParameters array sent to API calls.
+     * _setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
      */
-    private function _setParameters($parameters, $fieldMappings, $requestParameters)
+    
+    private function _setParametersAndPost($parameters, $fieldMappings, $requestParameters)
     {
-	// for loop to take all the non empty parameters in the $requestParameters and add it into the $parameters array
-	// if the keys are matched from $requestParameters array with the $fieldMappings array 
+	//for loop to take all the non empty parameters in the $requestParameters and add it into the $parameters array
+	//if the keys are matched from $requestParameters array with the $fieldMappings array 
         foreach ($requestParameters as $parm => $value) {
-            if (array_key_exists($parm, $fieldMappings) && trim($value)!='') {
+	    if(!is_array($value)){
+		$value = trim($value);
+	    }
 		
-		// for variables that take boolean values, strtolower them
+            if (array_key_exists($parm, $fieldMappings) && $value!='') {
+		
+		//for variables that take boolean values, strtolower them
 		if(is_bool($value))
 		    $value = strtolower($value);
                 
@@ -286,8 +296,17 @@ class Client
         }
         
         $parameters = $this->_setDefaultValues($parameters, $fieldMappings, $requestParameters);
-        
-	// Call the signature and Post function to perform the actions. Returns XML in array format
+	$responseObject = $this->_calculateSignatureAndPost($parameters);
+	
+	return $responseObject;
+    }
+    
+    /* _calculateSignatureAndPost - convert the Parameters array to string and curl POST the parameters to MWS
+     */
+    
+    private function _calculateSignatureAndPost($parameters)
+    {
+	//Call the signature and Post function to perform the actions. Returns XML in array format
         $parametersString = $this->_calculateSignatureAndParametersToString($parameters);
 	
 	//POST using curl the String converted Parameters
@@ -348,7 +367,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         return ($responseObject);
     }
     
@@ -385,7 +404,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -409,7 +428,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -435,7 +454,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -462,7 +481,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -488,7 +507,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -526,7 +545,7 @@ class Client
             'mws_auth_token' 		 => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -550,7 +569,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -584,7 +603,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -609,7 +628,7 @@ class Client
             'mws_auth_token' 	=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -643,7 +662,7 @@ class Client
             'mws_auth_token' 	  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -668,7 +687,7 @@ class Client
             'mws_auth_token' 	=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -695,7 +714,7 @@ class Client
             'mws_auth_token' => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -738,7 +757,7 @@ class Client
             'mws_auth_token' 		=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -764,7 +783,7 @@ class Client
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -801,7 +820,7 @@ class Client
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -825,7 +844,7 @@ class Client
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -849,7 +868,7 @@ class Client
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
@@ -899,7 +918,7 @@ class Client
             'mws_auth_token' 			=> 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
 	return ($responseObject);
     }
@@ -912,7 +931,7 @@ class Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
-    public function CloseBillingAgreement($requestParameters = array())
+    public function closeBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
         $parameters['Action'] = 'CloseBillingAgreement';
@@ -925,12 +944,12 @@ class Client
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
         
-        $responseObject = $this->_setParameters($parameters, $fieldMappings, $requestParameters);
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         
         return ($responseObject);
     }
     
-    /* Charge convenience method
+    /* charge convenience method
      * performs the API calls
      * 1. SetOrderReferenceDetails / SetBillingAgreementDetails
      * 2. ConfirmOrderReference / ConfirmBillingAgreement
@@ -947,98 +966,94 @@ class Client
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     
-    public function Charge($requestParameters = array())
-    {
+    public function charge($requestParameters = array()) {
         $requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
-        
-        //boolean to check if the input was Amazon OrderReference ID
-        $oro = false;
-        
-        //boolean to check if the input was Amazon Billing Agreement ID
-        $ba            = false;
-        
-        $setParameters       = $requestParameters;
-        $authorizeParameters = $requestParameters;
-        $confirmParameters   = $requestParameters;
-        
-        // check whether amazon_reference_id was an Order Reference ID or a Billing Agreement ID
+	
+	$setParameters = $authorizeParameters = $confirmParameters = $requestParameters;
+	
+        $chargeType = '';
+
         if (!empty($requestParameters['amazon_reference_id'])) {
-            if (substr($requestParameters['amazon_reference_id'], 0, 3) === 'P01' || substr($requestParameters['amazon_reference_id'], 0, 3) === 'S01') {
-                $oro                                              = true;
-                $setParameters['amazon_order_reference_id']       = $requestParameters['amazon_reference_id'];
-                $authorizeParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
-                $confirmParameters['amazon_order_reference_id']   = $requestParameters['amazon_reference_id'];
-            } elseif (substr($requestParameters['amazon_reference_id'], 0, 3) === 'B01' || substr($requestParameters['amazon_reference_id'], 0, 3) === 'C01') {
-                $ba                                                 = true;
-                $setParameters['amazon_billing_agreement_id']       = $requestParameters['amazon_reference_id'];
-                $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
-                $confirmParameters['amazon_billing_agreement_id']   = $requestParameters['amazon_reference_id'];
-            } else{
-		throw new \Exception('Invalid Amazon Reference ID');
-	    }
+            switch (substr(strtoupper($requestParameters['amazon_reference_id']), 0, 1)) {
+                case 'P':
+                case 'S':
+                    $chargeType = 'oro';
+                    $setParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    $authorizeParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    $confirmParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    break;
+                case 'B':
+                case 'C':
+                    $chargeType = 'ba';
+                    $setParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    $confirmParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    break;
+                default:
+                    throw new \Exception('Invalid Amazon Reference ID');
+            }
         } else {
             throw new \Exception('key amazon_reference_id is null and is a required parameter');
         }
+	
+	//set the other parameters if the values are present
+        $setParameters['amount'] = !empty($requestParameters['charge_amount']) ? $requestParameters['charge_amount'] : '';
+        $authorizeParameters['authorization_amount'] = !empty($requestParameters['charge_amount']) ? $requestParameters['charge_amount'] : '';
+
+        $setParameters['currency_code'] = !empty($requestParameters['charge_currency_code']) ? $requestParameters['charge_currency_code'] : '';
+        $authorizeParameters['currency_code'] = !empty($requestParameters['charge_currency_code']) ? $requestParameters['charge_currency_code'] : '';
+
+        $setParameters['seller_note'] = !empty($requestParameters['charge_note']) ? $requestParameters['charge_note'] : '';
+        $authorizeParameters['seller_authorization_note'] = !empty($requestParameters['charge_note']) ? $requestParameters['charge_note'] : '';
+        $authorizeParameters['seller_note'] = !empty($requestParameters['charge_note']) ? $requestParameters['charge_note'] : '';
+
+        $setParameters['seller_order_id'] = !empty($requestParameters['charge_order_id']) ? $requestParameters['charge_order_id'] : '';
+        $setParameters['seller_billing_agreement_id'] = !empty($requestParameters['charge_order_id']) ? $requestParameters['charge_order_id'] : '';
+        $authorizeParameters['seller_order_id'] = !empty($requestParameters['charge_order_id']) ? $requestParameters['charge_order_id'] : '';
+
+        $authorizeParameters['capture_now'] = 'true';
+	
+	$response = $this->_makeChargeCalls($chargeType,$setParameters,$confirmParameters,$authorizeParameters);
+	return $response;
         
-        if (!empty($requestParameters['charge_amount'])) {
-            $setParameters['amount']                     = $requestParameters['charge_amount'];
-            $authorizeParameters['authorization_amount'] = $requestParameters['charge_amount'];
-        }
-        if (!empty($requestParameters['charge_currency_code'])) {
-            $setParameters['currency_code']       = $requestParameters['charge_currency_code'];
-            $authorizeParameters['currency_code'] = $requestParameters['charge_currency_code'];
-        }
-        if (!empty($requestParameters['charge_note'])) {
-            $setParameters['seller_note']                     = $requestParameters['charge_note'];
-            $authorizeParameters['seller_authorization_note'] = $requestParameters['charge_note'];
-            $authorizeParameters['seller_note']               = $requestParameters['charge_note'];
-        }
-        if (!empty($requestParameters['charge_order_id'])) {
-            $setParameters['seller_order_id']             = $requestParameters['charge_order_id'];
-            $setParameters['seller_billing_agreement_id'] = $requestParameters['charge_order_id'];
-            $authorizeParameters['seller_order_id']       = $requestParameters['charge_order_id'];
-            
-        }
-        
-        $authorizeParameters['capture_now'] = true;
-        
-        if ($oro) {
-            $response = $this->setOrderReferenceDetails($setParameters);
-            
-            if ($this->_success) {
-                $this->confirmOrderReference($confirmParameters);
-            }
-            if ($this->_success) {
-                $response = $this->Authorize($authorizeParameters);
-            }
-            return $response;
-            
-        } elseif ($ba) {
-            //Get the Billing Agreement details and feed the response object to the ResponseParser
-            $responseObj = $this->getBillingAgreementDetails($setParameters);
-            
-            // Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
-            // $baStatus is an aray containing the State of the Billing Agreement
-            $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
-            
-            if ($baStatus['State'] != 'Open') {
-                $response = $this->SetBillingAgreementDetails($setParameters);
-                
+    }
+    
+    /* _makeChargeCalls - makes API calls based off the charge type (if an ORO or BA)
+     */
+    
+    private function _makeChargeCalls($chargeType,$setParameters,$confirmParameters,$authorizeParameters)
+    {
+	
+	switch ($chargeType) {
+            case 'oro':
+                $response = $this->setOrderReferenceDetails($setParameters);
                 if ($this->_success) {
-                    $response = $this->ConfirmBillingAgreement($confirmParameters);
+                    $this->confirmOrderReference($confirmParameters);
                 }
-            }
-	    //check the Billing agreement status again before making the Authorization.
-	    $responseObj = $this->getBillingAgreementDetails($setParameters);
-            $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
-	    
-            if ($this->_success && $baStatus['State'] === 'Open') {
-                $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
-            }
+                if ($this->_success) {
+                    $response = $this->Authorize($authorizeParameters);
+                }
+                return $response;
+            case 'ba':
+                //Get the Billing Agreement details and feed the response object to the ResponseParser
+                $responseObj = $this->getBillingAgreementDetails($setParameters);
+                //Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
+                //$baStatus is an aray containing the State of the Billing Agreement
+                $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
+                if ($baStatus['State'] != 'Open') {
+                    $response = $this->SetBillingAgreementDetails($setParameters);
+                    if ($this->_success) {
+                        $response = $this->ConfirmBillingAgreement($confirmParameters);
+                    }
+                }
+                //check the Billing agreement status again before making the Authorization.
+                $responseObj = $this->getBillingAgreementDetails($setParameters);
+                $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
+                if ($this->_success && $baStatus['State'] === 'Open') {
+                    $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
+                }
             return $response;
         }
-        
-        
     }
     
     /* Create an Array of required parameters, sort them
@@ -1175,7 +1190,7 @@ class Client
     }
     
     /**
-     * _invokePost takes the parameters and invokes the _httpPost function to POST the parameters
+     * _invokePost takes the parameters and invokes the httpPost function to POST the parameters
      * exponential retries on error 500 and 503
      * The response from the POST is an XML which is converted to Array
      */
@@ -1193,8 +1208,7 @@ class Client
                     $this->_constructUserAgentHeader();
                     
                     $httpCurlRequest = new HttpCurl($this->_config);
-                    $httpCurlRequest->_httpPost($this->_mwsServiceUrl, $this->_userAgent, $parameters);
-                    $response = $httpCurlRequest->getResponse();
+		    $response = $httpCurlRequest->httpPost($this->_mwsServiceUrl, $this->_userAgent, $parameters);
 		    
 		    //split the API response into Response Body and the other parts of the response into other
                     list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
@@ -1220,15 +1234,11 @@ class Client
                     } else {
                         $shouldRetry = false;
                     }
-                }
-                
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
                     throw $e;
                 }
             } while ($shouldRetry);
-        }
-        
-        catch (\Exception $se) {
+        } catch (\Exception $se) {
             throw $se;
         }
         
