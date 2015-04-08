@@ -111,7 +111,7 @@ class HttpCurl
         return $response;
     }
     
-    /* Execure Curl
+    /* Execute Curl request
      */
     
     private function _execute($ch)
