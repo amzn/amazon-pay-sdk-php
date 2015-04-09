@@ -274,6 +274,8 @@ class Client
     
     /*
      * _setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
+     * If Marketplace provider credit details are entered
+     * _setProviderCreditDetails or _setReverseProviderCreditDetails is called to set the values.
      */
     
     private function _setParametersAndPost($parameters, $fieldMappings, $requestParameters)
@@ -281,17 +283,29 @@ class Client
 	//for loop to take all the non empty parameters in the $requestParameters and add it into the $parameters array
 	//if the keys are matched from $requestParameters array with the $fieldMappings array 
         foreach ($requestParameters as $parm => $value) {
-	    if(!is_array($value)){
+	    
+	    //provider credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
+	    if(!is_array($value)) {
 		$value = trim($value);
 	    }
 		
             if (array_key_exists($parm, $fieldMappings) && $value!='') {
 		
-		//for variables that take boolean values, strtolower them
-		if(is_bool($value))
+		// for variables that take boolean values, strtolower them
+		if(is_bool($value)) {
 		    $value = strtolower($value);
-                
-		$parameters[$fieldMappings[$parm]] = $value;
+		} elseif(is_array($value)) {
+		    
+		    //if the parameter is related to Market place provider credit, call the respective functions to set the values
+		    if($parm === 'provider_credit') {
+			$parameters = $this->_setProviderCreditDetails($parameters,$value);
+		    } elseif ($parm === 'reverse_provider_credit') {
+			$parameters = $this->_setReverseProviderCreditDetails($parameters,$value);
+		    }
+		    
+		} else{
+		    $parameters[$fieldMappings[$parm]] = $value;
+		}
             }
         }
         
@@ -312,7 +326,7 @@ class Client
 	//POST using curl the String converted Parameters
 	$response = $this->_invokePost($parametersString);
 	
-	//send this response as a args to ResponseParser class which will return the object of the class.
+	//send this response as args to ResponseParser class which will return the object of the class.
         $responseObject = new ResponseParser($response);
         return $responseObject;
     }
@@ -344,6 +358,84 @@ class Client
         }
         
         return $parameters;
+    }
+    
+    /* _setProviderCreditDetails - sets the provider credit details sent via the Capture or Authoriza API calls
+     * @param ProviderId - [String]
+     * @param credit_amount - [String]
+     * @optional currency_code - [String]
+     */
+    
+    private function _setProviderCreditDetails($parameters,$providerCreditInfo)
+    {
+	$provider_index = 0;
+	$provider_string = 'ProviderCreditList.member.';
+        
+        $fieldMappings = array(
+            'provider_id'   => 'ProviderId',
+            'credit_amount' => 'CreditAmount.Amount',
+            'currency_code' => 'CreditAmount.CurrencyCode'
+        );
+	 
+	foreach ($providerCreditInfo as $key => $value)
+	 {
+	    $value = array_change_key_case($value, CASE_LOWER);
+	    $provider_index = $provider_index + 1;
+	    
+	    foreach ($value as $parm => $val)
+	    {
+		if (array_key_exists($parm, $fieldMappings) && trim($val)!='') {
+		    $parameters[$provider_string.$provider_index. '.' .$fieldMappings[$parm]] = $val;
+		}
+	    }
+	    
+	    //if currency code is not entered take it from the _config array
+	    if(empty($parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']]))
+	    {
+		$parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']] = strtoupper($this->_config['currency_code']);
+	    }
+	}
+	
+	return $parameters;
+    }
+    
+    /* _setReverseProviderCreditDetails - sets the reverse provider credit details sent via the Refund API call.
+     * @param ProviderId - [String]
+     * @param credit_amount - [String]
+     * @optional currency_code - [String]
+     */
+    
+    private function _setReverseProviderCreditDetails($parameters,$providerCreditInfo)
+    {
+	$provider_index = 0;
+	$provider_string = 'ProviderCreditReversalList.member.';
+        
+        $fieldMappings = array(
+            'provider_id' 	   	=> 'ProviderId',
+            'credit_reversal_amount' 	=> 'CreditReversalAmount.Amount',
+            'currency_code' 		=> 'CreditReversalAmount.CurrencyCode'
+        );
+	
+	foreach ($providerCreditInfo as $key => $value)
+	{
+	    $value = array_change_key_case($value, CASE_LOWER);
+	    $provider_index = $provider_index + 1;
+	    
+	    foreach ($value as $parm => $val)
+	    {
+		if (array_key_exists($parm, $fieldMappings) && trim($val)!='') {
+		    $parameters[$provider_string.$provider_index. '.' .$fieldMappings[$parm]] = $val;
+		}
+	    }
+	    
+	    //if currency code is not entered take it from the _config array
+	    if(empty($parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']]))
+	    {
+		$parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']] = strtoupper($this->_config['currency_code']);
+	    }
+	}
+	
+	return $parameters;
     }
     
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
@@ -521,6 +613,7 @@ class Client
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters['authorization_reference_id'] [String]
      * @optional requestParameters['capture_now'] [String]
+     * @param requestParameters[provider_credit'] - [array (array())]
      * @optional requestParameters['seller_authorization_note'] [String]
      * @optional requestParameters['transaction_timeout'] [String] - Defaults to 1440 minutes
      * @optional requestParameters['soft_descriptor'] - [String]
@@ -539,6 +632,7 @@ class Client
             'currency_code' 		 => 'AuthorizationAmount.CurrencyCode',
             'authorization_reference_id' => 'AuthorizationReferenceId',
             'capture_now' 		 => 'CaptureNow',
+	    'provider_credit'		 => array(),
             'seller_authorization_note'  => 'SellerAuthorizationNote',
             'transaction_timeout' 	 => 'TransactionTimeout',
             'soft_descriptor' 		 => 'SoftDescriptor',
@@ -582,6 +676,7 @@ class Client
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters[capture_reference_id'] - [String]
+     * @param requestParameters[provider_credit'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -598,6 +693,7 @@ class Client
             'capture_amount' 		=> 'CaptureAmount.Amount',
             'currency_code' 		=> 'CaptureAmount.CurrencyCode',
             'capture_reference_id' 	=> 'CaptureReferenceId',
+	    'provider_credit'		=> array(),
             'seller_capture_note' 	=> 'SellerCaptureNote',
             'soft_descriptor' 		=> 'SoftDescriptor',
             'mws_auth_token' 		=> 'MWSAuthToken'
@@ -641,6 +737,7 @@ class Client
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
+     * @param requestParameters['reverse_provider_credit'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -652,14 +749,15 @@ class Client
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
         
         $fieldMappings = array(
-            'merchant_id' 	  => 'SellerId',
-            'amazon_capture_id'   => 'AmazonCaptureId',
-            'refund_reference_id' => 'RefundReferenceId',
-            'refund_amount' 	  => 'RefundAmount.Amount',
-            'currency_code' 	  => 'RefundAmount.CurrencyCode',
-            'seller_refund_note'  => 'SellerRefundNote',
-            'soft_descriptor' 	  => 'SoftDescriptor',
-            'mws_auth_token' 	  => 'MWSAuthToken'
+            'merchant_id' 	  	=> 'SellerId',
+            'amazon_capture_id'   	=> 'AmazonCaptureId',
+            'refund_reference_id' 	=> 'RefundReferenceId',
+            'refund_amount' 	  	=> 'RefundAmount.Amount',
+            'currency_code' 	  	=> 'RefundAmount.CurrencyCode',
+	    'reverse_provider_credit'	=> array(),
+            'seller_refund_note'  	=> 'SellerRefundNote',
+            'soft_descriptor' 	  	=> 'SoftDescriptor',
+            'mws_auth_token' 	  	=> 'MWSAuthToken'
         );
         
         $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
@@ -1054,6 +1152,88 @@ class Client
                 }
             return $response;
         }
+    }
+    
+    /* GetProviderCreditDetails API Call - Get the details of the Marketplace provider credit.
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_provider_credit_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    
+    public function getProviderCreditDetails($requestParameters = array())
+    {
+	
+	$parameters           = array();
+        $parameters['Action'] = 'GetProviderCreditDetails';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+        
+        $fieldMappings = array(
+            'merchant_id' 		=> 'SellerId',
+            'amazon_provider_credit_id' => 'AmazonProviderCreditId',
+            'mws_auth_token' 		=> 'MWSAuthToken'
+        );
+        
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        
+        return ($responseObject);
+    }
+    
+    /* GetProviderCreditReversalDetails API Call - Get the details of the Marketplace provider reversal credit.
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_provider_credit_reversal_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    
+    public function getProviderCreditReversalDetails($requestParameters = array())
+    {
+	
+	$parameters           = array();
+        $parameters['Action'] = 'GetProviderCreditReversalDetails';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+        
+        $fieldMappings = array(
+            'merchant_id' 		  	 => 'SellerId',
+            'amazon_provider_credit_reversal_id' => 'AmazonProviderCreditReversalId',
+            'mws_auth_token' 		  	 => 'MWSAuthToken'
+        );
+        
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        
+        return ($responseObject);
+    }
+    
+    /* ReverseProviderCredit API Call - Reverse the provider fee charged back.
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['amazon_provider_credit_id'] - [String]
+     * @optional requestParameters['credit_reversal_reference_id'] - [String]
+     * @param requestParameters['credit_reversal_amount'] - [String]
+     * @optional requestParameters['currency_code'] - [String]
+     * @optional requestParameters['credit_reversal_note'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function reverseProviderCredit($requestParameters = array())
+    {
+	
+	$parameters           = array();
+        $parameters['Action'] = 'ReverseProviderCredit';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+        
+        $fieldMappings = array(
+            'merchant_id' 		   => 'SellerId',
+            'amazon_provider_credit_id'    => 'AmazonProviderCreditId',
+	    'credit_reversal_reference_id' => 'CreditReversalReferenceId',
+	    'credit_reversal_amount' 	   => 'CreditReversalAmount.Amount',
+	    'currency_code' 		   => 'CreditReversalAmount.CurrencyCode',
+	    'credit_reversal_note' 	   => 'CreditReversalNote',
+            'mws_auth_token' 		   => 'MWSAuthToken'
+        );
+        
+        $responseObject = $this->_setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        
+        return ($responseObject);
     }
     
     /* Create an Array of required parameters, sort them
