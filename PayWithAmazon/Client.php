@@ -243,9 +243,9 @@ class Client implements ClientInterface
 	return trim($this->_parameters);
     }
     
-    /* GetUserInfo convenience funtion - Returns user's profile information from Amazon using the access token returned by the Button widget.
+    /* GetUserInfo convenience function - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
-     * @see http://docs.developer.amazonservices.com/en_US/apa_guide/APAGuide_ObtainProfile.html
+     * @see http://login.amazon.com/website Step 4
      * @param $access_token [String]
      */
     

@@ -5,6 +5,12 @@
 
 interface ClientInterface
 {
+    /* Takes user configuration array from the user as input
+     * Takes JSON file path with configuration information as input
+     * Validates the user configuation array against existing _config array
+     */
+    public function __construct($config = null);
+    
     /* Setter for sandbox
      * sets the boolean value for _config['sandbox'] variable
      */
@@ -357,6 +363,11 @@ interface ClientInterface
  */ 
 interface IpnHandlerInterface
 {
+   /* Takes headers and body of the IPN message as input in the constructor
+    * verifies that the IPN is from the right resource and has the valid data
+    */
+    public function __construct($headers, $body, $ipnConfig = null);
+    
     /* returnMessage() - JSON decode the raw [Message] portion of the IPN
      */
     public function returnMessage();
@@ -386,6 +397,12 @@ interface IpnHandlerInterface
  */ 
 interface HttpCurlInterface
 {
+    /* Takes user configuration array as input
+     * Takes configuration for API call or IPN config
+     */
+    
+    public function __construct($config = null);
+    
     //set Http header for Access token for the GetUserInfo call
     public function setHttpHeader();
     
@@ -413,6 +430,9 @@ interface HttpCurlInterface
  */ 
 interface ResponseInterface
 {
+    //takes response from the API call
+    public function __construct($response=null);
+    
     /*
      * returns the XML portion of the response
      */
