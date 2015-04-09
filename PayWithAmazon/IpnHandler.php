@@ -1,11 +1,14 @@
 <?php namespace PayWithAmazon;
-/**
- * Class IPN_Handler
+
+/* Class IPN_Handler
  * Takes headers and body of the IPN message as input in the constructor
  * verifies that the IPN is from the right resource and has the valid data
  */
+
 require_once 'HttpCurl.php';
-class IpnHandler
+require_once 'Interface.php';
+
+class IpnHandler implements IpnHandlerInterface
 {
 
     private $_headers = null;
@@ -120,8 +123,7 @@ class IpnHandler
         }
     }
 
-    /**
-     * Convert a json error code to a descriptive error
+    /* Convert a json error code to a descriptive error
      * message
      *
      * @param int $json_error message code
@@ -195,8 +197,7 @@ class IpnHandler
 
     }
 
-    /**
-     * Verify that the signature is correct for the given data and
+    /* Verify that the signature is correct for the given data and
      * public key
      *
      * @param string $data            data to validate
@@ -236,8 +237,7 @@ class IpnHandler
         return $response;
     }
 
-    /**
-     * Verify that the signature is correct for the given data and
+    /* Verify that the signature is correct for the given data and
      * public key
      *
      * @param string $data            data to validate
@@ -279,8 +279,7 @@ class IpnHandler
     }
 
 
-    /**
-     * Extract the mandatory field from the message and return the contents
+    /* Extract the mandatory field from the message and return the contents
      *
      * @param string $fieldName name of the field to extract
      *
@@ -289,7 +288,7 @@ class IpnHandler
      * @return string field contents if found
      */
     
-    public function _getMandatoryField($fieldName)
+    private function _getMandatoryField($fieldName)
     {
         $value = $this->_getField($fieldName);
         if (is_null($value)) {
@@ -298,15 +297,14 @@ class IpnHandler
         return $value;
     }
 
-    /**
-     * Extract the field if present, return null if not defined
+    /* Extract the field if present, return null if not defined
      *
      * @param string $fieldName name of the field to extract
      *
      * @return string field contents if found, null otherwise
      */
     
-    public function _getField($fieldName)
+    private function _getField($fieldName)
     {
         if (array_key_exists($fieldName, $this->_snsMessage)) {
             return $this->_snsMessage[$fieldName];

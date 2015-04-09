@@ -1,9 +1,16 @@
 <?php namespace PayWithAmazon;
 
+/* Class Client
+ * Takes configuration information
+ * Makes API calls to MWS for Pay With Amazon
+ * returns Response Object
+ */
+
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
+require_once 'Interface.php';
 
-class Client
+class Client implements ClientInterface
 {
     const MWS_CLIENT_VERSION = '1.0.0';
     const SERVICE_VERSION = '2013-01-01';
@@ -73,33 +80,40 @@ class Client
             if (is_array($config)) {
                 $configArray = $config;
             } elseif (!is_array($config)) {
-		
-		if(file_exists($config))
-		{
-		    $jsonString  = file_get_contents($config);
-		    $configArray = json_decode($jsonString, true);
-                
-		    $json_error = json_last_error();
-                
-		    if ($json_error != 0) {
-			$errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $configArray;
-			throw new \Exception($errorMsg);
-		    }
-		} else {
-		    $errorMsg ='$config is not a Json File path or the Json File was not found in the path provided';
-		    throw new \Exception($errorMsg);
-		}
-                
-            }
-            if (is_array($configArray)) {
+		$configArray = $this->_checkIfFileExists($config);
+	    }
+            
+	    if (is_array($configArray)) {
                 $this->_checkConfigKeys($configArray);
             } else {
                 throw new \Exception('$config is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
             }
-        }
-	else{
+        } else {
 	    throw new \Exception('$config cannot be null.');
 	}
+    }
+    
+    /* _checkIfFileExists -  check if the JSON file exists in the path provided
+     */
+    
+    private function _checkIfFileExists($config)
+    {
+	if(file_exists($config))
+	{
+	    $jsonString  = file_get_contents($config);
+	    $configArray = json_decode($jsonString, true);
+                
+	    $json_error = json_last_error();
+                
+	    if ($json_error != 0) {
+		$errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $configArray;
+		throw new \Exception($errorMsg);
+	    }
+	} else {
+	    $errorMsg ='$config is not a Json File path or the Json File was not found in the path provided';
+	    throw new \Exception($errorMsg);
+	}
+	return $configArray;
     }
     
     /* Checks if the keys of the input configuration matches the keys in the _config array
@@ -116,14 +130,12 @@ class Client
                 $this->_config[$key] = $value;
             } else {
                 throw new \Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
-				check the _config array key names to match your key names of your config array ', 1);
+				check the _config array key names to match your key names of your config array', 1);
             }
         }
     }
     
-    /**
-     * Convert a json error code to a descriptive error
-     * message
+    /* Convert a json error code to a descriptive error message
      *
      * @param int $json_error message code
      *
@@ -160,7 +172,7 @@ class Client
         if (is_bool($value)) {
             $this->_config['sandbox'] = $value;
         } else {
-            throw new \Exception($value . ' is of type ' . gettype($value) . ' and should be a boolean value ');
+            throw new \Exception($value . ' is of type ' . gettype($value) . ' and should be a boolean value');
         }
     }
     
@@ -331,14 +343,14 @@ class Client
         return $responseObject;
     }
     
-    /*
-     * if Merchant ID is not set via the requestParameters array then it's taken from the _config array
+    /* if Merchant ID is not set via the requestParameters array then it's taken from the _config array
      *
      * Set the platform_id if set in the _config['platform_id'] array
      *
      * if currency_code is set in the $requestParameters and it exists in the $fieldMappings array ,strtoupper it
      * else take the value from _config array if set
-     */ 
+     */
+    
     private function _setDefaultValues($parameters, $fieldMappings, $requestParameters)
     {
         if (empty($requestParameters['merchant_id']))
@@ -361,7 +373,7 @@ class Client
     }
     
     /* _setProviderCreditDetails - sets the provider credit details sent via the Capture or Authoriza API calls
-     * @param ProviderId - [String]
+     * @param provider_id - [String]
      * @param credit_amount - [String]
      * @optional currency_code - [String]
      */
@@ -400,7 +412,7 @@ class Client
     }
     
     /* _setReverseProviderCreditDetails - sets the reverse provider credit details sent via the Refund API call.
-     * @param ProviderId - [String]
+     * @param provider_id - [String]
      * @param credit_amount - [String]
      * @optional currency_code - [String]
      */
@@ -446,6 +458,7 @@ class Client
      * @optional requestParameters['address_consent_token'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function getOrderReferenceDetails($requestParameters = array())
     {
         
@@ -477,6 +490,7 @@ class Client
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function setOrderReferenceDetails($requestParameters = array())
     {
         $parameters           = array();
@@ -508,6 +522,7 @@ class Client
      * @param requestParameters['amazon_order_reference_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function confirmOrderReference($requestParameters = array())
     {
         $parameters           = array();
@@ -533,6 +548,7 @@ class Client
      * @optional requestParameters['cancel_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function cancelOrderReference($requestParameters = array())
     {
         $parameters           = array();
@@ -560,6 +576,7 @@ class Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeOrderReference($requestParameters = array())
     {
         $parameters           = array();
@@ -586,6 +603,7 @@ class Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeAuthorization($requestParameters = array())
     {
         $parameters           = array();
@@ -613,12 +631,13 @@ class Client
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters['authorization_reference_id'] [String]
      * @optional requestParameters['capture_now'] [String]
-     * @param requestParameters[provider_credit'] - [array (array())]
+     * @optional requestParameters[provider_credit'] - [array (array())]
      * @optional requestParameters['seller_authorization_note'] [String]
      * @optional requestParameters['transaction_timeout'] [String] - Defaults to 1440 minutes
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function authorize($requestParameters = array())
     {
         $parameters           = array();
@@ -644,13 +663,14 @@ class Client
         return ($responseObject);
     }
     
-    /* Authorize API call - Returns the status of a particular authorization and the total amount captured on the authorization.
+    /* GetAuthorizationDetails API call - Returns the status of a particular authorization and the total amount captured on the authorization.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_GetAuthorizationDetails.html
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_authorization_id'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function getAuthorizationDetails($requestParameters = array())
     {
         $parameters           = array();
@@ -676,11 +696,12 @@ class Client
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters[capture_reference_id'] - [String]
-     * @param requestParameters[provider_credit'] - [array (array())]
+     * @optional requestParameters[provider_credit'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function capture($requestParameters = array())
     {
         $parameters           = array();
@@ -737,11 +758,12 @@ class Client
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @param requestParameters['reverse_provider_credit'] - [array(array())]
+     * @optional requestParameters['reverse_provider_credit'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function refund($requestParameters = array())
     {
         $parameters           = array();
@@ -824,7 +846,7 @@ class Client
      * @param requestParameters['Id'] - [String]
      * @optional requestParameters['inherit_shipping_address'] [Boolean]
      * @optional requestParameters['ConfirmNow'] - [Boolean]
-     * @optional Amount [Float] (required when confirm_now is set to true)
+     * @optional Amount (required when confirm_now is set to true) [String] 
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_note'] - [String]
      * @optional requestParameters['seller_order_id'] - [String]
@@ -930,6 +952,7 @@ class Client
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function confirmBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
@@ -954,6 +977,7 @@ class Client
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function validateBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
@@ -991,6 +1015,7 @@ class Client
      * @optional requestParameters['inherit_shipping_address'] [Boolean] - Defaults to true
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function authorizeOnBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
@@ -1029,6 +1054,7 @@ class Client
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeBillingAgreement($requestParameters = array())
     {
         $parameters           = array();
@@ -1075,14 +1101,14 @@ class Client
             switch (substr(strtoupper($requestParameters['amazon_reference_id']), 0, 1)) {
                 case 'P':
                 case 'S':
-                    $chargeType = 'oro';
+                    $chargeType = 'OrderReference';
                     $setParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
                     $authorizeParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
                     $confirmParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
                     break;
                 case 'B':
                 case 'C':
-                    $chargeType = 'ba';
+                    $chargeType = 'BillingAgreement';
                     $setParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
                     $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
                     $confirmParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
@@ -1123,7 +1149,7 @@ class Client
     {
 	
 	switch ($chargeType) {
-            case 'oro':
+            case 'OrderReference':
                 $response = $this->setOrderReferenceDetails($setParameters);
                 if ($this->_success) {
                     $this->confirmOrderReference($confirmParameters);
@@ -1132,7 +1158,7 @@ class Client
                     $response = $this->Authorize($authorizeParameters);
                 }
                 return $response;
-            case 'ba':
+            case 'BillingAgreement':
                 //Get the Billing Agreement details and feed the response object to the ResponseParser
                 $responseObj = $this->getBillingAgreementDetails($setParameters);
                 //Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
@@ -1214,6 +1240,7 @@ class Client
      * @optional requestParameters['credit_reversal_note'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function reverseProviderCredit($requestParameters = array())
     {
 	
@@ -1245,6 +1272,7 @@ class Client
      * @param Timestamp [String]
      * @param Signature [String]
      */
+    
     private function _calculateSignatureAndParametersToString($parameters = array())
     {
         $parameters['AWSAccessKeyId']   = $this->_config['access_key'];
@@ -1264,8 +1292,7 @@ class Client
         return $parameters;
     }
     
-    /**
-     * Computes RFC 2104-compliant HMAC signature for request parameters
+    /* Computes RFC 2104-compliant HMAC signature for request parameters
      * Implements AWS Signature, as per following spec:
      *
      * If Signature Version is 0, it signs concatenated Action and Timestamp
@@ -1294,6 +1321,7 @@ class Client
      *       Pairs of parameter and values are separated by the '&' character (ASCII code 38).
      *
      */
+    
     private function _signParameters(array $parameters)
     {
         $signatureVersion = $parameters['SignatureVersion'];
@@ -1310,11 +1338,11 @@ class Client
         return $this->_sign($stringToSign, $algorithm);
     }
     
-    /**
-     * Calculate String to Sign for SignatureVersion 2
+    /* Calculate String to Sign for SignatureVersion 2
      * @param array $parameters request parameters
      * @return String to Sign
      */
+    
     private function _calculateStringToSignV2(array $parameters)
     {
         $data = 'POST';
@@ -1327,9 +1355,9 @@ class Client
         return $data;
     }
     
-    /**
-     * Convert paremeters to Url encoded query string
+    /* Convert paremeters to Url encoded query string
      */
+    
     private function _getParametersAsString(array $parameters)
     {
         $queryParameters = array();
@@ -1345,9 +1373,9 @@ class Client
         return str_replace('%7E', '~', rawurlencode($value));
     }
     
-    /**
-     * Computes RFC 2104-compliant HMAC signature.
+    /* Computes RFC 2104-compliant HMAC signature.
      */
+    
     private function _sign($data, $algorithm)
     {
         if ($algorithm === 'HmacSHA1') {
@@ -1361,19 +1389,19 @@ class Client
         return base64_encode(hash_hmac($hash, $data, $this->_config['secret_key'], true));
     }
     
-    /**
-     * Formats date as ISO 8601 timestamp
+    /* Formats date as ISO 8601 timestamp
      */
+    
     private function _getFormattedTimestamp()
     {
         return gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", time());
     }
     
-    /**
-     * _invokePost takes the parameters and invokes the httpPost function to POST the parameters
+    /* _invokePost takes the parameters and invokes the httpPost function to POST the parameters
      * exponential retries on error 500 and 503
      * The response from the POST is an XML which is converted to Array
      */
+    
     private function _invokePost($parameters)
     {
         $response       = array();
@@ -1425,11 +1453,11 @@ class Client
         return $response;
     }
     
-    /**
-     * Exponential sleep on failed request
+    /* Exponential sleep on failed request
      * @param retries current retry
      * @throws \Exception if maximum number of retries has been reached
      */
+    
     private function _pauseOnRetry($retries, $status)
     {
         if ($retries <= self::MAX_ERROR_RETRY) {
@@ -1440,9 +1468,9 @@ class Client
         }
     }
     
-    /**
-     * create MWS service URL and the Endpoint path
+    /* create MWS service URL and the Endpoint path
      */
+    
     private function _createServiceUrl()
     {
         $this->_modePath = strtolower($this->_config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
@@ -1461,9 +1489,9 @@ class Client
         }
     }
     
-    /**
-     *  Based on the _config['region'] and _config['sandbox'] values get the user profile URL
+    /* Based on the _config['region'] and _config['sandbox'] values get the user profile URL
      */
+    
     private function _profileEndpointUrl()
     {
         if (!empty($this->_config['region'])) {
@@ -1481,9 +1509,9 @@ class Client
         }
     }
     
-    /**
-     * create the User Agent Header sent with the POST request
+    /* create the User Agent Header sent with the POST request
      */
+    
     private function _constructUserAgentHeader()
     {
         $this->_userAgent = $this->_quoteApplicationName($this->_config['application_name']) . '/' . $this->_quoteApplicationVersion($this->_config['application_version']);
@@ -1496,12 +1524,12 @@ class Client
         $this->_userAgent .= ')';
     }
     
-    /**
-     * Collapse multiple whitespace characters into a single ' ' and backslash escape '\',
+    /* Collapse multiple whitespace characters into a single ' ' and backslash escape '\',
      * and '/' characters from a string.
      * @param $s
      * @return string
      */
+    
     private function _quoteApplicationName($s)
     {
         $quotedString = preg_replace('/ {2,}|\s/', ' ', $s);
@@ -1510,8 +1538,7 @@ class Client
         return $quotedString;
     }
     
-    /**
-     * Collapse multiple whitespace characters into a single ' ' and backslash escape '\',
+    /* Collapse multiple whitespace characters into a single ' ' and backslash escape '\',
      * and '(' characters from a string.
      *
      * @param $s

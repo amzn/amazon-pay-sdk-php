@@ -1,6 +1,12 @@
 <?php namespace PayWithAmazon;
 
-class ResponseParser
+/* ResponseParser
+ * methods provided to convert the Response from the POST to XML,Array or JSON
+ */
+
+require_once 'Interface.php';
+
+class ResponseParser implements ResponseInterface
 {
     public $_response = null;
     
@@ -54,6 +60,8 @@ class ResponseParser
         return $response;
     }
     
+    /* Get the status of the BillingAgreement
+     */
     public function getBillingAgreementDetailsStatus($response)
     {
        $data= new \SimpleXMLElement($response);

@@ -4,7 +4,9 @@
  * Handles Curl POST function for all requests
  */
 
-class HttpCurl
+require_once 'Interface.php';
+
+class HttpCurl implements HttpCurlInterface
 {
     private $_url = null;
     private $_config = array();
