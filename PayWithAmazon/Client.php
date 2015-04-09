@@ -1082,7 +1082,7 @@ class Client implements ClientInterface
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_reference_id'] - [String] : Order Reference ID /Billing Agreement ID
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
-     * @param requestParameters['charge_currency_code'] - [String] : Currency Code for the Amount
+     * @param requestParameters['currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
      * @optional requestParameters['charge_note'] - [String] : seller note sent to the buyer
      * @optional requestParameters['transaction_timeout'] - [String] : Defaults to 1440 minutes
@@ -1123,9 +1123,6 @@ class Client implements ClientInterface
 	//set the other parameters if the values are present
         $setParameters['amount'] = !empty($requestParameters['charge_amount']) ? $requestParameters['charge_amount'] : '';
         $authorizeParameters['authorization_amount'] = !empty($requestParameters['charge_amount']) ? $requestParameters['charge_amount'] : '';
-
-        $setParameters['currency_code'] = !empty($requestParameters['charge_currency_code']) ? $requestParameters['charge_currency_code'] : '';
-        $authorizeParameters['currency_code'] = !empty($requestParameters['charge_currency_code']) ? $requestParameters['charge_currency_code'] : '';
 
         $setParameters['seller_note'] = !empty($requestParameters['charge_note']) ? $requestParameters['charge_note'] : '';
         $authorizeParameters['seller_authorization_note'] = !empty($requestParameters['charge_note']) ? $requestParameters['charge_note'] : '';
