@@ -343,7 +343,7 @@ class Client implements ClientInterface
         return $responseObject;
     }
     
-    /* if Merchant ID is not set via the requestParameters array then it's taken from the _config array
+    /* if merchant_id is not set via the requestParameters array then it's taken from the _config array
      *
      * Set the platform_id if set in the _config['platform_id'] array
      *

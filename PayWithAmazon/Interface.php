@@ -9,13 +9,14 @@ interface ClientInterface
      * Takes JSON file path with configuration information as input
      * Validates the user configuation array against existing _config array
      */
+    
     public function __construct($config = null);
     
     /* Setter for sandbox
      * sets the boolean value for _config['sandbox'] variable
      */
     
-     public function setSandbox($value);
+    public function setSandbox($value);
     
     /* Setter for _config['client_id']
      * sets the  value for _config['client_id'] variable
@@ -67,6 +68,7 @@ interface ClientInterface
      * @optional requestParameters['address_consent_token'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function getOrderReferenceDetails($requestParameters = array());
     
     /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
@@ -83,6 +85,7 @@ interface ClientInterface
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function setOrderReferenceDetails($requestParameters = array());
     
     /* ConfirmOrderReferenceDetails API call - Confirms that the order reference is free of constraints and all required information has been set on the order reference.
@@ -92,6 +95,7 @@ interface ClientInterface
      * @param requestParameters['amazon_order_reference_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function confirmOrderReference($requestParameters = array());
     
     /* CancelOrderReferenceDetails API call - Cancels a previously confirmed order reference.
@@ -102,6 +106,7 @@ interface ClientInterface
      * @optional requestParameters['cancel_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function cancelOrderReference($requestParameters = array());
     
     /* CloseOrderReferenceDetails API call - Confirms that an order reference has been fulfilled (fully or partially)
@@ -113,6 +118,7 @@ interface ClientInterface
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeOrderReference($requestParameters = array());
     
     /* CloseAuthorization API call - Closes an authorization.
@@ -123,6 +129,7 @@ interface ClientInterface
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeAuthorization($requestParameters = array());
     
     /* Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
@@ -140,6 +147,7 @@ interface ClientInterface
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function authorize($requestParameters = array());
     
     /* GetAuthorizationDetails API call - Returns the status of a particular authorization and the total amount captured on the authorization.
@@ -149,6 +157,7 @@ interface ClientInterface
      * @param requestParameters['amazon_authorization_id'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function getAuthorizationDetails($requestParameters = array());
     
     /* Capture API call - Captures funds from an authorized payment instrument.
@@ -164,6 +173,7 @@ interface ClientInterface
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function capture($requestParameters = array());
     
     /* GetCaptureDetails API call - Returns the status of a particular capture and the total amount refunded on the capture.
@@ -189,6 +199,7 @@ interface ClientInterface
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function refund($requestParameters = array());
     
     /* GetRefundDetails API call - Returns the status of a particular refund.
@@ -266,6 +277,7 @@ interface ClientInterface
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function confirmBillingAgreement($requestParameters = array());
     
     /* ValidateBillignAgreement API Call - Validates the status of the BillingAgreement object and the payment method associated with it.
@@ -275,6 +287,7 @@ interface ClientInterface
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function validateBillingAgreement($requestParameters = array());
     
     /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the billing agreement.
@@ -297,6 +310,7 @@ interface ClientInterface
      * @optional requestParameters['inherit_shipping_address'] [Boolean] - Defaults to true
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function authorizeOnBillingAgreement($requestParameters = array());
     
     /* CloseBillingAgreement API Call - Returns details about the Billing Agreement object and its current state.
@@ -307,6 +321,7 @@ interface ClientInterface
      * @optional requestParameters['closure_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function closeBillingAgreement($requestParameters = array());
     
     /* charge convenience method
@@ -356,6 +371,7 @@ interface ClientInterface
      * @optional requestParameters['credit_reversal_note'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
+    
     public function reverseProviderCredit($requestParameters = array());
 }
 
@@ -366,10 +382,12 @@ interface IpnHandlerInterface
    /* Takes headers and body of the IPN message as input in the constructor
     * verifies that the IPN is from the right resource and has the valid data
     */
+   
     public function __construct($headers, $body, $ipnConfig = null);
     
     /* returnMessage() - JSON decode the raw [Message] portion of the IPN
      */
+    
     public function returnMessage();
 
     /* toJson() - Converts IPN [Message] field to JSON
@@ -408,6 +426,7 @@ interface HttpCurlInterface
     
     /* Setter for  Access token to get the user info
      */
+    
     public function setAccessToken($accesstoken);
     
     /* POST using curl for the following situations
@@ -427,7 +446,8 @@ interface HttpCurlInterface
 }
 
 /* interface for ResponseParser.php
- */ 
+ */
+
 interface ResponseInterface
 {
     //takes response from the API call
@@ -453,5 +473,6 @@ interface ResponseInterface
     
     /* Get the status of the BillingAgreement
      */
+    
     public function getBillingAgreementDetailsStatus($response);
 }
