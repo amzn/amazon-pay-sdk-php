@@ -193,8 +193,6 @@ class IpnHandler implements IpnHandlerInterface
             $this->_signatureFields = implode("\n", $signatureFields) . "\n";
 
         }
-
-
     }
 
     /* Verify that the signature is correct for the given data and

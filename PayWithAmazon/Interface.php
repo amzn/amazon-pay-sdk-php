@@ -385,8 +385,7 @@ interface IpnHandlerInterface
    
     public function __construct($headers, $body, $ipnConfig = null);
     
-    /* returnMessage() - JSON decode the raw [Message] portion of the IPN
-     */
+    /* returnMessage() - JSON decode the raw [Message] portion of the IPN */
     
     public function returnMessage();
 
@@ -424,8 +423,7 @@ interface HttpCurlInterface
     //set Http header for Access token for the GetUserInfo call
     public function setHttpHeader();
     
-    /* Setter for  Access token to get the user info
-     */
+    /* Setter for  Access token to get the user info */
     
     public function setAccessToken($accesstoken);
     
@@ -470,8 +468,7 @@ interface ResponseInterface
     
     public function toArray();
     
-    /* Get the status of the BillingAgreement
-     */
+    /* Get the status of the BillingAgreement */
     
     public function getBillingAgreementDetailsStatus($response);
 }
