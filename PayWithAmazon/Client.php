@@ -71,7 +71,7 @@ class Client implements ClientInterface
 
     /* Takes user configuration array from the user as input
      * Takes JSON file path with configuration information as input
-     * Validates the user configuation array against existing config array
+     * Validates the user configuration array against existing config array
      */
 
     public function __construct($config = null)
@@ -165,7 +165,7 @@ class Client implements ClientInterface
     }
 
     /* Setter for sandbox
-     * sets the boolean value for config['sandbox'] variable
+     * sets the Boolean value for config['sandbox'] variable
      */
 
     public function setSandbox($value)
@@ -194,8 +194,8 @@ class Client implements ClientInterface
      * input $proxy [array]
      * @param $proxy['proxy_user_host'] - hostname for the proxy
      * @param $proxy['proxy_user_port'] - hostname for the proxy
-     * @param $proxy['proxy_user_name'] - if your proxy requeired a username
-     * @param $proxy['proxy_user_password'] - if your proxy requeired a passowrd
+     * @param $proxy['proxy_user_name'] - if your proxy required a username
+     * @param $proxy['proxy_user_password'] - if your proxy required a password
      */
 
     public function setProxy($proxy)
@@ -235,7 +235,7 @@ class Client implements ClientInterface
         }
     }
 
-    /* Getterfor parameters string
+    /* Getter for parameters string
      * Gets the value for the parameters string for unit testing
      */
 
@@ -374,7 +374,7 @@ class Client implements ClientInterface
         return $parameters;
     }
 
-    /* setProviderCreditDetails - sets the provider credit details sent via the Capture or Authoriza API calls
+    /* setProviderCreditDetails - sets the provider credit details sent via the Capture or Authorize API calls
      * @param provider_id - [String]
      * @param credit_amount - [String]
      * @optional currency_code - [String]

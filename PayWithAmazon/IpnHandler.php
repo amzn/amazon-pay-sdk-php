@@ -365,7 +365,7 @@ class IpnHandler implements IpnHandlerInterface
         return $response;
     }
 
-    /* addRemainingFields() - Add remaining fileds to the datatype
+    /* addRemainingFields() - Add remaining fields to the datatype
      *
      * Has child elements
      * ['NotificationData'] [XML] - API call XML response data
@@ -383,7 +383,7 @@ class IpnHandler implements IpnHandlerInterface
         //Getting the Simple XML element object of the IPN XML Response Body
         $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
 
-        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML elsement Object
+        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML element Object
         $response->addChild('Type', $this->_snsMessage['Type']);
         $response->addChild('MessageId', $this->_snsMessage['MessageId']);
         $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
@@ -392,7 +392,7 @@ class IpnHandler implements IpnHandlerInterface
     }
 
     /* _getRemainingIpnFields()
-     * Gets the remaining fields of the IPN to be later appeded to the return message
+     * Gets the remaining fields of the IPN to be later appended to the return message
      */
     
     private function _getRemainingIpnFields()
