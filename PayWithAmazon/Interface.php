@@ -7,19 +7,19 @@ interface ClientInterface
 {
     /* Takes user configuration array from the user as input
      * Takes JSON file path with configuration information as input
-     * Validates the user configuation array against existing _config array
+     * Validates the user configuation array against existing config array
      */
     
     public function __construct($config = null);
     
     /* Setter for sandbox
-     * sets the boolean value for _config['sandbox'] variable
+     * sets the boolean value for config['sandbox'] variable
      */
     
     public function setSandbox($value);
     
-    /* Setter for _config['client_id']
-     * sets the  value for _config['client_id'] variable
+    /* Setter for config['client_id']
+     * sets the  value for config['client_id'] variable
      */
     
     public function setClientId($value);
@@ -41,7 +41,7 @@ interface ClientInterface
     public function setMwsServiceUrl($url);
     
     /* Getter
-     * Gets the value for the key if the key exists in _config
+     * Gets the value for the key if the key exists in config
      */
     
     public function __get($name);

@@ -23,16 +23,15 @@ class HttpCurl implements HttpCurlInterface
         
     }
     
-    /* Setter for boolean header to get the user info
-     */
+    /* Setter for boolean header to get the user info */
     
     public function setHttpHeader()
     {
         $this->header = true;
     }
     
-    /* Setter for  Access token to get the user info
-     */
+    /* Setter for  Access token to get the user info */
+    
     public function setAccessToken($accesstoken)
     {
         $this->accessToken = $accesstoken;

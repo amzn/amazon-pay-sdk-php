@@ -287,7 +287,7 @@ class Client implements ClientInterface
 
     /*
      * setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
-     * If Marketplace provider credit details are entered
+     * If Provider Credit or Provider Credit Reversal details are present
      * setProviderCreditDetails or setReverseProviderCreditDetails is called to set the values.
      */
 
@@ -310,10 +310,10 @@ class Client implements ClientInterface
 		    $value = strtolower($value);
 		} elseif(is_array($value)) {
 
-		    // If the parameter is related to Market place provider credit, call the respective functions to set the values
+		    // If the parameter is a provider_credit or provider_credit_reversal, call the respective functions to set the values
 		    if($parm === 'provider_credit') {
 			$parameters = $this->setProviderCreditDetails($parameters,$value);
-		    } elseif ($parm === 'reverse_provider_credit') {
+		    } elseif ($parm === 'provider_credit_reversal') {
 			$parameters = $this->setReverseProviderCreditDetails($parameters,$value);
 		    }
 
@@ -760,7 +760,7 @@ class Client implements ClientInterface
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @optional requestParameters['reverse_provider_credit'] - [array(array())]
+     * @optional requestParameters['provider_credit_reversal'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -778,7 +778,7 @@ class Client implements ClientInterface
             'refund_reference_id' 	=> 'RefundReferenceId',
             'refund_amount' 	  	=> 'RefundAmount.Amount',
             'currency_code' 	  	=> 'RefundAmount.CurrencyCode',
-	    'reverse_provider_credit'	=> array(),
+	    'provider_credit_reversal'	=> array(),
             'seller_refund_note'  	=> 'SellerRefundNote',
             'soft_descriptor' 	  	=> 'SoftDescriptor',
             'mws_auth_token' 	  	=> 'MWSAuthToken'
@@ -1141,8 +1141,7 @@ class Client implements ClientInterface
 	return $response;
     }
 
-    /* makeChargeCalls - makes API calls based off the charge type (if an ORO or BA)
-     */
+    /* makeChargeCalls - makes API calls based off the charge type (OrderReference or BillingAgreement) */
 
     private function makeChargeCalls($chargeType, $setParameters, $confirmParameters, $authorizeParameters)
     {
@@ -1168,7 +1167,7 @@ class Client implements ClientInterface
                         $response = $this->ConfirmBillingAgreement($confirmParameters);
                     }
                 }
-                // Check the Billing agreement status again before making the Authorization.
+                // Check the Billing Agreement status again before making the Authorization.
                 $responseObj = $this->getBillingAgreementDetails($setParameters);
                 $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
                 if ($this->success && $baStatus['State'] === 'Open') {
@@ -1350,7 +1349,7 @@ class Client implements ClientInterface
         return $data;
     }
 
-    /* Convert paremeters to Url encoded query string*/
+    /* Convert paremeters to Url encoded query string */
 
     private function getParametersAsString(array $parameters)
     {
@@ -1460,7 +1459,7 @@ class Client implements ClientInterface
         }
     }
 
-    /* create MWS service URL and the Endpoint path*/
+    /* create MWS service URL and the Endpoint path */
 
     private function createServiceUrl()
     {
