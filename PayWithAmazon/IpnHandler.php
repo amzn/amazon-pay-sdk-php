@@ -11,32 +11,32 @@ require_once 'Interface.php';
 class IpnHandler implements IpnHandlerInterface
 {
 
-    private $_headers = null;
-    private $_body = null;
-    private $_snsMessage = null;
-    private $_fields = array();
-    private $_signatureFields = array();
-    private $_certificate = null;
-    private $_expectedCnName = 'sns.amazonaws.com';
+    private $headers = null;
+    private $body = null;
+    private $snsMessage = null;
+    private $fields = array();
+    private $signatureFields = array();
+    private $certificate = null;
+    private $expectedCnName = 'sns.amazonaws.com';
 
-    private $_ipnConfig = array('cabundle_file' => null,
-                                'proxy_host' => null,
-                                'proxy_port' => -1,
-                                'proxy_username' => null,
-                                'proxy_password' => null);
+    private $ipnConfig = array('cabundle_file'  => null,
+			       'proxy_host' 	=> null,
+                               'proxy_port' 	=> -1,
+                               'proxy_username' => null,
+			       'proxy_password' => null);
 
 
     public function __construct($headers, $body, $ipnConfig = null)
     {
-        $this->_headers = array_change_key_case($headers, CASE_LOWER);
-        $this->_body    = $body;
+        $this->headers = array_change_key_case($headers, CASE_LOWER);
+        $this->body = $body;
 
         if ($ipnConfig != null) {
-            $this->_checkConfigKeys($ipnConfig);
+            $this->checkConfigKeys($ipnConfig);
         }
 
-        // get the list of fields that we are interested in
-        $this->_fields = array(
+        // Get the list of fields that we are interested in
+        $this->fields = array(
             "Timestamp" => true,
             "Message" => true,
             "MessageId" => true,
@@ -45,93 +45,92 @@ class IpnHandler implements IpnHandlerInterface
             "Type" => true
         );
 
-        //validate the IPN message header [x-amz-sns-message-type]
-        $this->_validateHeaders();
+        // Validate the IPN message header [x-amz-sns-message-type]
+        $this->validateHeaders();
 
-        //converts the IPN [Message] to Notification object
-        $this->_getMessage();
+        // Converts the IPN [Message] to Notification object
+        $this->getMessage();
 
-        //checks if the notification [Type] is Notification and constructs the signature fields
-        $this->_checkForCorrectMessageType();
+        // Checks if the notification [Type] is Notification and constructs the signature fields
+        $this->checkForCorrectMessageType();
 
-        //verifies the signature against the provided pem file in the IPN
-        $this->_constructAndVerifySignature();
+        // Verifies the signature against the provided pem file in the IPN
+        $this->constructAndVerifySignature();
     }
 
-    private function _checkConfigKeys($ipnConfig)
+    private function checkConfigKeys($ipnConfig)
     {
         $ipnConfig = array_change_key_case($ipnConfig, CASE_LOWER);
 
         foreach ($ipnConfig as $key => $value) {
-            if (array_key_exists($key, $this->_ipnConfig)) {
-                $this->_ipnConfig[$key] = $value;
+            if (array_key_exists($key, $this->ipnConfig)) {
+                $this->ipnConfig[$key] = $value;
             } else {
                 throw new \Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
-				check the _ipnConfig array key names to match your key names of your config array ', 1);
+				check the ipnConfig array key names to match your key names of your config array ', 1);
             }
         }
     }
 
     /* Setter function
-     * sets the value for the key if the key exists in _ipnConfig
+     * Sets the value for the key if the key exists in ipnConfig
      */
     
     public function __set($name, $value)
     {
-        if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
-            $this->_ipnConfig[$name] = $value;
+        if (array_key_exists(strtolower($name), $this->ipnConfig)) {
+            $this->ipnConfig[$name] = $value;
         } else {
             throw new \Exception("Key " . $name . " is not part of the configuration", 1);
         }
     }
 
     /* Getter function
-     * returns the value for the key if the key exists in _ipnConfig
+     * Returns the value for the key if the key exists in ipnConfig
      */
     
     public function __get($name)
     {
-        if (array_key_exists(strtolower($name), $this->_ipnConfig)) {
-            return $this->_ipnConfig[$name];
+        if (array_key_exists(strtolower($name), $this->ipnConfig)) {
+            return $this->ipnConfig[$name];
         } else {
             throw new \Exception("Key " . $name . " was not found in the configuration", 1);
         }
     }
 
 
-    private function _validateHeaders()
+    private function validateHeaders()
     {
         // Quickly check that this is a sns message
-        if (!array_key_exists('x-amz-sns-message-type', $this->_headers)) {
+        if (!array_key_exists('x-amz-sns-message-type', $this->headers)) {
             throw new \Exception("Error with message - header " . "does not contain x-amz-sns-message-type header");
         }
 
-        if ($this->_headers['x-amz-sns-message-type'] !== 'Notification') {
-            throw new \Exception("Error with message - header x-amz-sns-message-type is not " . "Notification, is " . $this->_headers['x-amz-sns-message-type']);
+        if ($this->headers['x-amz-sns-message-type'] !== 'Notification') {
+            throw new \Exception("Error with message - header x-amz-sns-message-type is not " . "Notification, is " . $this->headers['x-amz-sns-message-type']);
         }
     }
 
-    private function _getMessage()
+    private function getMessage()
     {
-        $this->_snsMessage = json_decode($this->_body, true);
+        $this->snsMessage = json_decode($this->body, true);
 
         $json_error = json_last_error();
 
         if ($json_error != 0) {
-            $errorMsg = "Error with message - content is not in json format" . $this->_getErrorMessageForJsonError($json_error) . " " . $this->_snsMessage;
+            $errorMsg = "Error with message - content is not in json format" . $this->getErrorMessageForJsonError($json_error) . " " . $this->snsMessage;
             throw new \Exception($errorMsg);
         }
     }
 
-    /* Convert a json error code to a descriptive error
-     * message
+    /* Convert a json error code to a descriptive error message
      *
      * @param int $json_error message code
      *
      * @return string error message
      */
     
-    private function _getErrorMessageForJsonError($json_error)
+    private function getErrorMessageForJsonError($json_error)
     {
         switch ($json_error) {
             case JSON_ERROR_DEPTH:
@@ -152,34 +151,34 @@ class IpnHandler implements IpnHandlerInterface
         }
     }
 
-    /* _checkForCorrectMessageType()
+    /* checkForCorrectMessageType()
      *
      * Checks if the Field [Type] is set to ['Notification']
-     * gets the value for the fields marked true in the fields array
-     * constructs the signature string
+     * Gets the value for the fields marked true in the fields array
+     * Constructs the signature string
      */
 
-    private function _checkForCorrectMessageType()
+    private function checkForCorrectMessageType()
     {
-        $type = $this->_getMandatoryField("Type");
+        $type = $this->getMandatoryField("Type");
         if (strcasecmp($type, "Notification") != 0) {
             throw new \Exception("Error with SNS Notification - unexpected message with Type of " . $type);
         }
 
-        if (strcmp($this->_getMandatoryField("Type"), "Notification") != 0) {
-            throw new \Exception("Error with signature verification - unable to verify " . $this->_getMandatoryField("Type") . " message");
+        if (strcmp($this->getMandatoryField("Type"), "Notification") != 0) {
+            throw new \Exception("Error with signature verification - unable to verify " . $this->getMandatoryField("Type") . " message");
         } else {
 
-            // sort the fields into byte order based on the key name(A-Za-z)
-            ksort($this->_fields);
+            // Sort the fields into byte order based on the key name(A-Za-z)
+            ksort($this->fields);
 
-            // extract the key value pairs and sort in byte order
+            // Extract the key value pairs and sort in byte order
             $signatureFields = array();
-            foreach ($this->_fields as $fieldName => $mandatoryField) {
+            foreach ($this->fields as $fieldName => $mandatoryField) {
                 if ($mandatoryField) {
-                    $value = $this->_getMandatoryField($fieldName);
+                    $value = $this->getMandatoryField($fieldName);
                 } else {
-                    $value = $this->_getField($fieldName);
+                    $value = $this->getField($fieldName);
                 }
 
                 if (!is_null($value)) {
@@ -188,9 +187,10 @@ class IpnHandler implements IpnHandlerInterface
                 }
             }
 
-            // create the signature string - key / value in byte order
-            // delimited by newline character + ending with a new line character
-            $this->_signatureFields = implode("\n", $signatureFields) . "\n";
+            /* Create the signature string - key / value in byte order
+             * delimited by newline character + ending with a new line character
+             */
+            $this->signatureFields = implode("\n", $signatureFields) . "\n";
 
         }
     }
@@ -207,36 +207,35 @@ class IpnHandler implements IpnHandlerInterface
      * @return bool true if valid
      */
     
-    private function _constructAndVerifySignature()
+    private function constructAndVerifySignature()
     {
 
-        $signature       = base64_decode($this->_getMandatoryField("Signature"));
-        $certificatePath = $this->_getMandatoryField("SigningCertURL");
+        $signature       = base64_decode($this->getMandatoryField("Signature"));
+        $certificatePath = $this->getMandatoryField("SigningCertURL");
 
-        $this->_certificate = $this->_getCertificate($certificatePath);
+        $this->certificate = $this->getCertificate($certificatePath);
 
         $result = $this->verifySignatureIsCorrectFromCertificate($signature);
         if (!$result) {
-            throw new \Exception("Unable to match signature from remote server: signature of " . $this->_getCertificate($certificatePath) . " , SigningCertURL of " . $this->_getMandatoryField("SigningCertURL") . " , SignatureOf " . $this->_getMandatoryField("Signature"));
+            throw new \Exception("Unable to match signature from remote server: signature of " . $this->getCertificate($certificatePath) . " , SigningCertURL of " . $this->getMandatoryField("SigningCertURL") . " , SignatureOf " . $this->getMandatoryField("Signature"));
         }
     }
 
-    /* _getCertificate($certificatePath)
+    /* getCertificate($certificatePath)
      *
      * gets the certificate from the $certificatePath using Curl
      */
     
-    private function _getCertificate($certificatePath)
+    private function getCertificate($certificatePath)
     {
-        $httpCurlRequest  = new HttpCurl($this->_ipnConfig);
+        $httpCurlRequest  = new HttpCurl($this->ipnConfig);
 
 	$response = $httpCurlRequest->httpGet($certificatePath);
 
         return $response;
     }
 
-    /* Verify that the signature is correct for the given data and
-     * public key
+    /* Verify that the signature is correct for the given data and public key
      *
      * @param string $data            data to validate
      * @param string $signature       decoded signature to compare against
@@ -245,14 +244,14 @@ class IpnHandler implements IpnHandlerInterface
 
     public function verifySignatureIsCorrectFromCertificate($signature)
     {
-        $certKey = openssl_get_publickey($this->_certificate);
+        $certKey = openssl_get_publickey($this->certificate);
 
         if ($certKey === False) {
             throw new \Exception("Unable to extract public key from cert");
         }
 
         try {
-            $certInfo    = openssl_x509_parse($this->_certificate, true);
+            $certInfo    = openssl_x509_parse($this->certificate, true);
             $certSubject = $certInfo["subject"];
 
             if (is_null($certSubject)) {
@@ -262,13 +261,13 @@ class IpnHandler implements IpnHandlerInterface
             throw new \Exception("Unable to verify certificate - error with the certificate subject", null, $ex);
         }
 
-        if (strcmp($certSubject["CN"], $this->_expectedCnName)) {
+        if (strcmp($certSubject["CN"], $this->expectedCnName)) {
             throw new \Exception("Unable to verify certificate issued by Amazon - error with certificate subject");
         }
 
         $result = -1;
         try {
-            $result = openssl_verify($this->_signatureFields, $signature, $certKey, OPENSSL_ALGO_SHA1);
+            $result = openssl_verify($this->signatureFields, $signature, $certKey, OPENSSL_ALGO_SHA1);
         } catch (\Exception $ex) {
             throw new \Exception("Unable to verify signature - error with the verification algorithm", null, $ex);
         }
@@ -286,9 +285,9 @@ class IpnHandler implements IpnHandlerInterface
      * @return string field contents if found
      */
     
-    private function _getMandatoryField($fieldName)
+    private function getMandatoryField($fieldName)
     {
-        $value = $this->_getField($fieldName);
+        $value = $this->getField($fieldName);
         if (is_null($value)) {
             throw new \Exception("Error with json message - mandatory field " . $fieldName . " cannot be found");
         }
@@ -302,21 +301,20 @@ class IpnHandler implements IpnHandlerInterface
      * @return string field contents if found, null otherwise
      */
     
-    private function _getField($fieldName)
+    private function getField($fieldName)
     {
-        if (array_key_exists($fieldName, $this->_snsMessage)) {
-            return $this->_snsMessage[$fieldName];
+        if (array_key_exists($fieldName, $this->snsMessage)) {
+            return $this->snsMessage[$fieldName];
         } else {
             return null;
         }
     }
 
-    /* returnMessage() - JSON decode the raw [Message] portion of the IPN
-     */
+    /* returnMessage() - JSON decode the raw [Message] portion of the IPN */
     
     public function returnMessage()
     {
-        return json_decode($this->_snsMessage['Message'], true);
+        return json_decode($this->snsMessage['Message'], true);
     }
 
     /* toJson() - Converts IPN [Message] field to JSON
@@ -332,34 +330,32 @@ class IpnHandler implements IpnHandlerInterface
     
     public function toJson()
     {
-        $response = $this->_simpleXmlObject();
+        $response = $this->simpleXmlObject();
 
-        //Merging the remaining fields with the response
-        $remainingFields = $this->_getRemainingIpnFields();
+        // Merging the remaining fields with the response
+        $remainingFields = $this->getRemainingIpnFields();
         $responseArray = array_merge($remainingFields,(array)$response);
 
-        //Converting to JSON format
+        // Converting to JSON format
         $response = json_encode($responseArray);
 
         return $response;
     }
 
-
     /* toArray() - Converts IPN [Message] field to associative array
-     * Merge the rema
      * @return response in array format
      */
     
     public function toArray()
     {
-        $response = $this->_simpleXmlObject();
+        $response = $this->simpleXmlObject();
 
-        //Converting the SimpleXMLElement Object to array()
+        // Converting the SimpleXMLElement Object to array()
         $response = json_encode($response);
         $response = json_decode($response, true);
 
-        //Merging the remaining fields with the response array
-        $remainingFields = $this->_getRemainingIpnFields();
+        // Merging the remaining fields with the response array
+        $remainingFields = $this->getRemainingIpnFields();
         $response = array_merge($remainingFields,$response);
 
         return $response;
@@ -376,26 +372,26 @@ class IpnHandler implements IpnHandlerInterface
      * @return response in array format
      */
 
-    private function _simpleXmlObject()
+    private function simpleXmlObject()
     {
         $ipnMessage = $this->returnMessage();
 
-        //Getting the Simple XML element object of the IPN XML Response Body
+        // Getting the Simple XML element object of the IPN XML Response Body
         $response = simplexml_load_string((string) $ipnMessage['NotificationData']);
 
-        //Adding the Type,MessageId,TopicArn details of the IPN to the Simple XML element Object
-        $response->addChild('Type', $this->_snsMessage['Type']);
-        $response->addChild('MessageId', $this->_snsMessage['MessageId']);
-        $response->addChild('TopicArn', $this->_snsMessage['TopicArn']);
+        // Adding the Type, MessageId, TopicArn details of the IPN to the Simple XML element Object
+        $response->addChild('Type', $this->snsMessage['Type']);
+        $response->addChild('MessageId', $this->snsMessage['MessageId']);
+        $response->addChild('TopicArn', $this->snsMessage['TopicArn']);
 
         return $response;
     }
 
-    /* _getRemainingIpnFields()
+    /* getRemainingIpnFields()
      * Gets the remaining fields of the IPN to be later appended to the return message
      */
     
-    private function _getRemainingIpnFields()
+    private function getRemainingIpnFields()
     {
         $ipnMessage = $this->returnMessage();
 

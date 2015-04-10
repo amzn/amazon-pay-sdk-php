@@ -5,7 +5,7 @@ require_once '../PayWithAmazon/IpnHandler.php';
 
 class IpnHandlertest extends \PHPUnit_Framework_TestCase
 {
-    private $_configParams = array(
+    private $configParams = array(
                 'cabundle_file'  => null,
                 'proxy_host'     => null,
                 'proxy_port'     => -1,
@@ -20,7 +20,7 @@ class IpnHandlertest extends \PHPUnit_Framework_TestCase
             $headers = array('ab'=>'abc');
             $body = 'abctest';
             
-            $ipnHandler = new IpnHandler($headers,$body,$this->_configParams);
+            $ipnHandler = new IpnHandler($headers,$body,$this->configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - header./i', strval($expected));
         }
@@ -28,7 +28,7 @@ class IpnHandlertest extends \PHPUnit_Framework_TestCase
             $headers['x-amz-sns-message-type'] = 'Notification';
             $body = 'abctest';
             
-            $ipnHandler = new IpnHandler($headers,$body,$this->_configParams);
+            $ipnHandler = new IpnHandler($headers,$body,$this->configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - content is not in json format./i', strval($expected));
         }
@@ -44,6 +44,4 @@ class IpnHandlertest extends \PHPUnit_Framework_TestCase
             $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }
     }
-    
-    
 }

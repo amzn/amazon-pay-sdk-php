@@ -178,9 +178,9 @@ $requestParameters['authorization_reference_id'] = 'UNIQUE STRING';
 $requestParameters['transaction_timeout'] = 0;
 $requestParameters['charge_note'] = 'Example item note';
 $requestParameters['charge_order_id'] = '1234-Example-Order';
-$requestParameters['Store_Name'] = 'Example Store';
-$requestParameters['Platform_Id'] = null;
-$requestParameters['Custom_Information'] = 'Any_Custom_String';
+$requestParameters['store_name'] = 'Example Store';
+$requestParameters['platform_Id'] = null;
+$requestParameters['custom_information'] = 'Any_Custom_String';
 $requestParameters['mws_auth_token'] = null;
 
 //get the Authorization response from the charge method

@@ -35,7 +35,7 @@ class Signature{
     }
     
     /* Create an Array of required parameters, sort them
-     * calculate signature and invoke the POST them to the MWS Service URL
+     * Calculate signature and invoke the POST them to the MWS Service URL
      *
      * @param AWSAccessKeyId [String]
      * @param Version [String]
@@ -96,8 +96,7 @@ class Signature{
         return $this->sign($stringToSign, $algorithm);
     }
     
-    /**
-     * Calculate String to Sign for SignatureVersion 2
+    /* Calculate String to Sign for SignatureVersion 2
      * @param array $parameters request parameters
      * @return String to Sign
      */
@@ -114,9 +113,7 @@ class Signature{
         return $data;
     }
     
-    /**
-     * Convert paremeters to Url encoded query string
-     */
+    /* Convert paremeters to Url encoded query string */
     
     private function getParametersAsString(array $parameters)
     {
@@ -133,9 +130,7 @@ class Signature{
         return str_replace('%7E', '~', rawurlencode($value));
     }
     
-    /**
-     * Computes RFC 2104-compliant HMAC signature.
-     */
+    /* Computes RFC 2104-compliant HMAC signature.*/
     
     private function sign($data, $algorithm)
     {
@@ -150,9 +145,7 @@ class Signature{
         return base64_encode(hash_hmac($hash, $data, $this->config['secret_key'], true));
     }
     
-    /**
-     * Formats date as ISO 8601 timestamp
-     */
+    /* Formats date as ISO 8601 timestamp */
     
     private function getFormattedTimestamp()
     {

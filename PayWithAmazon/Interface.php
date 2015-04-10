@@ -13,13 +13,13 @@ interface ClientInterface
     public function __construct($config = null);
     
     /* Setter for sandbox
-     * sets the boolean value for config['sandbox'] variable
+     * Sets the boolean value for config['sandbox'] variable
      */
     
     public function setSandbox($value);
     
     /* Setter for config['client_id']
-     * sets the  value for config['client_id'] variable
+     * Sets the  value for config['client_id'] variable
      */
     
     public function setClientId($value);
@@ -28,8 +28,8 @@ interface ClientInterface
      * input $proxy [array]
      * @param $proxy['proxy_user_host'] - hostname for the proxy
      * @param $proxy['proxy_user_port'] - hostname for the proxy
-     * @param $proxy['proxy_user_name'] - if your proxy requeired a username
-     * @param $proxy['proxy_user_password'] - if your proxy requeired a passowrd
+     * @param $proxy['proxy_user_name'] - if your proxy required a username
+     * @param $proxy['proxy_user_password'] - if your proxy required a passowrd
      */
     
     public function setProxy($proxy);
@@ -194,7 +194,7 @@ interface ClientInterface
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @param requestParameters['reverse_provider_credit'] - [array(array())]
+     * @param requestParameters['provider_credit_reversal'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -270,7 +270,7 @@ interface ClientInterface
     
     public function setBillingAgreementDetails($requestParameters = array());
     
-    /* ConfirmBillingAgreement API Call - Confirms that the billing agreement is free of constraints and all required information has been set on the billing agreement.
+    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the billing agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -280,7 +280,7 @@ interface ClientInterface
     
     public function confirmBillingAgreement($requestParameters = array());
     
-    /* ValidateBillignAgreement API Call - Validates the status of the BillingAgreement object and the payment method associated with it.
+    /* ValidateBillingAgreement API Call - Validates the status of the Billing Agreement object and the payment method associated with it.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ValidateBillignAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -290,7 +290,7 @@ interface ClientInterface
     
     public function validateBillingAgreement($requestParameters = array());
     
-    /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the billing agreement.
+    /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the Billing Agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_AuthorizeOnBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -325,7 +325,7 @@ interface ClientInterface
     public function closeBillingAgreement($requestParameters = array());
     
     /* charge convenience method
-     * performs the API calls
+     * Performs the API calls
      * 1. SetOrderReferenceDetails / SetBillingAgreementDetails
      * 2. ConfirmOrderReference / ConfirmBillingAgreement
      * 3. Authorize (with Capture) / AuthorizeOnBillingAgreeemnt (with Capture)
@@ -343,7 +343,7 @@ interface ClientInterface
     
     public function charge($requestParameters = array());
     
-    /* GetProviderCreditDetails API Call - Get the details of the Marketplace provider credit.
+    /* GetProviderCreditDetails API Call - Get the details of the Provider Credit.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
@@ -352,7 +352,7 @@ interface ClientInterface
     
     public function getProviderCreditDetails($requestParameters = array());
     
-    /* GetProviderCreditReversalDetails API Call - Get the details of the Marketplace provider reversal credit.
+    /* GetProviderCreditReversalDetails API Call - Get details of the Provider Credit Reversal.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_reversal_id'] - [String]
@@ -361,7 +361,7 @@ interface ClientInterface
     
     public function getProviderCreditReversalDetails($requestParameters = array());
     
-    /* ReverseProviderCredit API Call - Reverse the provider fee charged back.
+    /* ReverseProviderCredit API Call - Reverse the Provider Credit.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
@@ -375,7 +375,7 @@ interface ClientInterface
     public function reverseProviderCredit($requestParameters = array());
 }
 
-/* interface for IpnHandler.php */
+/* Interface for IpnHandler.php */
 
 interface IpnHandlerInterface
 {
@@ -403,14 +403,13 @@ interface IpnHandlerInterface
     public function toJson();
 
     /* toArray() - Converts IPN [Message] field to associative array
-     * Merge the rema
      * @return response in array format
      */
     
     public function toArray();
 }
 
-/* interface for HttpCurl.php */
+/* Interface for HttpCurl.php */
 
 interface HttpCurlInterface
 {
@@ -420,7 +419,8 @@ interface HttpCurlInterface
     
     public function __construct($config = null);
     
-    //set Http header for Access token for the GetUserInfo call
+    /* Set Http header for Access token for the GetUserInfo call */
+    
     public function setHttpHeader();
     
     /* Setter for  Access token to get the user info */
@@ -443,16 +443,15 @@ interface HttpCurlInterface
     public function httpGet($url, $userAgent = null);
 }
 
-/* interface for ResponseParser.php */
+/* Interface for ResponseParser.php */
 
 interface ResponseInterface
 {
-    //takes response from the API call
-    public function __construct($response=null);
+    /* Takes response from the API call */
     
-    /*
-     * returns the XML portion of the response
-     */
+    public function __construct($response = null);
+    
+    /* Returns the XML portion of the response */
     
     public function toXml();
     

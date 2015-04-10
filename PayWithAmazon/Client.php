@@ -94,8 +94,7 @@ class Client implements ClientInterface
 	}
     }
 
-    /* checkIfFileExists -  check if the JSON file exists in the path provided
-     */
+    /* checkIfFileExists -  check if the JSON file exists in the path provided */
 
     private function checkIfFileExists($config)
     {
@@ -296,14 +295,14 @@ class Client implements ClientInterface
 	/* For loop to take all the non empty parameters in the $requestParameters and add it into the $parameters array,
 	 * if the keys are matched from $requestParameters array with the $fieldMappings array
 	 */
-        foreach ($requestParameters as $parm => $value) {
+        foreach ($requestParameters as $param => $value) {
 
 	    // 	Provider credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
 	    if(!is_array($value)) {
 		$value = trim($value);
 	    }
 
-            if (array_key_exists($parm, $fieldMappings) && $value!='') {
+            if (array_key_exists($param, $fieldMappings) && $value!='') {
 
 		// For variables that take boolean values, strtolower them
 		if(is_bool($value)) {
@@ -311,14 +310,14 @@ class Client implements ClientInterface
 		} elseif(is_array($value)) {
 
 		    // If the parameter is a provider_credit or provider_credit_reversal, call the respective functions to set the values
-		    if($parm === 'provider_credit') {
+		    if($param === 'provider_credit') {
 			$parameters = $this->setProviderCreditDetails($parameters,$value);
-		    } elseif ($parm === 'provider_credit_reversal') {
+		    } elseif ($param === 'provider_credit_reversal') {
 			$parameters = $this->setReverseProviderCreditDetails($parameters,$value);
 		    }
 
 		} else{
-		    $parameters[$fieldMappings[$parm]] = $value;
+		    $parameters[$fieldMappings[$param]] = $value;
 		}
             }
         }
@@ -329,8 +328,7 @@ class Client implements ClientInterface
 	return $responseObject;
     }
 
-    /* calculateSignatureAndPost - convert the Parameters array to string and curl POST the parameters to MWS
-     */
+    /* calculateSignatureAndPost - convert the Parameters array to string and curl POST the parameters to MWS */
 
     private function calculateSignatureAndPost($parameters)
     {
@@ -345,11 +343,11 @@ class Client implements ClientInterface
         return $responseObject;
     }
 
-    /* if merchant_id is not set via the requestParameters array then it's taken from the config array
+    /* If merchant_id is not set via the requestParameters array then it's taken from the config array
      *
      * Set the platform_id if set in the config['platform_id'] array
      *
-     * if currency_code is set in the $requestParameters and it exists in the $fieldMappings array ,strtoupper it
+     * If currency_code is set in the $requestParameters and it exists in the $fieldMappings array, strtoupper it
      * else take the value from config array if set
      */
 
@@ -382,8 +380,8 @@ class Client implements ClientInterface
 
     private function setProviderCreditDetails($parameters, $providerCreditInfo)
     {
-	$provider_index = 0;
-	$provider_string = 'ProviderCreditList.member.';
+	$providerIndex = 0;
+	$providerString = 'ProviderCreditList.member.';
 
         $fieldMappings = array(
             'provider_id'   => 'ProviderId',
@@ -394,19 +392,19 @@ class Client implements ClientInterface
 	foreach ($providerCreditInfo as $key => $value)
 	 {
 	    $value = array_change_key_case($value, CASE_LOWER);
-	    $provider_index = $provider_index + 1;
+	    $providerIndex = $providerIndex + 1;
 
-	    foreach ($value as $parm => $val)
+	    foreach ($value as $param => $val)
 	    {
-		if (array_key_exists($parm, $fieldMappings) && trim($val)!='') {
-		    $parameters[$provider_string.$provider_index. '.' .$fieldMappings[$parm]] = $val;
+		if (array_key_exists($param, $fieldMappings) && trim($val)!='') {
+		    $parameters[$providerString.$providerIndex. '.' .$fieldMappings[$param]] = $val;
 		}
 	    }
 
 	    // If currency code is not entered take it from the config array
-	    if(empty($parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']]))
+	    if(empty($parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']]))
 	    {
-		$parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
+		$parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
 	    }
 	}
 
@@ -421,8 +419,8 @@ class Client implements ClientInterface
 
     private function setReverseProviderCreditDetails($parameters, $providerCreditInfo)
     {
-	$provider_index = 0;
-	$provider_string = 'ProviderCreditReversalList.member.';
+	$providerIndex = 0;
+	$providerString = 'ProviderCreditReversalList.member.';
 
         $fieldMappings = array(
             'provider_id' 	   	=> 'ProviderId',
@@ -433,19 +431,19 @@ class Client implements ClientInterface
 	foreach ($providerCreditInfo as $key => $value)
 	{
 	    $value = array_change_key_case($value, CASE_LOWER);
-	    $provider_index = $provider_index + 1;
+	    $providerIndex = $providerIndex + 1;
 
-	    foreach ($value as $parm => $val)
+	    foreach ($value as $param => $val)
 	    {
-		if (array_key_exists($parm, $fieldMappings) && trim($val)!='') {
-		    $parameters[$provider_string.$provider_index. '.' .$fieldMappings[$parm]] = $val;
+		if (array_key_exists($param, $fieldMappings) && trim($val)!='') {
+		    $parameters[$providerString.$providerIndex. '.' .$fieldMappings[$param]] = $val;
 		}
 	    }
 
 	    // If currency code is not entered take it from the config array
-	    if(empty($parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']]))
+	    if(empty($parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']]))
 	    {
-		$parameters[$provider_string.$provider_index. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
+		$parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
 	    }
 	}
 
@@ -910,7 +908,7 @@ class Client implements ClientInterface
 	return ($responseObject);
     }
 
-    /* SetBillingAgreementDetails API call - Sets billing agreement details such as a description of the agreement and other information about the seller.
+    /* SetBillingAgreementDetails API call - Sets Billing Agreement details such as a description of the agreement and other information about the seller.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetBillingAgreementDetails.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -947,7 +945,7 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* ConfirmBillingAgreement API Call - Confirms that the billing agreement is free of constraints and all required information has been set on the billing agreement.
+    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the billing agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -972,8 +970,8 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* ValidateBillignAgreement API Call - Validates the status of the BillingAgreement object and the payment method associated with it.
-     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ValidateBillignAgreement.html
+    /* ValidateBillignAgreement API Call - Validates the status of the Billing Agreement object and the payment method associated with it.
+     * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ValidateBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
@@ -1075,8 +1073,8 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* Charge convenience method
-     * performs the API calls
+    /* charge convenience method
+     * Performs the API calls
      * 1. SetOrderReferenceDetails / SetBillingAgreementDetails
      * 2. ConfirmOrderReference / ConfirmBillingAgreement
      * 3. Authorize (with Capture) / AuthorizeOnBillingAgreeemnt (with Capture)
@@ -1086,7 +1084,7 @@ class Client implements ClientInterface
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
      * @param requestParameters['currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
-     * @optional requestParameters['charge_note'] - [String] : seller note sent to the buyer
+     * @optional requestParameters['charge_note'] - [String] : Seller Note sent to the buyer
      * @optional requestParameters['transaction_timeout'] - [String] : Defaults to 1440 minutes
      * @optional requestParameters['charge_order_id'] - [String] : Custom Order ID provided
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -1177,7 +1175,7 @@ class Client implements ClientInterface
         }
     }
 
-    /* GetProviderCreditDetails API Call - Get the details of the Marketplace provider credit.
+    /* GetProviderCreditDetails API Call - Get the details of the Provider Credit.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
@@ -1201,7 +1199,7 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* GetProviderCreditReversalDetails API Call - Get the details of the Marketplace provider reversal credit.
+    /* GetProviderCreditReversalDetails API Call - Get details of the Provider Credit Reversal.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_reversal_id'] - [String]
@@ -1225,7 +1223,7 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* ReverseProviderCredit API Call - Reverse the provider fee charged back.
+    /* ReverseProviderCredit API Call - Reverse the Provider Credit.
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
@@ -1258,7 +1256,7 @@ class Client implements ClientInterface
     }
 
     /* Create an Array of required parameters, sort them
-     * calculate signature and invoke the POST them to the MWS Service URL
+     * Calculate signature and invoke the POST to the MWS Service URL
      *
      * @param AWSAccessKeyId [String]
      * @param Version [String]
@@ -1389,7 +1387,7 @@ class Client implements ClientInterface
     }
 
     /* invokePost takes the parameters and invokes the httpPost function to POST the parameters
-     * exponential retries on error 500 and 503
+     * Exponential retries on error 500 and 503
      * The response from the POST is an XML which is converted to Array
      */
 
@@ -1398,7 +1396,9 @@ class Client implements ClientInterface
         $response       = array();
         $statusCode     = 200;
         $this->success = false;
-        /* Submit the request and read response body */
+        
+	// Submit the request and read response body
+	
         try {
             $shouldRetry = true;
             $retries     = 0;
@@ -1459,7 +1459,7 @@ class Client implements ClientInterface
         }
     }
 
-    /* create MWS service URL and the Endpoint path */
+    /* Create MWS service URL and the Endpoint path */
 
     private function createServiceUrl()
     {
@@ -1498,7 +1498,7 @@ class Client implements ClientInterface
         }
     }
 
-    /* create the User Agent Header sent with the POST request */
+    /* Create the User Agent Header sent with the POST request */
 
     private function constructUserAgentHeader()
     {
@@ -1532,6 +1532,7 @@ class Client implements ClientInterface
      * @param $s
      * @return string
      */
+    
     private function quoteApplicationVersion($s)
     {
         $quotedString = preg_replace('/ {2,}|\s/', ' ', $s);

@@ -30,7 +30,7 @@ class HttpCurl implements HttpCurlInterface
         $this->header = true;
     }
     
-    /* Setter for  Access token to get the user info */
+    /* Setter for Access token to get the user info */
     
     public function setAccessToken($accesstoken)
     {
@@ -38,7 +38,7 @@ class HttpCurl implements HttpCurlInterface
     }
 
     /* Add the common Curl Parameters to the curl handler $ch
-     * also checks for optional parameters if provided in the config
+     * Also checks for optional parameters if provided in the config
      * config['cabundle_file']
      * config['proxy_port']
      * config['proxy_host']
@@ -100,7 +100,7 @@ class HttpCurl implements HttpCurlInterface
     {
         $ch = $this->commonCurlParams($url,$userAgent);
         
-        // setting the HTTP header with the Access Token only for Getting user info
+        // Setting the HTTP header with the Access Token only for Getting user info
         if ($this->header) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Authorization: bearer ' . $this->accessToken

@@ -2,27 +2,25 @@
 namespace PayWithAmazon;
 
 /* ResponseParser
- * methods provided to convert the Response from the POST to XML,Array or JSON
+ * Methods provided to convert the Response from the POST to XML, Array or JSON
  */
 
 require_once 'Interface.php';
 
 class ResponseParser implements ResponseInterface
 {
-    public $_response = null;
+    public $response = null;
     
     public function __construct($response=null)
     {
-        $this->_response = $response;
+        $this->response = $response;
     }
    
-    /*
-     * returns the XML portion of the response
-     */
+    /* Returns the XML portion of the response */
     
     public function toXml()
     {
-        return $this->_response['ResponseBody'];
+        return $this->response['ResponseBody'];
     }
     
     /* toJson  - converts XML into Json
@@ -31,34 +29,34 @@ class ResponseParser implements ResponseInterface
     
     public function toJson()
     {
-        $response = $this->_simpleXmlObject();
+        $response = $this->simpleXmlObject();
         
         return (json_encode($response));
     }
     
     /* toArray  - converts XML into associative array
-     * @param $this->_response [XML]
+     * @param $this->response [XML]
      */
     public function toArray()
     {
-        $response = $this->_simpleXmlObject();
+        $response = $this->simpleXmlObject();
         
-        //Converting the SimpleXMLElement Object to array()
+        // Converting the SimpleXMLElement Object to array()
         $response = json_encode($response);
         
         return (json_decode($response, true));
     }
     
-    private function _simpleXmlObject()
+    private function simpleXmlObject()
     {
-        $response = $this->_response;
-        //Getting the HttpResponse Status code to the output as a string
+        $response = $this->response;
+        // Getting the HttpResponse Status code to the output as a string
         $status = strval($response['Status']);
         
-        //Getting the Simple XML element object of the XML Response Body
+        // Getting the Simple XML element object of the XML Response Body
         $response = simplexml_load_string((string) $response['ResponseBody']);
         
-        //Adding the HttpResponse Status code to the output as a string
+        // Adding the HttpResponse Status code to the output as a string
         $response->addChild('ResponseStatus', $status);
         
         return $response;
