@@ -1,7 +1,7 @@
-<?php namespace PayWithAmazon;
+<?php
+namespace PayWithAmazon;
 
-/* Interface class to showcase the public API methods for Pay With Amazon
- */
+/* Interface class to showcase the public API methods for Pay With Amazon */
 
 interface ClientInterface
 {
@@ -375,8 +375,8 @@ interface ClientInterface
     public function reverseProviderCredit($requestParameters = array());
 }
 
-/* interface for IpnHandler.php
- */ 
+/* interface for IpnHandler.php */
+
 interface IpnHandlerInterface
 {
    /* Takes headers and body of the IPN message as input in the constructor
@@ -411,8 +411,8 @@ interface IpnHandlerInterface
     public function toArray();
 }
 
-/* interface for HttpCurl.php
- */ 
+/* interface for HttpCurl.php */
+
 interface HttpCurlInterface
 {
     /* Takes user configuration array as input
@@ -445,8 +445,7 @@ interface HttpCurlInterface
     public function httpGet($url, $userAgent = null);
 }
 
-/* interface for ResponseParser.php
- */
+/* interface for ResponseParser.php */
 
 interface ResponseInterface
 {

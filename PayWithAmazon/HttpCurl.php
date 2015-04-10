@@ -1,6 +1,7 @@
-<?php namespace PayWithAmazon;
+<?php
+namespace PayWithAmazon;
 
-/* class HttpCurl
+/* Class HttpCurl
  * Handles Curl POST function for all requests
  */
 
@@ -8,10 +9,9 @@ require_once 'Interface.php';
 
 class HttpCurl implements HttpCurlInterface
 {
-    private $_url = null;
-    private $_config = array();
-    private $_header = false;
-    private $_accessToken = null;
+    private $config = array();
+    private $header = false;
+    private $accessToken = null;
     
     /* Takes user configuration array as input
      * Takes configuration for API call or IPN config
@@ -19,7 +19,7 @@ class HttpCurl implements HttpCurlInterface
     
     public function __construct($config = null)
     {
-        $this->_config = $config;
+        $this->config = $config;
         
     }
     
@@ -28,26 +28,26 @@ class HttpCurl implements HttpCurlInterface
     
     public function setHttpHeader()
     {
-        $this->_header = true;
+        $this->header = true;
     }
     
     /* Setter for  Access token to get the user info
      */
     public function setAccessToken($accesstoken)
     {
-        $this->_accessToken = $accesstoken;
+        $this->accessToken = $accesstoken;
     }
 
     /* Add the common Curl Parameters to the curl handler $ch
      * also checks for optional parameters if provided in the config
-     * _config['cabundle_file']
-     * _config['proxy_port']
-     * _config['proxy_host']
-     * _config['proxy_username']
-     * _config['proxy_password']
+     * config['cabundle_file']
+     * config['proxy_port']
+     * config['proxy_host']
+     * config['proxy_username']
+     * config['proxy_password']
      */
     
-    private  function _commonCurlParams($url,$userAgent)
+    private  function commonCurlParams($url,$userAgent)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -56,19 +56,19 @@ class HttpCurl implements HttpCurlInterface
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
-        if (!is_null($this->_config['cabundle_file'])) {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->_config['cabundle_file']);
+        if (!is_null($this->config['cabundle_file'])) {
+            curl_setopt($ch, CURLOPT_CAINFO, $this->config['cabundle_file']);
         }
         
         if (!empty($userAgent))
             curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         
-        if ($this->_config['proxy_host'] != null && $this->_config['proxy_port'] != -1) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->_config['proxy_host'] . ':' . $this->_config['proxy_port']);
+        if ($this->config['proxy_host'] != null && $this->config['proxy_port'] != -1) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->config['proxy_host'] . ':' . $this->config['proxy_port']);
         }
         
-        if ($this->_config['proxy_username'] != null && $this->_config['proxy_password'] != null) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->_config['proxy_username'] . ':' . $this->_config['proxy_password']);
+        if ($this->config['proxy_username'] != null && $this->config['proxy_password'] != null) {
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config['proxy_username'] . ':' . $this->config['proxy_password']);
         }
         
         return $ch;
@@ -82,7 +82,7 @@ class HttpCurl implements HttpCurlInterface
     
     public function httpPost($url, $userAgent = null, $parameters = null)
     {
-        $ch = $this->_commonCurlParams($url,$userAgent);
+        $ch = $this->commonCurlParams($url,$userAgent);
         
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
@@ -94,18 +94,17 @@ class HttpCurl implements HttpCurlInterface
     
     /* GET using curl for the following situations
      * 1. IPN certificate retrieval
-     * 3. Get User Info
+     * 2. Get User Info
      */
     
     public function httpGet($url, $userAgent = null)
     {
-        $ch = $this->_commonCurlParams($url,$userAgent);
-        /*
-         * setting the HTTP header with the Access Token only for Getting user info
-         */
-        if ($this->_header) {
+        $ch = $this->commonCurlParams($url,$userAgent);
+        
+        // setting the HTTP header with the Access Token only for Getting user info
+        if ($this->header) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization: bearer ' . $this->_accessToken
+                'Authorization: bearer ' . $this->accessToken
             ));
         }
         
@@ -113,8 +112,7 @@ class HttpCurl implements HttpCurlInterface
         return $response;
     }
     
-    /* Execute Curl request
-     */
+    /* Execute Curl request */
     
     private function _execute($ch)
     {

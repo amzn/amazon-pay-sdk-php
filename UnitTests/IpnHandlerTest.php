@@ -1,4 +1,5 @@
-<?php namespace PayWithAmazon;
+<?php
+namespace PayWithAmazon;
 
 require_once '../PayWithAmazon/IpnHandler.php';
 

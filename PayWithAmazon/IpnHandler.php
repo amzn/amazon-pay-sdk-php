@@ -1,4 +1,5 @@
-<?php namespace PayWithAmazon;
+<?php
+namespace PayWithAmazon;
 
 /* Class IPN_Handler
  * Takes headers and body of the IPN message as input in the constructor
@@ -7,7 +8,6 @@
 
 require_once 'HttpCurl.php';
 require_once 'Interface.php';
-
 class IpnHandler implements IpnHandlerInterface
 {
 
