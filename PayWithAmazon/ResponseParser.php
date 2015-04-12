@@ -23,7 +23,7 @@ class ResponseParser implements ResponseInterface
         return $this->response['ResponseBody'];
     }
     
-    /* toJson  - converts XML into Json
+    /* toJson - converts XML into Json
      * @param $response [XML]
      */
     
@@ -34,9 +34,10 @@ class ResponseParser implements ResponseInterface
         return (json_encode($response));
     }
     
-    /* toArray  - converts XML into associative array
+    /* toArray - converts XML into associative array
      * @param $this->response [XML]
      */
+    
     public function toArray()
     {
         $response = $this->simpleXmlObject();
@@ -50,6 +51,7 @@ class ResponseParser implements ResponseInterface
     private function simpleXmlObject()
     {
         $response = $this->response;
+        
         // Getting the HttpResponse Status code to the output as a string
         $status = strval($response['Status']);
         

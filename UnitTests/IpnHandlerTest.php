@@ -21,6 +21,7 @@ class IpnHandlertest extends \PHPUnit_Framework_TestCase
             $body = 'abctest';
             
             $ipnHandler = new IpnHandler($headers,$body,$this->configParams);
+            
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - header./i', strval($expected));
         }
@@ -29,17 +30,18 @@ class IpnHandlertest extends \PHPUnit_Framework_TestCase
             $body = 'abctest';
             
             $ipnHandler = new IpnHandler($headers,$body,$this->configParams);
+            
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - content is not in json format./i', strval($expected));
         }
         try {
-            
             $ConfigParams = array(
                 'a' => 'A',
                 'b' => 'B'
             );
             
             $ipnHandler = new IpnHandler(array(),null,$ConfigParams);
+            
         } catch (\Exception $expected) {
             $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }

@@ -202,15 +202,14 @@ class IpnHandler implements IpnHandlerInterface
      * @param string $signature       decoded signature to compare against
      * @param string $certificatePath path to certificate, can be file or url
      *
-     * @throws \Exception if there is an error  with the call
+     * @throws Exception if there is an error with the call
      *
      * @return bool true if valid
      */
     
     private function constructAndVerifySignature()
     {
-
-        $signature       = base64_decode($this->getMandatoryField("Signature"));
+	$signature       = base64_decode($this->getMandatoryField("Signature"));
         $certificatePath = $this->getMandatoryField("SigningCertURL");
 
         $this->certificate = $this->getCertificate($certificatePath);
@@ -280,7 +279,7 @@ class IpnHandler implements IpnHandlerInterface
      *
      * @param string $fieldName name of the field to extract
      *
-     * @throws \Exception if not found
+     * @throws Exception if not found
      *
      * @return string field contents if found
      */

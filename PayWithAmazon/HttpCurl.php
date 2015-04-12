@@ -20,7 +20,6 @@ class HttpCurl implements HttpCurlInterface
     public function __construct($config = null)
     {
         $this->config = $config;
-        
     }
     
     /* Setter for boolean header to get the user info */

@@ -1,8 +1,8 @@
 <?php
 namespace PayWithAmazon;
 
-class Signature{
-    
+class Signature
+{
     const SERVICE_VERSION = '2013-01-01';
     private $config = array();
     private $signature = null;
@@ -43,6 +43,7 @@ class Signature{
      * @param Timestamp [String]
      * @param Signature [String]
      */
+    
     private function calculateSignature($parameters)
     {
 	$this->createServiceUrl();
@@ -119,13 +120,13 @@ class Signature{
     {
         $queryParameters = array();
         foreach ($parameters as $key => $value) {
-            $queryParameters[] = $key . '=' . $this->_urlencode($value);
+            $queryParameters[] = $key . '=' . $this->urlEncode($value);
         }
         
         return implode('&', $queryParameters);
     }
     
-    private function _urlencode($value)
+    private function urlEncode($value)
     {
         return str_replace('%7E', '~', rawurlencode($value));
     }

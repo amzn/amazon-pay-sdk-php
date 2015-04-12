@@ -24,21 +24,22 @@ class Client implements ClientInterface
     private $mwsEndpointUrl = null;
     private $profileEndpoint = null;
     private $config = array('merchant_id' 	   => null,
-			     'secret_key' 	   => null,
-			     'access_key' 	   => null,
-			     'region' 		   => null,
-			     'currency_code' 	   => null,
-			     'sandbox' 		   => false,
-			     'platform_id' 	   => null,
-			     'cabundle_file' 	   => null,
-			     'application_name'    => null,
-			     'application_version' => null,
-			     'proxy_host' 	   => null,
-			     'proxy_port' 	   => -1,
-			     'proxy_username' 	   => null,
-			     'proxy_password' 	   => null,
-			     'client_id' 	   => null,
-			     'handle_throttle' 	   => true);
+			    'secret_key' 	   => null,
+			    'access_key' 	   => null,
+			    'region' 		   => null,
+			    'currency_code' 	   => null,
+			    'sandbox' 		   => false,
+			    'platform_id' 	   => null,
+			    'cabundle_file' 	   => null,
+			    'application_name'    => null,
+			    'application_version' => null,
+			    'proxy_host' 	   => null,
+			    'proxy_port' 	   => -1,
+			    'proxy_username' 	   => null,
+			    'proxy_password' 	   => null,
+			    'client_id' 	   => null,
+			    'handle_throttle' 	   => true
+			    );
 
     private $modePath = null;
 
@@ -103,10 +104,10 @@ class Client implements ClientInterface
 	    $jsonString  = file_get_contents($config);
 	    $configArray = json_decode($jsonString, true);
 
-	    $json_error = json_last_error();
+	    $jsonError = json_last_error();
 
-	    if ($json_error != 0) {
-		$errorMsg = "Error with message - content is not in json format" . $this->getErrorMessageForJsonError($json_error) . " " . $configArray;
+	    if ($jsonError != 0) {
+		$errorMsg = "Error with message - content is not in json format" . $this->getErrorMessageForJsonError($jsonError) . " " . $configArray;
 		throw new \Exception($errorMsg);
 	    }
 	} else {
@@ -137,14 +138,14 @@ class Client implements ClientInterface
 
     /* Convert a json error code to a descriptive error message
      *
-     * @param int $json_error message code
+     * @param int $jsonError message code
      *
      * @return string error message
      */
 
-    private function getErrorMessageForJsonError($json_error)
+    private function getErrorMessageForJsonError($jsonError)
     {
-        switch ($json_error) {
+        switch ($jsonError) {
             case JSON_ERROR_DEPTH:
                 return " - maximum stack depth exceeded.";
                 break;
@@ -177,7 +178,7 @@ class Client implements ClientInterface
     }
 
     /* Setter for config['client_id']
-     * sets the  value for config['client_id'] variable
+     * sets the value for config['client_id'] variable
      */
 
     public function setClientId($value)
@@ -246,21 +247,21 @@ class Client implements ClientInterface
     /* GetUserInfo convenience function - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
      * @see http://login.amazon.com/website Step 4
-     * @param $access_token [String]
+     * @param $accessToken [String]
      */
 
-    public function getUserInfo($access_token)
+    public function getUserInfo($accessToken)
     {
         // Get the correct Profile Endpoint URL based off the country/region provided in the config['region']
         $this->profileEndpointUrl();
 
-        if (empty($access_token)) {
+        if (empty($accessToken)) {
             throw new \InvalidArgumentException('Access Token is a required parameter and is not set');
         }
 
         // To make sure double encoding doesn't occur decode first and encode again.
-        $access_token = urldecode($access_token);
-        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlencode($access_token);
+        $accessToken = urldecode($accessToken);
+        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
 
         $httpCurlRequest = new HttpCurl();
 
@@ -276,7 +277,7 @@ class Client implements ClientInterface
         $url             = $this->profileEndpoint . '/user/profile';
         $httpCurlRequest = new HttpCurl();
 
-        $httpCurlRequest->setAccessToken($access_token);
+        $httpCurlRequest->setAccessToken($accessToken);
         $httpCurlRequest->setHttpHeader(true);
         $response = $httpCurlRequest->httpGet($url);
 
@@ -297,7 +298,7 @@ class Client implements ClientInterface
 	 */
         foreach ($requestParameters as $param => $value) {
 
-	    // 	Provider credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
+	    // 	Provider Credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
 	    if(!is_array($value)) {
 		$value = trim($value);
 	    }
@@ -1353,13 +1354,13 @@ class Client implements ClientInterface
     {
         $queryParameters = array();
         foreach ($parameters as $key => $value) {
-            $queryParameters[] = $key . '=' . $this->urlencode($value);
+            $queryParameters[] = $key . '=' . $this->urlEncode($value);
         }
 
         return implode('&', $queryParameters);
     }
 
-    private function urlencode($value)
+    private function urlEncode($value)
     {
         return str_replace('%7E', '~', rawurlencode($value));
     }
@@ -1398,8 +1399,7 @@ class Client implements ClientInterface
         $this->success = false;
         
 	// Submit the request and read response body
-	
-        try {
+	try {
             $shouldRetry = true;
             $retries     = 0;
             do {
@@ -1446,7 +1446,7 @@ class Client implements ClientInterface
 
     /* Exponential sleep on failed request
      * @param retries current retry
-     * @throws \Exception if maximum number of retries has been reached
+     * @throws Exception if maximum number of retries has been reached
      */
 
     private function pauseOnRetry($retries, $status)

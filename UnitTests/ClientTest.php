@@ -28,28 +28,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testConfigArray()
     {
         try {
-
             $client = new Client($this->configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/is not a Json File or the Json File./i', strval($expected));
         }
 
         try {
-
             $configParams = array(
                 'a' => 'A',
                 'b' => 'B'
             );
-
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }
 
         try {
-
             $configParams = array();
-
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/$config cannot be null./i', strval($expected));
@@ -59,18 +54,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testJsonFile()
     {
         try {
-
             $configParams = "config.json";
-
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - content is not in json format./i', strval($expected));
         }
 
         try {
-
             $configParams = "abc.json";
-
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/is not a Json File path or the Json File./i', strval($expected));
@@ -105,17 +96,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetOrderReferenceDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getOrderReferenceDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testSetOrderReferenceDetails()
@@ -136,17 +127,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'SetOrderReferenceDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->setOrderReferenceDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testConfirmOrderReference()
@@ -160,17 +151,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'ConfirmOrderReference';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->confirmOrderReference($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCancelOrderReference()
@@ -185,17 +176,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CancelOrderReference';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->cancelOrderReference($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCloseOrderReference()
@@ -210,16 +201,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CloseOrderReference';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-        $client->closeOrderReference($apiCallParams);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->closeOrderReference($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCloseAuthorization()
@@ -234,17 +226,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CloseAuthorization';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->CloseAuthorization($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testAuthorize()
@@ -265,24 +257,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'Authorize';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->authorize($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testGetAuthorizationDetails()
     {
         $client = new Client($this->configParams);
-         $fieldMappings = array(
+        $fieldMappings = array(
             'merchant_id' => 'SellerId',
             'amazon_authorization_id' => 'AmazonAuthorizationId',
             'mws_auth_token' => 'MWSAuthToken'
@@ -290,18 +281,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetAuthorizationDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getAuthorizationDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCapture()
@@ -320,18 +310,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'Capture';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->capture($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testGetCaptureDetails()
@@ -345,18 +334,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetCaptureDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getCaptureDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testRefund()
@@ -375,18 +363,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'Refund';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->refund($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testGetRefundDetails()
@@ -400,18 +387,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetRefundDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getRefundDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testGetServiceStatus()
@@ -424,18 +410,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetServiceStatus';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getServiceStatus($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCreateOrderReferenceForId()
@@ -459,18 +444,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CreateOrderReferenceForId';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->createOrderReferenceForId($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testGetBillingAgreementDetails()
@@ -485,18 +469,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'GetBillingAgreementDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getBillingAgreementDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testSetBillingAgreementDetails()
@@ -515,18 +498,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'SetBillingAgreementDetails';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->setBillingAgreementDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testConfirmBillingAgreement()
@@ -540,18 +522,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'ConfirmBillingAgreement';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->confirmBillingAgreement($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testValidateBillingAgreement()
@@ -565,18 +546,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'ValidateBillingAgreement';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->validateBillingAgreement($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testAuthorizeOnBillingAgreement()
@@ -603,18 +583,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'AuthorizeOnBillingAgreement';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->authorizeOnBillingAgreement($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCloseBillingAgreement()
@@ -629,18 +608,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CloseBillingAgreement';
 
-        $parameters = $this->setParametersAndPost($fieldMappings,$action);
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedStringParams = $this->callPrivateMethod($client,'calculateSignatureAndParametersToString',$expectedParameters);
-
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->closeBillingAgreement($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
-        $this->assertEquals($apiParametersString,$expectedStringParams);
+        $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
     public function testCharge()
@@ -651,19 +629,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->charge($apiCallParams);
 
         try {
-
             $client = new Client($this->configParams);
             $apiCallParams = array('amazon_reference_id' => '');
-
             $client->charge($apiCallParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/amazon_reference_id is null and is a required parameter./i', strval($expected));
         }
-        try {
 
+        try {
             $client = new Client($this->configParams);
             $apiCallParams = array('amazon_reference_id' => 'T01');
-
             $client->charge($apiCallParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/Invalid Amazon Reference ID./i', strval($expected));
@@ -679,6 +654,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         } catch (\Exception $expected) {
             $this->assertRegExp('/is a required parameter./i', strval($expected));
         }
+
         try {
             $this->configParams['region'] = 'us';
             $client = new Client($this->configParams);
@@ -703,11 +679,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $signatureObj = new Signature($this->configParams,$parameters);
         $expectedSignature = $signatureObj->getSignature();
 
-        $this->callPrivateMethod($client,'createServiceUrl',null);
+        $this->callPrivateMethod($client,'createServiceUrl', null);
 
-        $signature = $this->callPrivateMethod($client,'signParameters',$parameters);
+        $signature = $this->callPrivateMethod($client,'signParameters', $parameters);
 
-        $this->assertEquals($signature,$expectedSignature);
+        $this->assertEquals($signature, $expectedSignature);
     }
 
     public function test500or503()
@@ -717,7 +693,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
             $url = 'https://www.justcharge.me/OffAmazonPayments_Sandbox/2013-01-01';
             $client->setMwsServiceUrl($url);
-            $this->callPrivateMethod($client,'invokePost',null);
+            $this->callPrivateMethod($client, 'invokePost', null);
 
         } catch (\Exception $expected) {
             $this->assertRegExp('/Maximum number of retry attempts./i', strval($expected));
@@ -738,7 +714,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $responseObj = new ResponseParser($response);
         $xmlResponse = $responseObj->toXml();
 
-        $this->assertEquals($xmlResponse,$response['ResponseBody']);
+        $this->assertEquals($xmlResponse, $response['ResponseBody']);
     }
 
     public function testJsonResponse()
@@ -757,7 +733,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $responseObj = new ResponseParser($response);
         $jsonResponse = $responseObj->toJson();
 
-        $this->assertEquals($json,$jsonResponse);
+        $this->assertEquals($json, $jsonResponse);
     }
 
     public function testArrayResponse()
@@ -778,10 +754,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $responseObj = new ResponseParser($response);
         $arrayResponse = $responseObj->toArray();
 
-        $this->assertEquals($array,$arrayResponse);
+        $this->assertEquals($array, $arrayResponse);
     }
 
-    private function setParametersAndPost($fieldMappings,$action)
+    private function setParametersAndPost($fieldMappings, $action)
     {
         $expectedParameters = array();
         $apiCallParams = array();
@@ -801,7 +777,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         }
 
         return array('expectedParameters' => $expectedParameters,
-                     'apiCallParams' =>$apiCallParams);
+                     'apiCallParams'      =>$apiCallParams);
     }
 
     private function setDefaultValues($fieldMappings)
@@ -815,28 +791,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 	}
 
         if (array_key_exists('currency_code', $fieldMappings)) {
-		$expectedParameters[$fieldMappings['currency_code']] = 'TEST';
-                $apiCallParams['currency_code'] = 'TEST';
+	    $expectedParameters[$fieldMappings['currency_code']] = 'TEST';
+            $apiCallParams['currency_code'] = 'TEST';
         }
 
-
-       return array('expectedParameters' => $expectedParameters,
-                    'apiCallParams'      => $apiCallParams);
+        return array('expectedParameters' => $expectedParameters,
+                     'apiCallParams'      => $apiCallParams);
     }
 
     /* Formats date as ISO 8601 timestamp */
-    
+
     private function getFormattedTimestamp()
     {
         return gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", time());
     }
 
-    private function callPrivateMethod($client,$methodName,$parameters)
+    private function callPrivateMethod($client, $methodName, $parameters)
     {
         $reflectionClass = new \ReflectionClass("PayWithAmazon\Client");
         $reflectionMethod = $reflectionClass->getMethod($methodName);
         $reflectionMethod->setAccessible(true);
-        $expectedStringParams = $reflectionMethod->invoke($client,$parameters);
+        $expectedStringParams = $reflectionMethod->invoke($client, $parameters);
         return $expectedStringParams;
     }
 }
