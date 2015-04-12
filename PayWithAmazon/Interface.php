@@ -253,7 +253,7 @@ interface ClientInterface
     
     public function getBillingAgreementDetails($requestParameters = array());
     
-    /* SetBillingAgreementDetails API call - Sets billing agreement details such as a description of the agreement and other information about the seller.
+    /* SetBillingAgreementDetails API call - Sets Billing Agreement details such as a description of the agreement and other information about the seller.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_SetBillingAgreementDetails.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -270,7 +270,7 @@ interface ClientInterface
     
     public function setBillingAgreementDetails($requestParameters = array());
     
-    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the billing agreement.
+    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the Billing Agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]

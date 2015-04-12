@@ -946,7 +946,7 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the billing agreement.
+    /* ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the Billing Agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_ConfirmBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -996,7 +996,7 @@ class Client implements ClientInterface
         return ($responseObject);
     }
 
-    /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the billing agreement.
+    /* AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the Billing Agreement.
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_AuthorizeOnBillingAgreement.html
      *
      * @param requestParameters['merchant_id'] - [String]
