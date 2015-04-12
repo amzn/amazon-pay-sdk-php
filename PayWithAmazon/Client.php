@@ -261,12 +261,12 @@ class Client implements ClientInterface
 
         // To make sure double encoding doesn't occur decode first and encode again.
         $accessToken = urldecode($accessToken);
-        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
+        $url 	     = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
 
         $httpCurlRequest = new HttpCurl();
 
         $response = $httpCurlRequest->httpGet($url);
-        $data     = json_decode($response);
+        $data 	  = json_decode($response);
 
         if ($data->aud != $this->config['client_id']) {
             // The access token does not belong to us
