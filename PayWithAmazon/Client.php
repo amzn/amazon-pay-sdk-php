@@ -546,7 +546,7 @@ class Client implements ClientInterface
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_order_reference_id'] - [String]
-     * @optional requestParameters['cancel_reason'] [String]
+     * @optional requestParameters['cancelation_reason'] [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
 
