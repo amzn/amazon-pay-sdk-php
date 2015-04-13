@@ -165,7 +165,7 @@ class Client implements ClientInterface
     }
 
     /* Setter for sandbox
-     * sets the Boolean value for config['sandbox'] variable
+     * Sets the Boolean value for config['sandbox'] variable
      */
 
     public function setSandbox($value)
@@ -178,7 +178,7 @@ class Client implements ClientInterface
     }
 
     /* Setter for config['client_id']
-     * sets the value for config['client_id'] variable
+     * Sets the value for config['client_id'] variable
      */
 
     public function setClientId($value)
