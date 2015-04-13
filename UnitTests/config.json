@@ -1,0 +1,15 @@
+{
+   "merchant_id": "test",
+   "access_Key": "test",
+   "secret_Key": "test",
+   "currency_Code": "USD",
+   "client_Id": "test",
+   "region": "us",
+   "sandbox": true,
+   "application_Name": "sdk testing",
+   "application_Version": "1.0",
+   "proxy_Host": null,
+   "proxy_Port": -1,
+   "proxy_Username": null,
+   "proxy_Password": null
+}
