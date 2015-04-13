@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
    "name": "login-and-pay-with-amazon-sdk-php",
+=======
+   "name": "amzn/login-and-pay-with-amazon-sdk-php",
+>>>>>>> 8cadc4e454efeca2d13615757edcf6146594e3b9
    "type": "library",
    "description": "Pay with Amazon SDK",
    "keywords": [
@@ -10,7 +14,11 @@
       "pay with amazon",
       "amazon payments"
    ],
+<<<<<<< HEAD
    "homepage": "https://github.com/amzn/login-and-pay-with-amazon-sdk-php/tree/phoenix",
+=======
+   "homepage": "https://github.com/amzn/login-and-pay-with-amazon-sdk-php",
+>>>>>>> 8cadc4e454efeca2d13615757edcf6146594e3b9
    "license": "Apache OSL-2",
    "authors": [
       {
@@ -27,4 +35,8 @@
       "ext-curl":"*",
       "php":">=5.3.0"
    }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8cadc4e454efeca2d13615757edcf6146594e3b9
