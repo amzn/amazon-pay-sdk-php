@@ -68,7 +68,7 @@ class Client implements ClientInterface
 				    'jp' => 'jp');
 
     // Boolean variable to check if the API call was a success
-    private $success = false;
+    public $success = false;
 
     /* Takes user configuration array from the user as input
      * Takes JSON file path with configuration information as input

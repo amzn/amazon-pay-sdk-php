@@ -86,7 +86,7 @@ class HttpCurl implements HttpCurlInterface
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, true);
         
-        $response = $this->_execute($ch);
+        $response = $this->execute($ch);
         return $response;
     }
     
@@ -106,13 +106,13 @@ class HttpCurl implements HttpCurlInterface
             ));
         }
         
-        $response = $this->_execute($ch);
+        $response = $this->execute($ch);
         return $response;
     }
     
     /* Execute Curl request */
     
-    private function _execute($ch)
+    private function execute($ch)
     {
         $response = '';
         if (!$response = curl_exec($ch)) {
