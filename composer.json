@@ -14,17 +14,17 @@
    "license": "Apache OSL-2",
    "authors": [
       {
-         "name":"Amazon Payments",
-         "email":"eps-dse@amazon.com"
+         "name": "Amazon Payments",
+         "email": "eps-dse@amazon.com"
       }
    ],
    "autoload": {
       "psr-4": {
-         "PayWithAmazon\\":"PayWithAmazon/"
+         "PayWithAmazon\\": "PayWithAmazon/"
       }
    },
    "require": {
-      "ext-curl":"*",
-      "php":">=5.3.0"
+      "ext-curl": "*",
+      "php": ">=5.3.0"
    }
 }
