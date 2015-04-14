@@ -4,7 +4,7 @@ Login and Pay with Amazon API Integration
 ## Requirements
 
 * PHP 5.3 or higher
-* Curl 7.8
+* Curl 7.18 or higher
 
 ## Quick Start
 
@@ -78,7 +78,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
 
 $client = new Client($config);
 
-//Also you can set the sandbox variable in the _config() array of the Client class by 
+//Also you can set the sandbox variable in the config() array of the Client class by 
 
 $client->setSandbox(true);
 ```
@@ -111,7 +111,7 @@ $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 
 //Optional Parameter
 $requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
-$requestParameters['mws_auth_token']     	= 'MWS_AUTH_TOKEN';
+$requestParameters['mws_auth_token']            = 'MWS_AUTH_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
@@ -142,7 +142,7 @@ $ipnHandler = new IpnHandler($headers, $body);
 
 #####Charge Method
 
-Charge method combines the following API calls 
+charge method combines the following API calls 
 
 **Standard Payments / Recurring Payments**
 
@@ -150,12 +150,15 @@ Charge method combines the following API calls
 2. ConfirmOrderReference / ConfirmBillingAgreement
 3. Authorize (With capture) / AuthorizeOnBillingAgreement (With capture)
 
+For Recurring payments the first `charge` call will make the SetBillingAgreementDetails, ConfirmBillingAgreement, AuthorizeOnBillingAgreement API calls.
+Subsequent call to `charge` method for the same Billing Agreement ID will make the call only to AuthorizeOnBillingAgreement (With capture).
+
 | Parameter                  | Variable Name               | Mandatory | Values                                                                                              	   |
 |----------------------------|-----------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
 | Amazon Reference ID 	     | `amazon_reference_id` 	   | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`)       |
-| Merchant ID         	     | `merchant_id`         	   | no        | value taken from _config array in Client.php                                                              |
+| Merchant ID         	     | `merchant_id`         	   | no        | value taken from config array in Client.php                                                              |
 | Charge Amount       	     | `charge_amount`       	   | yes       | Amount that needs to be captured.<br>Maps to API call variables `amount` , `authorization_amount`         |
-| Currency code       	     | `currency_code`       	   | no        | if no value is provided, value is taken from the _config array in Client.php      		           |
+| Currency code       	     | `currency_code`       	   | no        | if no value is provided, value is taken from the config array in Client.php      		           |
 | Authorization Reference ID | `authorization_reference_id`| yes       | Unique string to be passed									           |
 | Transaction Timeout 	     | `transaction_timeout`       | no        | Timeout for Authorization - Defaults to 1440 minutes						           |
 | Charge Note         	     | `charge_note`         	   | no        | Note that is sent to the buyer. <br>Maps to API call variables `seller_note` , `seller_authorization_note`|
@@ -166,7 +169,7 @@ Charge method combines the following API calls
 | MWS Auth Token      	     | `mws_auth_token`      	   | no        | MWS Auth Token required if API call is made on behalf of the seller                                       |
 
 ```php
-//create an array that will contain the parameters for the Charge API call
+//create an array that will contain the parameters for the charge API call
 $requestParameters = array();
 
 //Adding the parameters values to the respective keys in the array
@@ -194,8 +197,8 @@ $response = $client->charge($requestParameters);
 | Parameter           | Variable Name         | Mandatory | Values                                                                       	     |
 |---------------------|-----------------------|-----------|------------------------------------------------------------------------------------------|
 | Access Token        | `access_token`        | yes       | Retrieved as GET parameter from the URL                                      	     |
-| Region              | `region`              | yes       | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in _config['region'] array |
-| LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in _config array                        	     |
+| Region              | `region`              | yes       | Default :`null` <br>Other:`us`,`de`,`uk`,`jp`<br>Value is set in config['region'] array |
+| LWA Client ID       | `client_id`           | yes       | Default: null<br>Value should be set in config array                        	     |
 
 ```php
 <?php namespace PayWithAmazon;
