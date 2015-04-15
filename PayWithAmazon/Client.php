@@ -288,7 +288,7 @@ class Client implements ClientInterface
     /*
      * setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
      * If Provider Credit or Provider Credit Reversal details are present
-     * setProviderCreditDetails or setReverseProviderCreditDetails is called to set the values.
+     * setProviderCreditDetails or setProviderCreditReversalDetails is called to set the values.
      */
 
     private function setParametersAndPost($parameters, $fieldMappings, $requestParameters)
@@ -310,11 +310,11 @@ class Client implements ClientInterface
 		    $value = strtolower($value);
 		} elseif(is_array($value)) {
 
-		    // If the parameter is a provider_credit or provider_credit_reversal, call the respective functions to set the values
-		    if($param === 'provider_credit') {
+		    // If the parameter is a provider_credit_details or provider_credit_reversal_details, call the respective functions to set the values
+		    if($param === 'provider_credit_details') {
 			$parameters = $this->setProviderCreditDetails($parameters,$value);
-		    } elseif ($param === 'provider_credit_reversal') {
-			$parameters = $this->setReverseProviderCreditDetails($parameters,$value);
+		    } elseif ($param === 'provider_credit_reversal_details') {
+			$parameters = $this->setProviderCreditReversalDetails($parameters,$value);
 		    }
 
 		} else{
@@ -412,13 +412,13 @@ class Client implements ClientInterface
 	return $parameters;
     }
 
-    /* setReverseProviderCreditDetails - sets the reverse provider credit details sent via the Refund API call.
+    /* setProviderCreditReversalDetails - sets the reverse provider credit details sent via the Refund API call.
      * @param provider_id - [String]
      * @param credit_amount - [String]
      * @optional currency_code - [String]
      */
 
-    private function setReverseProviderCreditDetails($parameters, $providerCreditInfo)
+    private function setProviderCreditReversalDetails($parameters, $providerCreditInfo)
     {
 	$providerIndex = 0;
 	$providerString = 'ProviderCreditReversalList.member.';
@@ -632,7 +632,7 @@ class Client implements ClientInterface
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters['authorization_reference_id'] [String]
      * @optional requestParameters['capture_now'] [String]
-     * @optional requestParameters[provider_credit'] - [array (array())]
+     * @optional requestParameters['provider_credit_details'] - [array (array())]
      * @optional requestParameters['seller_authorization_note'] [String]
      * @optional requestParameters['transaction_timeout'] [String] - Defaults to 1440 minutes
      * @optional requestParameters['soft_descriptor'] - [String]
@@ -652,7 +652,7 @@ class Client implements ClientInterface
             'currency_code' 		 => 'AuthorizationAmount.CurrencyCode',
             'authorization_reference_id' => 'AuthorizationReferenceId',
             'capture_now' 		 => 'CaptureNow',
-	    'provider_credit'		 => array(),
+	    'provider_credit_details'	 => array(),
             'seller_authorization_note'  => 'SellerAuthorizationNote',
             'transaction_timeout' 	 => 'TransactionTimeout',
             'soft_descriptor' 		 => 'SoftDescriptor',
@@ -697,7 +697,7 @@ class Client implements ClientInterface
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters[capture_reference_id'] - [String]
-     * @optional requestParameters[provider_credit'] - [array (array())]
+     * @optional requestParameters['provider_credit_details'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -715,7 +715,7 @@ class Client implements ClientInterface
             'capture_amount' 		=> 'CaptureAmount.Amount',
             'currency_code' 		=> 'CaptureAmount.CurrencyCode',
             'capture_reference_id' 	=> 'CaptureReferenceId',
-	    'provider_credit'		=> array(),
+	    'provider_credit_details'	=> array(),
             'seller_capture_note' 	=> 'SellerCaptureNote',
             'soft_descriptor' 		=> 'SoftDescriptor',
             'mws_auth_token' 		=> 'MWSAuthToken'
@@ -759,7 +759,7 @@ class Client implements ClientInterface
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @optional requestParameters['provider_credit_reversal'] - [array(array())]
+     * @optional requestParameters['provider_credit_reversal_details'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -772,15 +772,15 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 	  	=> 'SellerId',
-            'amazon_capture_id'   	=> 'AmazonCaptureId',
-            'refund_reference_id' 	=> 'RefundReferenceId',
-            'refund_amount' 	  	=> 'RefundAmount.Amount',
-            'currency_code' 	  	=> 'RefundAmount.CurrencyCode',
-	    'provider_credit_reversal'	=> array(),
-            'seller_refund_note'  	=> 'SellerRefundNote',
-            'soft_descriptor' 	  	=> 'SoftDescriptor',
-            'mws_auth_token' 	  	=> 'MWSAuthToken'
+            'merchant_id' 	  		=> 'SellerId',
+            'amazon_capture_id'   		=> 'AmazonCaptureId',
+            'refund_reference_id' 		=> 'RefundReferenceId',
+            'refund_amount' 	  		=> 'RefundAmount.Amount',
+            'currency_code' 	  		=> 'RefundAmount.CurrencyCode',
+	    'provider_credit_reversal_details'	=> array(),
+            'seller_refund_note'  		=> 'SellerRefundNote',
+            'soft_descriptor' 	  		=> 'SoftDescriptor',
+            'mws_auth_token' 	  		=> 'MWSAuthToken'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
