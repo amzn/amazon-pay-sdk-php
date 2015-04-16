@@ -297,7 +297,7 @@ class Client implements ClientInterface
 	 */
         foreach ($requestParameters as $param => $value) {
 
-	    // 	Provider Credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
+	    // Provider Credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
 	    if(!is_array($value)) {
 		$value = trim($value);
 	    }
