@@ -286,8 +286,8 @@ class Client implements ClientInterface
     }
 
     /* setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
-     * If Provider Credit Details is present, values are set by setProviderCreditDetails
-     * If Provider Credit Reversal details is present, values are set by setProviderCreditDetails
+     * If Provider Credit Details is present, values are set by setProviderCreditDetails
+     * If Provider Credit Reversal Details is present, values are set by setProviderCreditDetails
      */
 
     private function setParametersAndPost($parameters, $fieldMappings, $requestParameters)

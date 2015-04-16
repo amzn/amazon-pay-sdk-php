@@ -217,7 +217,7 @@ $client->setClientId(‘YOUR_LWA_CLIENT_ID’);
 
 // Get the Access Token from the URL
 $access_token = 'ACCESS_TOKEN';
-// calling the function getUserInfo with the access token parameter returns object
+// Calling the function getUserInfo with the access token parameter returns object
 $userInfo = $client->getUserInfo($access_token);
 
 // Buyer name
