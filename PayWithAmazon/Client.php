@@ -318,7 +318,7 @@ class Client implements ClientInterface
 		    {
 			$value = strtolower($value);
 		    }
-			
+
 		    $parameters[$fieldMappings[$param]] = $value;
 		}
             }
@@ -329,6 +329,8 @@ class Client implements ClientInterface
 
 	return $responseObject;
     }
+
+    /* checkIfBool - checks if the input is a boolean */
     
     private function checkIfBool($string)
     {
@@ -1099,7 +1101,7 @@ class Client implements ClientInterface
      */
 
     public function charge($requestParameters = array()) {
-        
+
 	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
 
 	$setParameters = $authorizeParameters = $confirmParameters = $requestParameters;
@@ -1404,7 +1406,7 @@ class Client implements ClientInterface
         $response       = array();
         $statusCode     = 200;
         $this->success = false;
-        
+
 	// Submit the request and read response body
 	try {
             $shouldRetry = true;
@@ -1539,7 +1541,7 @@ class Client implements ClientInterface
      * @param $s
      * @return string
      */
-    
+
     private function quoteApplicationVersion($s)
     {
         $quotedString = preg_replace('/ {2,}|\s/', ' ', $s);
