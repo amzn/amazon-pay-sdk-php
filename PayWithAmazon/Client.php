@@ -286,8 +286,8 @@ class Client implements ClientInterface
     }
 
     /* setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
-     * If Provider Credit or Provider Credit Reversal details are present
-     * setProviderCreditDetails or setProviderCreditReversalDetails is called to set the values.
+     * If Provider Credit Details is present, values are set byÊsetProviderCreditDetails
+     * If Provider Credit Reversal details is present, values are set byÊsetProviderCreditDetails
      */
 
     private function setParametersAndPost($parameters, $fieldMappings, $requestParameters)
@@ -297,7 +297,6 @@ class Client implements ClientInterface
 	 */
         foreach ($requestParameters as $param => $value) {
 
-	    // Provider Credit is an array of arrays for example, if the input $value was an array don't trim it as trim needs parameter to be string
 	    if(!is_array($value)) {
 		$value = trim($value);
 	    }
@@ -705,7 +704,7 @@ class Client implements ClientInterface
      * @param requestParameters['amazon_authorization_id'] - [String]
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @param requestParameters[capture_reference_id'] - [String]
+     * @param requestParameters['capture_reference_id'] - [String]
      * @optional requestParameters['provider_credit_details'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
@@ -1010,8 +1009,8 @@ class Client implements ClientInterface
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
-     * @param AuthorizationReferenceId [String]
-     * @param AuthorizationAmount [String]
+     * @param requestParameters['authorization_reference_id'] [String]
+     * @param requestParameters['authorization_amount'] [String]
      * @param requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_authorization_note'] [String]
      * @optional requestParameters['transaction_timeout'] - Defaults to 1440 minutes

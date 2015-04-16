@@ -167,7 +167,7 @@ interface ClientInterface
      * @param requestParameters['amazon_authorization_id'] - [String]
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @param requestParameters[capture_reference_id'] - [String]
+     * @param requestParameters['capture_reference_id'] - [String]
      * @param requestParameters['provider_credit_details'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
@@ -295,8 +295,8 @@ interface ClientInterface
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
-     * @param AuthorizationReferenceId [String]
-     * @param AuthorizationAmount [String]
+     * @param requestParameters['authorization_reference_id'] [String]
+     * @param requestParameters['authorization_amount'] [String]
      * @param requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_authorization_note'] [String]
      * @optional requestParameters['transaction_timeout'] - Defaults to 1440 minutes
