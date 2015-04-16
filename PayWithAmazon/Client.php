@@ -285,8 +285,7 @@ class Client implements ClientInterface
         return $userInfo;
     }
 
-    /*
-     * setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
+    /* setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
      * If Provider Credit or Provider Credit Reversal details are present
      * setProviderCreditDetails or setProviderCreditReversalDetails is called to set the values.
      */
@@ -305,11 +304,7 @@ class Client implements ClientInterface
 
             if (array_key_exists($param, $fieldMappings) && $value!='') {
 
-		// For variables that take boolean values, strtolower them
-		if(is_bool($value)) {
-		    $value = strtolower($value);
-		} elseif(is_array($value)) {
-
+		if(is_array($value)) {
 		    // If the parameter is a provider_credit_details or provider_credit_reversal_details, call the respective functions to set the values
 		    if($param === 'provider_credit_details') {
 			$parameters = $this->setProviderCreditDetails($parameters,$value);
@@ -318,6 +313,12 @@ class Client implements ClientInterface
 		    }
 
 		} else{
+		    // For variables that are boolean values, strtolower them
+		    if($this->checkIfBool($value))
+		    {
+			$value = strtolower($value);
+		    }
+			
 		    $parameters[$fieldMappings[$param]] = $value;
 		}
             }
@@ -327,6 +328,12 @@ class Client implements ClientInterface
 	$responseObject = $this->calculateSignatureAndPost($parameters);
 
 	return $responseObject;
+    }
+    
+    private function checkIfBool($string)
+    {
+	$string = strtolower($string);
+	return in_array($string, array('true', 'false'));
     }
 
     /* calculateSignatureAndPost - convert the Parameters array to string and curl POST the parameters to MWS */
