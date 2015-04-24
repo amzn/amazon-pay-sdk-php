@@ -1127,12 +1127,12 @@ class Client implements ClientInterface
 	$setParameters = $authorizeParameters = $confirmParameters = $requestParameters;
 
         $chargeType = '';
-	 if (!empty($requestParameters['amazon_order_reference_id']))
+	
+	if (!empty($requestParameters['amazon_order_reference_id']))
 	{
 	    $chargeType = 'OrderReference';
 	    
-	} elseif(!empty($requestParameters['amazon_billing_agreement_id']))
-	{
+	} elseif(!empty($requestParameters['amazon_billing_agreement_id'])) {
 	    $chargeType = 'BillingAgreement';
 	    
 	} elseif (!empty($requestParameters['amazon_reference_id'])) {
