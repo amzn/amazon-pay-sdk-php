@@ -125,6 +125,7 @@ class Client implements ClientInterface
     private function checkConfigKeys($config)
     {
         $config = array_change_key_case($config, CASE_LOWER);
+	$config = $this->trimArray($config);
 
         foreach ($config as $key => $value) {
             if (array_key_exists($key, $this->config)) {
@@ -200,6 +201,8 @@ class Client implements ClientInterface
 
     public function setProxy($proxy)
     {
+	$proxy = $this->trimArray($proxy);
+	
         if (!empty($proxy['proxy_user_host']))
 	    $this->config['proxy_user_host'] = $proxy['proxy_user_host'];
 
@@ -242,6 +245,17 @@ class Client implements ClientInterface
     public function getParameters()
     {
 	return trim($this->parameters);
+    }
+    
+    /* Trim the input Array key values */
+    
+    private function trimArray($array)
+    {
+	foreach ($array as $key => $value)
+	{
+	    $array[$key] = trim($value);
+	}
+	return $array;
     }
 
     /* GetUserInfo convenience function - Returns user's profile information from Amazon using the access token returned by the Button widget.
@@ -1089,7 +1103,13 @@ class Client implements ClientInterface
      * 3. Authorize (with Capture) / AuthorizeOnBillingAgreeemnt (with Capture)
      *
      * @param requestParameters['merchant_id'] - [String]
+     *
      * @param requestParameters['amazon_reference_id'] - [String] : Order Reference ID /Billing Agreement ID
+     * If requestParameters['amazon_reference_id'] is empty then the following is required,
+     * @param requestParameters['amazon_order_reference_id'] - [String] : Order Reference ID
+     * or,
+     * @param requestParameters['amazon_billing_agreement_id'] - [String] : Billing Agreement ID
+     * 
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
      * @param requestParameters['currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
@@ -1102,12 +1122,20 @@ class Client implements ClientInterface
     public function charge($requestParameters = array()) {
 
 	$requestParameters = array_change_key_case($requestParameters, CASE_LOWER);
+	$requestParameters= $this->trimArray($requestParameters);
 
 	$setParameters = $authorizeParameters = $confirmParameters = $requestParameters;
 
         $chargeType = '';
-
-        if (!empty($requestParameters['amazon_reference_id'])) {
+	 if (!empty($requestParameters['amazon_order_reference_id']))
+	{
+	    $chargeType = 'OrderReference';
+	    
+	} elseif(!empty($requestParameters['amazon_billing_agreement_id']))
+	{
+	    $chargeType = 'BillingAgreement';
+	    
+	} elseif (!empty($requestParameters['amazon_reference_id'])) {
             switch (substr(strtoupper($requestParameters['amazon_reference_id']), 0, 1)) {
                 case 'P':
                 case 'S':
@@ -1127,7 +1155,7 @@ class Client implements ClientInterface
                     throw new \Exception('Invalid Amazon Reference ID');
             }
         } else {
-            throw new \Exception('key amazon_reference_id is null and is a required parameter');
+            throw new \Exception('key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter');
         }
 
 	// Set the other parameters if the values are present

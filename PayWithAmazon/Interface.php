@@ -168,7 +168,7 @@ interface ClientInterface
      * @param requestParameters['capture_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
      * @param requestParameters['capture_reference_id'] - [String]
-     * @param requestParameters['provider_credit_details'] - [array (array())]
+     * @optional requestParameters['provider_credit_details'] - [array (array())]
      * @optional requestParameters['seller_capture_note'] - [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -194,7 +194,7 @@ interface ClientInterface
      * @param requestParameters['refund_reference_id'] - [String]
      * @param requestParameters['refund_amount'] - [String]
      * @param requestParameters['currency_code'] - [String]
-     * @param requestParameters['provider_credit_reversal_details'] - [array(array())]
+     * @optional requestParameters['provider_credit_reversal_details'] - [array(array())]
      * @optional requestParameters['seller_refund_note'] [String]
      * @optional requestParameters['soft_descriptor'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -331,11 +331,17 @@ interface ClientInterface
      * 3. Authorize (with Capture) / AuthorizeOnBillingAgreeemnt (with Capture)
      *
      * @param requestParameters['merchant_id'] - [String]
+     *
      * @param requestParameters['amazon_reference_id'] - [String] : Order Reference ID /Billing Agreement ID
+     * If requestParameters['amazon_reference_id'] is empty then the following is required,
+     * @param requestParameters['amazon_order_reference_id'] - [String] : Order Reference ID
+     * or,
+     * @param requestParameters['amazon_billing_agreement_id'] - [String] : Billing Agreement ID
+     * 
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
-     * @param requestParameters['charge_currency_code'] - [String] : Currency Code for the Amount
+     * @param requestParameters['currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
-     * @optional requestParameters['charge_note'] - [String] : seller note sent to the buyer
+     * @optional requestParameters['charge_note'] - [String] : Seller Note sent to the buyer
      * @optional requestParameters['transaction_timeout'] - [String] : Defaults to 1440 minutes
      * @optional requestParameters['charge_order_id'] - [String] : Custom Order ID provided
      * @optional requestParameters['mws_auth_token'] - [String]
