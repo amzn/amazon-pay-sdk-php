@@ -47,7 +47,7 @@ Setting configuration while instantiating the Client object
 <?php
 namespace PayWithAmazon;
 
-require_once 'Client.php'
+require_once 'Client.php';
 // Your Login and Pay with Amazon keys are available in your Seller Central account
 
 // PHP Associative array
