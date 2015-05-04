@@ -14,6 +14,11 @@ Client Takes in parameters in the following format
 1. Associative array
 2. Path to the JSON file containing configuration information.
 
+## Installing using Composer
+```
+composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
+```
+
 ##Parameters List
 
 ####Mandatory Parameters
