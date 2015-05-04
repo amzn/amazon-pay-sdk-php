@@ -184,7 +184,8 @@ $requestParameters = array();
 // Adding the parameters values to the respective keys in the array
 $requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
 
-// Or if $requestParameters['amazon_reference_id'] is not provided , Following needs to be inputted
+// Or if $requestParameters['amazon_reference_id'] is not provided
+// Following needs to be inputted
 $requestParameters['amazon_order_reference_id']   = 'AMAZON_ORDER_REFERENCE_ID';
 $requestParameters['amazon_billing_agreement_id'] = 'AMAZON_BILLING_AGREEMENT_ID';
 
