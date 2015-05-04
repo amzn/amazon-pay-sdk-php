@@ -160,20 +160,22 @@ The charge method combines the following API calls:
 For Recurring payments the first `charge` call will make the SetBillingAgreementDetails, ConfirmBillingAgreement, AuthorizeOnBillingAgreement API calls.
 Subsequent call to `charge` method for the same Billing Agreement ID will make the call only to AuthorizeOnBillingAgreement (With Capture).
 
-| Parameter                                                                      | Variable Name                                                                     | Mandatory | Values                                                                                              	                                                                                                                                                           |
-|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Amazon Reference ID or <br> Amazon OrderReference ID or <br>Amazon Billing Agreement ID | `amazon_reference_id`<br>`amazon_order_reference_id`/`amazon_billing_agrement_id` | yes       | `Amazon Reference ID` can be OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`)<br>If key `Amazon Reference ID` is not used either `amazon_order_reference_id`/`amazon_billing_agreement_id` should be provided|
-| Merchant ID         	                                                         | `merchant_id`         	                                                     | no        | Value taken from config array in Client.php                                                               |
-| Charge Amount       	                                                         | `charge_amount`       	                                                     | yes       | Amount that needs to be captured.<br>Maps to API call variables `amount` , `authorization_amount`         |
-| Currency code       	                                                         | `currency_code`       	                                                     | no        | If no value is provided, value is taken from the config array in Client.php      		             |
-| Authorization Reference ID                                                     | `authorization_reference_id`                                                      | yes       | Unique string to be passed									             |
-| Transaction Timeout 	                                                         | `transaction_timeout`                                                             | no        | Timeout for Authorization - Defaults to 1440 minutes						             |
-| Charge Note         	                                                         | `charge_note`         	                                                     | no        | Note that is sent to the buyer. <br>Maps to API call variables `seller_note` , `seller_authorization_note`|
-| Charge Order ID     	                                                         | `charge_order_id`     	                                                     | no        | Custom order ID provided <br>Maps to API call variables `seller_order_id` , `seller_billing_agreement_id` |
-| Store Name          	                                                         | `store_name`          	                                                     | no        | Name of the store                                                                                         |
-| Platform ID         	                                                         | `platform_id`         	                                                     | no        | Platform ID of the Solution provider                                                                      |
-| Custom Information  	                                                         | `custom_information`  	                                                     | no        | Any custom string                                                                                         |
-| MWS Auth Token      	                                                         | `mws_auth_token`      	                                                     | no        | MWS Auth Token required if API call is made on behalf of the seller                                       |
+| Parameter                  | Variable Name                | Mandatory | Values                                                                                              	    |
+|----------------------------|------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
+| Amazon Reference ID 	     | `amazon_reference_id` 	    | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`)       |
+| Amazon OrderReference ID   | `amazon__order_reference_id` | no        | OrderReference ID (`starts with P01 or S01`) if no Amazon Reference ID is provided                        |
+| Amazon Billing Agreement ID| `amazon_billing_agreement_id`| no        | Billing Agreement ID (`starts with B01 or C01`) if no Amazon Reference ID is provided                     |
+| Merchant ID         	     | `merchant_id`         	    | no        | Value taken from config array in Client.php                                                               |
+| Charge Amount       	     | `charge_amount`       	    | yes       | Amount that needs to be captured.<br>Maps to API call variables `amount` , `authorization_amount`         |
+| Currency code       	     | `currency_code`       	    | no        | If no value is provided, value is taken from the config array in Client.php      		            |
+| Authorization Reference ID | `authorization_reference_id` | yes       | Unique string to be passed									            |
+| Transaction Timeout 	     | `transaction_timeout`        | no        | Timeout for Authorization - Defaults to 1440 minutes						            |
+| Charge Note         	     | `charge_note`         	    | no        | Note that is sent to the buyer. <br>Maps to API call variables `seller_note` , `seller_authorization_note`|
+| Charge Order ID     	     | `charge_order_id`     	    | no        | Custom order ID provided <br>Maps to API call variables `seller_order_id` , `seller_billing_agreement_id` |
+| Store Name          	     | `store_name`          	    | no        | Name of the store                                                                                         |
+| Platform ID         	     | `platform_id`         	    | no        | Platform ID of the Solution provider                                                                      |
+| Custom Information  	     | `custom_information`  	    | no        | Any custom string                                                                                         |
+| MWS Auth Token      	     | `mws_auth_token`      	    | no        | MWS Auth Token required if API call is made on behalf of the seller                                       |
 
 ```php
 // Create an array that will contain the parameters for the charge API call
@@ -181,6 +183,11 @@ $requestParameters = array();
 
 // Adding the parameters values to the respective keys in the array
 $requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
+
+// Or if $requestParameters['amazon_reference_id'] is not provided , Following needs to be inputted
+$requestParameters['amazon_order_reference_id']   = 'AMAZON_ORDER_REFERENCE_ID';
+$requestParameters['amazon_billing_agreement_id'] = 'AMAZON_BILLING_AGREEMENT_ID';
+
 $requestParameters['seller_id'] = null;
 $requestParameters['charge_amount'] = '100.50';
 $requestParameters['currency_code'] = 'USD';
