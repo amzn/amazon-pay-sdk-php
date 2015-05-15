@@ -163,7 +163,7 @@ Subsequent call to `charge` method for the same Billing Agreement ID will make t
 | Parameter                  | Variable Name                | Mandatory | Values                                                                                              	    |
 |----------------------------|------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
 | Amazon Reference ID 	     | `amazon_reference_id` 	    | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`)       |
-| Amazon OrderReference ID   | `amazon__order_reference_id` | no        | OrderReference ID (`starts with P01 or S01`) if no Amazon Reference ID is provided                        |
+| Amazon OrderReference ID   | `amazon_order_reference_id` | no        | OrderReference ID (`starts with P01 or S01`) if no Amazon Reference ID is provided                        |
 | Amazon Billing Agreement ID| `amazon_billing_agreement_id`| no        | Billing Agreement ID (`starts with B01 or C01`) if no Amazon Reference ID is provided                     |
 | Merchant ID         	     | `merchant_id`         	    | no        | Value taken from config array in Client.php                                                               |
 | Charge Amount       	     | `charge_amount`       	    | yes       | Amount that needs to be captured.<br>Maps to API call variables `amount` , `authorization_amount`         |
