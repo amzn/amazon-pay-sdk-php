@@ -3,8 +3,13 @@ Login and Pay with Amazon API Integration
 
 ## Requirements
 
+* Login and Pay With Amazon account - [Register here](https://payments.amazon.com/signup)
 * PHP 5.3 or higher
 * Curl 7.18 or higher
+
+## Documentation
+
+* The Integration steps can be found [here](https://payments.amazon.com/documentation)
 
 ## Quick Start
 
