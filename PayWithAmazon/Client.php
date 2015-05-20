@@ -277,7 +277,7 @@ class Client implements ClientInterface
         $accessToken = urldecode($accessToken);
         $url 	     = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
 
-        $httpCurlRequest = new HttpCurl();
+        $httpCurlRequest = new HttpCurl($this->config);
 
         $response = $httpCurlRequest->httpGet($url);
         $data 	  = json_decode($response);
@@ -289,7 +289,7 @@ class Client implements ClientInterface
 
         // Exchange the access token for user profile
         $url             = $this->profileEndpoint . '/user/profile';
-        $httpCurlRequest = new HttpCurl();
+        $httpCurlRequest = new HttpCurl($this->config);
 
         $httpCurlRequest->setAccessToken($accessToken);
         $httpCurlRequest->setHttpHeader(true);
