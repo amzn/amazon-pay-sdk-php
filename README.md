@@ -70,7 +70,7 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'region'      => 'REGION');
 
-// JSON file path            
+// JSON file path
 $config = 'PATH_TO_JSON_FILE';
 
 // Instantiate the client class with the config type
@@ -92,7 +92,7 @@ $config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
 
 $client = new Client($config);
 
-// Also you can set the sandbox variable in the config() array of the Client class by 
+// Also you can set the sandbox variable in the config() array of the Client class by
 
 $client->setSandbox(true);
 ```
@@ -150,10 +150,12 @@ require_once 'IpnHandler.php';
 $headers    = getallheaders();
 $body       = file_get_contents('php://input');
 
-// Create an object($ipnHandler) of the IpnHandler class 
+// Create an object($ipnHandler) of the IpnHandler class
 $ipnHandler = new IpnHandler($headers, $body);
 
 ```
+See the [IPN Response](https://github.com/amzn/login-and-pay-with-amazon-sdk-php#ipn-response) section for information on parsing the IPN response.
+
 ### Convenience Methods
 
 #####Charge Method
@@ -214,9 +216,9 @@ $requestParameters['mws_auth_token'] = null;
 $response = $client->charge($requestParameters);
 ```
 #####Obtain profile information (getUserInfo method)
-1. obtains the user's profile information from Amazon using the access token returned by the Button widget. 
-2. An access token is granted by the authorization server when a user logs in to a site. 
-3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data. 
+1. obtains the user's profile information from Amazon using the access token returned by the Button widget.
+2. An access token is granted by the authorization server when a user logs in to a site.
+3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data.
 
 | Parameter           | Variable Name         | Mandatory | Values                                                                       	     |
 |---------------------|-----------------------|-----------|------------------------------------------------------------------------------------------|
