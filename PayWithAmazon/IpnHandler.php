@@ -61,7 +61,7 @@ class IpnHandler implements IpnHandlerInterface
     private function checkConfigKeys($ipnConfig)
     {
         $ipnConfig = array_change_key_case($ipnConfig, CASE_LOWER);
-	$ipnConfig = trimArray($ipnConfig);
+	$ipnConfig = $this->trimArray($ipnConfig);
 
         foreach ($ipnConfig as $key => $value) {
             if (array_key_exists($key, $this->ipnConfig)) {
