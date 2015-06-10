@@ -321,6 +321,11 @@ function printGetBillingAgreementDetailsResponse ($response)
                 echo ("                        " .
                          $billingAgreementDetails->getBillingAgreementConsent() . "\n");
             }
+            if ($billingAgreementDetails->isSetOrderLanguage()) {
+            	echo ("                    OrderLanguage\n");
+            	echo ("                        " .
+            			$billingAgreementDetails->getOrderLanguage() . "\n");
+            }
         }
     }
     if ($response->isSetResponseMetadata()) {

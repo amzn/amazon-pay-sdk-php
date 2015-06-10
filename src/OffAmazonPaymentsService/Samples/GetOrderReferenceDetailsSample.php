@@ -348,6 +348,11 @@ function printGetOrderReferenceDetailsResponse($response)
                                 print "                            " . $parentDetails->getType() . PHP_EOL;
                             }
                         }
+                        if ($orderReferenceDetails->isSetOrderLanguage())
+                        {
+                        	print "                    OrderLanguage" . PHP_EOL;
+                        	print "                        " . $orderReferenceDetails->getOrderLanguage() . PHP_EOL;
+                        }
                     } 
                 } 
                 if ($response->isSetResponseMetadata()) { 
@@ -359,7 +364,6 @@ function printGetOrderReferenceDetailsResponse($response)
                         print "                    " . $responseMetadata->getRequestId() . PHP_EOL;
                     }
                 } 
-
    	print "            ResponseHeaderMetadata: " . 
     $response->getResponseHeaderMetadata() . PHP_EOL;
         	

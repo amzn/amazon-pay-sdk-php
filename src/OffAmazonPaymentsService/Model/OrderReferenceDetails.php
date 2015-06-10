@@ -44,6 +44,7 @@ require_once 'OffAmazonPaymentsService/Model.php';
  * <li>ExpirationTimestamp: string</li>
  * <li>IdList: OffAmazonPaymentsService_Model_IdList</li>
  * <li>ParentDetails: OffAmazonPaymentsService_Model_ParentDetails</li>
+ * <li>OrderLanguage: string</li>
  * </ul>
  */
 class OffAmazonPaymentsService_Model_OrderReferenceDetails extends OffAmazonPaymentsService_Model
@@ -72,6 +73,7 @@ class OffAmazonPaymentsService_Model_OrderReferenceDetails extends OffAmazonPaym
      * <li>ExpirationTimestamp: string</li>
      * <li>IdList: OffAmazonPaymentsService_Model_IdList</li>
      * <li>ParentDetails: OffAmazonPaymentsService_Model_ParentDetails</li>
+     * <li>OrderLanguage: string</li>
      *
      * </ul>
      */
@@ -152,8 +154,12 @@ class OffAmazonPaymentsService_Model_OrderReferenceDetails extends OffAmazonPaym
             'ParentDetails' => array(
                 'FieldValue' => null,
                 'FieldType' => 'OffAmazonPaymentsService_Model_ParentDetails'
+            ),
+        		
+            'OrderLanguage' => array(
+                'FieldValue' => null,
+                'FieldType' => 'string'
             )
-            
         );
         parent::__construct($data);
     }
@@ -841,6 +847,52 @@ class OffAmazonPaymentsService_Model_OrderReferenceDetails extends OffAmazonPaym
     {
         return !is_null($this->_fields['ParentDetails']['FieldValue']);
         
+    }
+    
+    /**
+     * Gets the value of the OrderLanguage.
+     *
+     * @return string OrderLanguage
+     */
+    public function getOrderLanguage()
+    {
+    	return $this->_fields['OrderLanguage']['FieldValue'];
+    }
+    
+    /**
+     * Sets the value of the OrderLanguage.
+     *
+     * @param string OrderLanguage
+     * @return this instance
+     */
+    public function setOrderLanguage($value)
+    {
+    	$this->_fields['OrderLanguage']['FieldValue'] = $value;
+    	return $this;
+    }
+    
+    /**
+     * Sets the value of the OrderLanguage  and returns this instance
+     *
+     * @param ParentDetails $value OrderLanguage
+     * @return OffAmazonPaymentsService_Model_OrderReferenceDetails instance
+     */
+    public function withOrderLanguage($value)
+    {
+    	$this->setOrderLanguage($value);
+    	return $this;
+    }
+    
+    
+    /**
+     * Checks if OrderLanguage is set
+     *
+     * @return bool true if OrderLanguage property is set
+     */
+    public function isSetOrderLanguage()
+    {
+    	return !is_null($this->_fields['OrderLanguage']['FieldValue']);
+    
     }
     
 }
