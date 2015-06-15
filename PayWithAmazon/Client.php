@@ -204,16 +204,16 @@ class Client implements ClientInterface
 	$proxy = $this->trimArray($proxy);
 	
         if (!empty($proxy['proxy_user_host']))
-	    $this->config['proxy_user_host'] = $proxy['proxy_user_host'];
+	    $this->config['proxy_host'] = $proxy['proxy_user_host'];
 
         if (!empty($proxy['proxy_user_port']))
-            $this->config['proxy_user_port'] = $proxy['proxy_user_port'];
+            $this->config['proxy_port'] = $proxy['proxy_user_port'];
 
         if (!empty($proxy['proxy_user_name']))
-            $this->config['proxy_user_name'] = $proxy['proxy_user_name'];
+            $this->config['proxy_username'] = $proxy['proxy_user_name'];
 
         if (!empty($proxy['proxy_user_password']))
-            $this->config['proxy_user_password'] = $proxy['proxy_user_password'];
+            $this->config['proxy_password'] = $proxy['proxy_user_password'];
     }
 
     /* Setter for $mwsServiceUrl
