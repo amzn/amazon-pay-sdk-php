@@ -1176,12 +1176,14 @@ class Client implements ClientInterface
     private function makeChargeCalls($chargeType, $setParameters, $confirmParameters, $authorizeParameters)
     {
 	switch ($chargeType) {
-            case 'OrderReference':
-		// Get the Billing Agreement details and feed the response object to the ResponseParser
+            
+	    case 'OrderReference':
+		
+		// Get the Order Reference details and feed the response object to the ResponseParser
                 $responseObj = $this->getOrderReferenceDetails($setParameters);
 		
-		// Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
-                // $baStatus is an aray containing the State of the Billing Agreement
+		// Call the function getOrderReferenceDetailsStatus in ResponseParser.php providing it the XML response
+                // $oroStatus is an array containing the State of the Order Reference ID
                 $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
 		
 		if ($oroStatus['State'] === 'Draft') {
@@ -1190,11 +1192,10 @@ class Client implements ClientInterface
                     $this->confirmOrderReference($confirmParameters);
 		    }
 		}
-		// Get the Billing Agreement details and feed the response object to the ResponseParser
+		
                 $responseObj = $this->getOrderReferenceDetails($setParameters);
 		
-		// Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
-                // $baStatus is an aray containing the State of the Billing Agreement
+		// Check the Order Reference Status again before making the Authorization.
                 $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
 		
 		if ($oroStatus['State'] === 'Open') {
@@ -1209,33 +1210,37 @@ class Client implements ClientInterface
 		return $response;
             
 	    case 'BillingAgreement':
-                // Get the Billing Agreement details and feed the response object to the ResponseParser
-                $responseObj = $this->getBillingAgreementDetails($setParameters);
-                // Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
-                // $baStatus is an aray containing the State of the Billing Agreement
+                
+		// Get the Billing Agreement details and feed the response object to the ResponseParser
+                
+		$responseObj = $this->getBillingAgreementDetails($setParameters);
+                
+		// Call the function getBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
+                // $baStatus is an array containing the State of the Billing Agreement
                 $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
                 
 		if ($baStatus['State'] === 'Draft') {
-                    $response = $this->SetBillingAgreementDetails($setParameters);
+                    $response = $this->setBillingAgreementDetails($setParameters);
                     if ($this->success) {
-                        $response = $this->ConfirmBillingAgreement($confirmParameters);
+                        $response = $this->confirmBillingAgreement($confirmParameters);
                     }
                 }
-                // Check the Billing Agreement status again before making the Authorization.
+                
+		// Check the Billing Agreement status again before making the Authorization.
                 $responseObj = $this->getBillingAgreementDetails($setParameters);
-                $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
+                $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
 		
                 if ($this->success && $baStatus['State'] === 'Open') {
-                    $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
+                    $response = $this->authorizeOnBillingAgreement($authorizeParameters);
                 }
 		
 		if($baStatus['State'] != 'Open' && $baStatus['State'] != 'Draft') {
 		    throw new \Exception('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
 		}
+		
             return $response;
-    
-        }
-    }
+	    }
+	}
 
     /* GetProviderCreditDetails API Call - Get the details of the Provider Credit.
      *
