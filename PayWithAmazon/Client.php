@@ -10,6 +10,7 @@ namespace PayWithAmazon;
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
 require_once 'Interface.php';
+require_once 'Regions.php';
 
 class Client implements ClientInterface
 {
@@ -45,27 +46,9 @@ class Client implements ClientInterface
 
     // Final URL to where the API parameters POST done, based off the config['region'] and respective $mwsServiceUrls
     private $mwsServiceUrl = null;
-
-    private $mwsServiceUrls = array('eu' => 'mws-eu.amazonservices.com',
-				    'na' => 'mws.amazonservices.com',
-				    'jp' => 'mws.amazonservices.jp');
-
-    // Production profile end points to get the user information
-    private $liveProfileEndpoint = array('uk' => 'https://api.amazon.co.uk',
-					 'us' => 'https://api.amazon.com',
-					 'de' => 'https://api.amazon.de',
-					 'jp' => 'https://api.amazon.co.jp');
-
-    // Sandbox profile end points to get the user information
-    private $sandboxProfileEndpoint = array('uk' => 'https://api.sandbox.amazon.co.uk',
-					    'us' => 'https://api.sandbox.amazon.com',
-					    'de' => 'https://api.sandbox.amazon.de',
-					    'jp' => 'https://api.sandbox.amazon.co.jp');
-
-    private $regionMappings = array('de' => 'eu',
-				    'uk' => 'eu',
-				    'us' => 'na',
-				    'jp' => 'jp');
+    private $mwsServiceUrls;
+    private $profileEndpointUrls;
+    private $regionMappings;
 
     // Boolean variable to check if the API call was a success
     public $success = false;
@@ -77,6 +60,7 @@ class Client implements ClientInterface
 
     public function __construct($config = null)
     {
+	$this->getRegionUrls();
         if (!is_null($config)) {
 
             if (is_array($config)) {
@@ -93,6 +77,16 @@ class Client implements ClientInterface
         } else {
 	    throw new \Exception('$config cannot be null.');
 	}
+    }
+    
+    /* Get the Region specific properties from the Regions class.*/
+    
+    private function getRegionUrls()
+    {
+	$regionObject = new Regions();
+	$this->mwsServiceUrls = $regionObject->mwsServiceUrls;
+	$this->regionMappings = $regionObject->regionMappings;
+	$this->profileEndpointUrls = $regionObject->profileEndpointUrls;
     }
 
     /* checkIfFileExists -  check if the JSON file exists in the path provided */
@@ -201,9 +195,7 @@ class Client implements ClientInterface
 
     public function setProxy($proxy)
     {
-	$proxy = $this->trimArray($proxy);
-	
-        if (!empty($proxy['proxy_user_host']))
+	if (!empty($proxy['proxy_user_host']))
 	    $this->config['proxy_host'] = $proxy['proxy_user_host'];
 
         if (!empty($proxy['proxy_user_port']))
@@ -253,7 +245,10 @@ class Client implements ClientInterface
     {
 	foreach ($array as $key => $value)
 	{
-	    $array[$key] = trim($value);
+	    if(!is_array($value) && $key!=='proxy_password')
+	    {
+		$array[$key] = trim($value);
+	    }
 	}
 	return $array;
     }
@@ -1170,7 +1165,7 @@ class Client implements ClientInterface
         $setParameters['seller_billing_agreement_id'] = !empty($requestParameters['charge_order_id']) ? $requestParameters['charge_order_id'] : '';
         $authorizeParameters['seller_order_id'] = !empty($requestParameters['charge_order_id']) ? $requestParameters['charge_order_id'] : '';
 
-        $authorizeParameters['capture_now'] = 'true';
+        $authorizeParameters['capture_now'] = !empty($requestParameters['capture_now']) ? $requestParameters['capture_now'] : false;
 
 	$response = $this->makeChargeCalls($chargeType, $setParameters, $confirmParameters, $authorizeParameters);
 	return $response;
@@ -1182,21 +1177,45 @@ class Client implements ClientInterface
     {
 	switch ($chargeType) {
             case 'OrderReference':
-                $response = $this->setOrderReferenceDetails($setParameters);
-                if ($this->success) {
+		// Get the Billing Agreement details and feed the response object to the ResponseParser
+                $responseObj = $this->getOrderReferenceDetails($setParameters);
+		
+		// Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
+                // $baStatus is an aray containing the State of the Billing Agreement
+                $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
+		
+		if ($oroStatus['State'] === 'Draft') {
+		    $response = $this->setOrderReferenceDetails($setParameters);
+		    if ($this->success) {
                     $this->confirmOrderReference($confirmParameters);
-                }
-                if ($this->success) {
+		    }
+		}
+		// Get the Billing Agreement details and feed the response object to the ResponseParser
+                $responseObj = $this->getOrderReferenceDetails($setParameters);
+		
+		// Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
+                // $baStatus is an aray containing the State of the Billing Agreement
+                $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
+		
+		if ($oroStatus['State'] === 'Open') {
+		    if ($this->success) {
                     $response = $this->Authorize($authorizeParameters);
-                }
-                return $response;
-            case 'BillingAgreement':
+		    }
+		}
+		if ($oroStatus['State'] != 'Open' && $oroStatus['State'] != 'Draft') {
+		    throw new \Exception('The Order Reference is in the ' . $oroStatus['State'] . " State. It should be in the Draft or Open State");
+		}
+                
+		return $response;
+            
+	    case 'BillingAgreement':
                 // Get the Billing Agreement details and feed the response object to the ResponseParser
                 $responseObj = $this->getBillingAgreementDetails($setParameters);
                 // Call the function GetBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
                 // $baStatus is an aray containing the State of the Billing Agreement
                 $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
-                if ($baStatus['State'] != 'Open') {
+                
+		if ($baStatus['State'] === 'Draft') {
                     $response = $this->SetBillingAgreementDetails($setParameters);
                     if ($this->success) {
                         $response = $this->ConfirmBillingAgreement($confirmParameters);
@@ -1205,10 +1224,16 @@ class Client implements ClientInterface
                 // Check the Billing Agreement status again before making the Authorization.
                 $responseObj = $this->getBillingAgreementDetails($setParameters);
                 $baStatus = $responseObj->GetBillingAgreementDetailsStatus($responseObj->toXml());
+		
                 if ($this->success && $baStatus['State'] === 'Open') {
                     $response = $this->AuthorizeOnBillingAgreement($authorizeParameters);
                 }
+		
+		if($baStatus['State'] != 'Open' && $baStatus['State'] != 'Draft') {
+		    throw new \Exception('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
+		}
             return $response;
+    
         }
     }
 
@@ -1519,14 +1544,14 @@ class Client implements ClientInterface
 
     private function profileEndpointUrl()
     {
+	$profileEnvt = strtolower($this->config['sandbox']) ? "api.sandbox" : "api";
+	
         if (!empty($this->config['region'])) {
             $region = strtolower($this->config['region']);
 
-	    if (array_key_exists($region, $this->sandboxProfileEndpoint) && $this->config['sandbox'] ) {
-                $this->profileEndpoint = $this->sandboxProfileEndpoint[$region];
-	    } elseif (array_key_exists($region, $this->liveProfileEndpoint)) {
-		$this->profileEndpoint = $this->liveProfileEndpoint[$region];
-	    } else{
+	    if (array_key_exists($region, $this->regionMappings) ) {
+                $this->profileEndpoint = 'https://' . $profileEnvt . '.' . $this->profileEndpointUrls[$region];
+	    }else{
 		throw new \Exception($region . ' is not a valid region');
 	    }
 	} else {

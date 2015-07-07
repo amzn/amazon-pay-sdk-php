@@ -64,6 +64,23 @@ class ResponseParser implements ResponseInterface
         return $response;
     }
     
+    /* Get the status of the Order Reference ID */
+    
+    public function getOrderReferenceDetailsStatus($response)
+    {
+       $data= new \SimpleXMLElement($response);
+        $namespaces = $data->getNamespaces(true);
+        foreach($namespaces as $key=>$value){
+            $namespace = $value;
+        }
+        $data->registerXPathNamespace('GetORO', $namespace);
+        foreach ($data->xpath('//GetORO:OrderReferenceStatus') as $value) {
+            $oroStatus = json_decode(json_encode((array)$value), TRUE);
+        }
+        
+        return $oroStatus ;
+    }
+    
     /* Get the status of the BillingAgreement */
     
     public function getBillingAgreementDetailsStatus($response)

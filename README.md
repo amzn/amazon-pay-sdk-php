@@ -166,21 +166,29 @@ The charge method combines the following API calls:
 
 1. SetOrderReferenceDetails / SetBillingAgreementDetails
 2. ConfirmOrderReference / ConfirmBillingAgreement
-3. Authorize (With Capture) / AuthorizeOnBillingAgreement (With Capture)
+3. Authorize / AuthorizeOnBillingAgreement
 
-For Recurring payments the first `charge` call will make the SetBillingAgreementDetails, ConfirmBillingAgreement, AuthorizeOnBillingAgreement API calls.
-Subsequent call to `charge` method for the same Billing Agreement ID will make the call only to AuthorizeOnBillingAgreement (With Capture).
+For **Standard payments** the first `charge` call will make the SetOrderReferenceDetails, ConfirmOrderReference, Authorize API calls.
+Subsequent call to `charge` method for the same Order Reference ID will make the call only to Authorize.
+
+For **Recurring payments** the first `charge` call will make the SetBillingAgreementDetails, ConfirmBillingAgreement, AuthorizeOnBillingAgreement API calls.
+Subsequent call to `charge` method for the same Billing Agreement ID will make the call only to AuthorizeOnBillingAgreement.
+
+> **Capture Now** can be set to `true` for digital goods . For Physical goods it's highly recommended to set the Capture Now to `false`
+and the amount captured by making the `capture` API call after the shipment is complete.
+
 
 | Parameter                  | Variable Name                | Mandatory | Values                                                                                              	    |
 |----------------------------|------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
 | Amazon Reference ID 	     | `amazon_reference_id` 	    | yes       | OrderReference ID (`starts with P01 or S01`) or <br>Billing Agreement ID (`starts with B01 or C01`)       |
-| Amazon OrderReference ID   | `amazon_order_reference_id` | no        | OrderReference ID (`starts with P01 or S01`) if no Amazon Reference ID is provided                        |
+| Amazon OrderReference ID   | `amazon_order_reference_id`  | no        | OrderReference ID (`starts with P01 or S01`) if no Amazon Reference ID is provided                        |
 | Amazon Billing Agreement ID| `amazon_billing_agreement_id`| no        | Billing Agreement ID (`starts with B01 or C01`) if no Amazon Reference ID is provided                     |
 | Merchant ID         	     | `merchant_id`         	    | no        | Value taken from config array in Client.php                                                               |
 | Charge Amount       	     | `charge_amount`       	    | yes       | Amount that needs to be captured.<br>Maps to API call variables `amount` , `authorization_amount`         |
 | Currency code       	     | `currency_code`       	    | no        | If no value is provided, value is taken from the config array in Client.php      		            |
 | Authorization Reference ID | `authorization_reference_id` | yes       | Unique string to be passed									            |
 | Transaction Timeout 	     | `transaction_timeout`        | no        | Timeout for Authorization - Defaults to 1440 minutes						            |
+| Capture Now	             | `capture_now`                | no        | Will capture the payment automatically when set to `true`. Defaults to `false`						                                            |
 | Charge Note         	     | `charge_note`         	    | no        | Note that is sent to the buyer. <br>Maps to API call variables `seller_note` , `seller_authorization_note`|
 | Charge Order ID     	     | `charge_order_id`     	    | no        | Custom order ID provided <br>Maps to API call variables `seller_order_id` , `seller_billing_agreement_id` |
 | Store Name          	     | `store_name`          	    | no        | Name of the store                                                                                         |
@@ -195,8 +203,9 @@ $requestParameters = array();
 // Adding the parameters values to the respective keys in the array
 $requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
 
-// Or if $requestParameters['amazon_reference_id'] is not provided
-// Following needs to be inputted
+// Or
+// If $requestParameters['amazon_reference_id'] is not provided,
+// either one of the following ID input is needed
 $requestParameters['amazon_order_reference_id']   = 'AMAZON_ORDER_REFERENCE_ID';
 $requestParameters['amazon_billing_agreement_id'] = 'AMAZON_BILLING_AGREEMENT_ID';
 
@@ -205,6 +214,7 @@ $requestParameters['charge_amount'] = '100.50';
 $requestParameters['currency_code'] = 'USD';
 $requestParameters['authorization_reference_id'] = 'UNIQUE STRING';
 $requestParameters['transaction_timeout'] = 0;
+$requestParameters['capture_now'] = false; //`true` for Digital goods
 $requestParameters['charge_note'] = 'Example item note';
 $requestParameters['charge_order_id'] = '1234-Example-Order';
 $requestParameters['store_name'] = 'Example Store';
