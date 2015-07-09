@@ -408,10 +408,8 @@ class IpnHandler implements IpnHandlerInterface
         $remainingFields = array(
                             'NotificationReferenceId' =>$ipnMessage['NotificationReferenceId'],
                             'NotificationType' =>$ipnMessage['NotificationType'],
-                            'IsSample' =>$ipnMessage['IsSample'],
                             'SellerId' =>$ipnMessage['SellerId'],
-                            'ReleaseEnvironment' =>$ipnMessage['ReleaseEnvironment'],
-                            'Version' =>$ipnMessage['Version']);
+                            'ReleaseEnvironment' =>$ipnMessage['ReleaseEnvironment'] );
 
         return $remainingFields;
     }

@@ -27,6 +27,27 @@ Client Takes in parameters in the following format
 ```
 composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
 ```
+## Directory Tree
+```
+.
+├── composer.json - Configuration for composer
+├── LICENSE.txt
+├── NOTICE.txt
+├── PayWithAmazon
+│   ├── Client.php - Main class with the API calls
+│   ├── HttpCurl.php -  Client class uses this file to execute the GET/POST
+│   ├── Interface.php - Shows the public function definitions in the Client.php
+│   ├── IpnHandler.php - Class handles verification of the IPN
+│   ├── Regions.php -  Defines the regions that is supported
+│   └── ResponseParser.php -  Parses the API call response
+├── README.md
+└── UnitTests
+    ├── ClientTest.php
+    ├── config.json
+    ├── coverage.txt
+    ├── IpnHandlerTest.php
+    └── Signature.php
+```
 ##Parameters List
 
 ####Mandatory Parameters
@@ -131,6 +152,7 @@ $requestParameters['mws_auth_token']            = 'MWS_AUTH_TOKEN';
 $response = $client->getOrderReferenceDetails($requestParameters);
 
 ```
+See the [API Response](https://github.com/amzn/login-and-pay-with-amazon-sdk-php#api-response) section for information on parsing the API response.
 
 ### IPN Handling
 
@@ -225,6 +247,8 @@ $requestParameters['mws_auth_token'] = null;
 // Get the Authorization response from the charge method
 $response = $client->charge($requestParameters);
 ```
+See the [API Response](https://github.com/amzn/login-and-pay-with-amazon-sdk-php#api-response) section for information on parsing the API response.
+
 #####Obtain profile information (getUserInfo method)
 1. obtains the user's profile information from Amazon using the access token returned by the Button widget.
 2. An access token is granted by the authorization server when a user logs in to a site.
