@@ -299,7 +299,7 @@ class Client implements ClientInterface
      * If Provider Credit Reversal Details is present, values are set by setProviderCreditDetails
      */
 
-    private function setParametersAndPost($parameters, $fieldMappings, $requestParameters)
+    protected function setParametersAndPost($parameters, $fieldMappings, $requestParameters)
     {
 	/* For loop to take all the non empty parameters in the $requestParameters and add it into the $parameters array,
 	 * if the keys are matched from $requestParameters array with the $fieldMappings array
