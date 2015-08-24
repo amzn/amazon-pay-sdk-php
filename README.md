@@ -35,10 +35,13 @@ composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
 ├── NOTICE.txt
 ├── PayWithAmazon
 │   ├── Client.php - Main class with the API calls
+│   ├── ClientInterface.php - Shows the public function definitions in Client.php
 │   ├── HttpCurl.php -  Client class uses this file to execute the GET/POST
-│   ├── Interface.php - Shows the public function definitions in the Client.php
+│   ├── HttpCurlInterface.php - Shows the public function definitions in HttpCurl.php
 │   ├── IpnHandler.php - Class handles verification of the IPN
+│   ├── IpnHandlerInterface.php - Shows the public function definitions in IpnHandler.php
 │   ├── Regions.php -  Defines the regions that is supported
+│   ├── ResponseInterface.php - Shows the public function definitions in ResponseParser.php
 │   └── ResponseParser.php -  Parses the API call response
 ├── README.md
 └── UnitTests

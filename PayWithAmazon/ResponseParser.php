@@ -5,7 +5,7 @@ namespace PayWithAmazon;
  * Methods provided to convert the Response from the POST to XML, Array or JSON
  */
 
-require_once 'Interface.php';
+require_once 'ResponseInterface.php';
 
 class ResponseParser implements ResponseInterface
 {
