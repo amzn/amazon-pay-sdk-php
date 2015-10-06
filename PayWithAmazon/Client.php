@@ -39,7 +39,8 @@ class Client implements ClientInterface
 			    'proxy_username' 	   => null,
 			    'proxy_password' 	   => null,
 			    'client_id' 	   => null,
-			    'handle_throttle' 	   => true
+			    'handle_throttle' 	   => true,
+			    'ssl_verify'           => true,
 			    );
 
     private $modePath = null;
