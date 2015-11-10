@@ -1,9 +1,9 @@
 <?php
-namespace PayWithAmazon;
+namespace PayWithAmazon\Tests;
 
-require_once '../PayWithAmazon/Client.php';
-require_once '../PayWithAmazon/ResponseParser.php';
-require_once 'Signature.php';
+use PayWithAmazon\Client;
+use PayWithAmazon\ResponseParser;
+use PayWithAmazon\Tests\Signature;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 'region' => 'us',
                 'sandbox' => true,
                 'platform_id' => 'test',
-                'cabundle_file' => null,
                 'application_name' => 'sdk testing',
                 'application_version' => '1.0',
                 'proxy_host' => null,
@@ -54,7 +53,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testJsonFile()
     {
         try {
-            $configParams = "config.json";
+            $configParams =  __DIR__ . "/config.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/Error with message - content is not in json format./i', strval($expected));

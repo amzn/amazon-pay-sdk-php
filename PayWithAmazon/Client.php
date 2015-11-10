@@ -1194,10 +1194,8 @@ class Client implements ClientInterface
 		}
 		
                 $responseObj = $this->getOrderReferenceDetails($setParameters);
-		
 		// Check the Order Reference Status again before making the Authorization.
                 $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
-		
 		if ($oroStatus['State'] === 'Open') {
 		    if ($this->success) {
                     $response = $this->Authorize($authorizeParameters);
