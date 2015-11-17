@@ -12,6 +12,7 @@ class HttpCurl implements HttpCurlInterface
     private $config = array();
     private $header = false;
     private $accessToken = null;
+    private $curlResponseInfo = null;
     
     /* Takes user configuration array as input
      * Takes configuration for API call or IPN config
@@ -84,7 +85,7 @@ class HttpCurl implements HttpCurlInterface
         
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
-        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         
         $response = $this->execute($ch);
         return $response;
@@ -115,12 +116,23 @@ class HttpCurl implements HttpCurlInterface
     private function execute($ch)
     {
         $response = '';
+        $response = curl_exec($ch);
         if (!$response = curl_exec($ch)) {
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
             curl_close($ch);
             throw new \Exception($error_msg);
         }
+        else{
+            $this->curlResponseInfo = curl_getinfo($ch);
+        }
         curl_close($ch);
         return $response;
+    }
+    
+    /* Get the output of Curl Getinfo */
+    
+    public function getCurlResponseInfo()
+    {
+        return $this->curlResponseInfo;
     }
 }

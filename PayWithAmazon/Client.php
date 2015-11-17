@@ -758,7 +758,7 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 	=> 'SellerId',
+            'merchant_id' 		=> 'SellerId',
             'amazon_capture_id' => 'AmazonCaptureId',
             'mws_auth_token' 	=> 'MWSAuthToken'
         );
@@ -789,15 +789,15 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 	  		=> 'SellerId',
-            'amazon_capture_id'   		=> 'AmazonCaptureId',
-            'refund_reference_id' 		=> 'RefundReferenceId',
-            'refund_amount' 	  		=> 'RefundAmount.Amount',
-            'currency_code' 	  		=> 'RefundAmount.CurrencyCode',
-	    'provider_credit_reversal_details'	=> array(),
-            'seller_refund_note'  		=> 'SellerRefundNote',
-            'soft_descriptor' 	  		=> 'SoftDescriptor',
-            'mws_auth_token' 	  		=> 'MWSAuthToken'
+            'merchant_id' 	  					=> 'SellerId',
+            'amazon_capture_id'   				=> 'AmazonCaptureId',
+            'refund_reference_id' 				=> 'RefundReferenceId',
+            'refund_amount' 	  				=> 'RefundAmount.Amount',
+            'currency_code' 	  				=> 'RefundAmount.CurrencyCode',
+			'provider_credit_reversal_details'	=> array(),
+            'seller_refund_note'  				=> 'SellerRefundNote',
+            'soft_descriptor' 	  				=> 'SoftDescriptor',
+            'mws_auth_token' 	  				=> 'MWSAuthToken'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
@@ -820,7 +820,7 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 	=> 'SellerId',
+            'merchant_id' 		=> 'SellerId',
             'amazon_refund_id'  => 'AmazonRefundId',
             'mws_auth_token' 	=> 'MWSAuthToken'
         );
@@ -880,19 +880,19 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 		=> 'SellerId',
-            'id' 			=> 'Id',
-            'id_type' 			=> 'IdType',
+            'merchant_id' 				=> 'SellerId',
+            'id' 						=> 'Id',
+            'id_type' 					=> 'IdType',
             'inherit_shipping_address' 	=> 'InheritShippingAddress',
-            'confirm_now' 		=> 'ConfirmNow',
-            'amount' 			=> 'OrderReferenceAttributes.OrderTotal.Amount',
-            'currency_code' 		=> 'OrderReferenceAttributes.OrderTotal.CurrencyCode',
-            'platform_id' 		=> 'OrderReferenceAttributes.PlatformId',
-            'seller_note' 		=> 'OrderReferenceAttributes.SellerNote',
-            'seller_order_id' 		=> 'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId',
-            'store_name' 		=> 'OrderReferenceAttributes.SellerOrderAttributes.StoreName',
-            'custom_information' 	=> 'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation',
-            'mws_auth_token' 		=> 'MWSAuthToken'
+            'confirm_now' 				=> 'ConfirmNow',
+            'amount' 					=> 'OrderReferenceAttributes.OrderTotal.Amount',
+            'currency_code' 			=> 'OrderReferenceAttributes.OrderTotal.CurrencyCode',
+            'platform_id' 				=> 'OrderReferenceAttributes.PlatformId',
+            'seller_note' 				=> 'OrderReferenceAttributes.SellerNote',
+            'seller_order_id' 			=> 'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId',
+            'store_name' 				=> 'OrderReferenceAttributes.SellerOrderAttributes.StoreName',
+            'custom_information' 		=> 'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation',
+            'mws_auth_token' 			=> 'MWSAuthToken'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
@@ -915,10 +915,10 @@ class Client implements ClientInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id' 		  => 'SellerId',
-            'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
-            'address_consent_token' 	  => 'AddressConsentToken',
-            'mws_auth_token' 		  => 'MWSAuthToken'
+            'merchant_id' 		  			=> 'SellerId',
+            'amazon_billing_agreement_id' 	=> 'AmazonBillingAgreementId',
+            'address_consent_token' 	  	=> 'AddressConsentToken',
+            'mws_auth_token' 		  		=> 'MWSAuthToken'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
@@ -1464,8 +1464,8 @@ class Client implements ClientInterface
         $statusCode     = 200;
         $this->success = false;
 
-	// Submit the request and read response body
-	try {
+    // Submit the request and read response body
+    try {
             $shouldRetry = true;
             $retries     = 0;
             do {
@@ -1473,26 +1473,24 @@ class Client implements ClientInterface
                     $this->constructUserAgentHeader();
 
                     $httpCurlRequest = new HttpCurl($this->config);
-		    $response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
-
-		    // Split the API response into Response Body and the other parts of the response into other
-                    list($other, $responseBody) = explode("\r\n\r\n", $response, 2);
-                    $other = preg_split("/\r\n|\n|\r/", $other);
-
-                    list($protocol, $code, $text) = explode(' ', trim(array_shift($other)), 3);
+                    $response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
+                    $curlResponseInfo = $httpCurlRequest->getCurlResponseInfo();
+                    
+                    $statusCode = $curlResponseInfo["http_code"];
+                    
                     $response = array(
-                        'Status' => (int) $code,
-                        'ResponseBody' => $responseBody
+                        'Status' => $statusCode,
+                        'ResponseBody' => $response
                     );
 
-		    $statusCode = $response['Status'];
-
-		    if ($statusCode == 200) {
+                    $statusCode = $response['Status'];
+                    
+            if ($statusCode == 200) {
                         $shouldRetry    = false;
                         $this->success = true;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
 
-			$shouldRetry = true;
+            $shouldRetry = true;
                         if ($shouldRetry && strtolower($this->config['handle_throttle'])) {
                             $this->pauseOnRetry(++$retries, $statusCode);
                         }
