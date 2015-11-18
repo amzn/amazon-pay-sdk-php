@@ -276,6 +276,9 @@ class Client implements ClientInterface
 
         $response = $httpCurlRequest->httpGet($url);
         $data 	  = json_decode($response);
+        if (isset($data->error)) {
+            throw new \Exception("{$data->error}: {$data->error_description}");
+        }
 
         if ($data->aud != $this->config['client_id']) {
             // The access token does not belong to us
