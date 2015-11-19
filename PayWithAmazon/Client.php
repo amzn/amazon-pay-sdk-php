@@ -226,7 +226,7 @@ class Client implements ClientInterface
         if (array_key_exists(strtolower($name), $this->config)) {
             return $this->config[strtolower($name)];
         } else {
-            throw new \Exception('Key ' . $name . ' is either not a part of the configuration array config or the' . $name . 'does not match the key name in the config array', 1);
+            throw new \Exception('Key ' . $name . ' is either not a part of the configuration array config or does not match the key name in the config array', 1);
         }
     }
 
