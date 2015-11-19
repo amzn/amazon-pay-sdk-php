@@ -1,7 +1,7 @@
 <?php
-namespace PayWithAmazon;
+namespace PayWithAmazon\Tests;
 
-require_once '../PayWithAmazon/IpnHandler.php';
+use PayWithAmazon\IpnHandler;
 
 class IpnHandlertest extends \PHPUnit_Framework_TestCase
 {

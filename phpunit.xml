@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="UnitTests/bootstrap.php">
+    <testsuites>
+        <testsuite name="PayWithAmazon tests">
+            <directory>./UnitTests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./PayWithAmazon/</directory>
+        </whitelist>
+    </filter>
+</phpunit>
