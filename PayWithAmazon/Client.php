@@ -8,7 +8,7 @@ namespace PayWithAmazon;
  */
 
 require_once 'ResponseParser.php';
-require_once 'HttpCurl.php';
+require_once 'Transport.php';
 require_once 'Interface.php';
 require_once 'Regions.php';
 
@@ -76,11 +76,30 @@ class Client implements ClientInterface
             }
         } else {
 	    throw new \Exception('$config cannot be null.');
-	}
+        }
+
+        $this->transport = new CurlTransport();
     }
-    
+
+    /**
+     * Object used for sending requests.  This can be overridden to aid
+     * debugging or provide fake responses for testing.
+     */
+    public function setTransport($transport)
+    {
+        $this->transport = $transport;
+    }
+
+    /**
+     * Return current transport.
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+
     /* Get the Region specific properties from the Regions class.*/
-    
+
     private function getRegionUrls()
     {
 	$regionObject = new Regions();
@@ -272,10 +291,13 @@ class Client implements ClientInterface
         $accessToken = urldecode($accessToken);
         $url 	     = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
 
-        $httpCurlRequest = new HttpCurl($this->config);
+        $response = $this->transport->send(array(
+            'method' => "GET",
+            'url' => $url,
+            'config' => $this->config,
+        ));
 
-        $response = $httpCurlRequest->httpGet($url);
-        $data 	  = json_decode($response);
+        $data 	  = json_decode($response['body']);
         if (isset($data->error)) {
             throw new \Exception("{$data->error}: {$data->error_description}");
         }
@@ -287,13 +309,17 @@ class Client implements ClientInterface
 
         // Exchange the access token for user profile
         $url             = $this->profileEndpoint . '/user/profile';
-        $httpCurlRequest = new HttpCurl($this->config);
 
-        $httpCurlRequest->setAccessToken($accessToken);
-        $httpCurlRequest->setHttpHeader(true);
-        $response = $httpCurlRequest->httpGet($url);
+        $response = $this->transport->send(array(
+            'method' => "GET",
+            'url' => $url,
+            'config' => $this->config,
+            'headers' => array(
+                'Authorization: bearer ' . $accessToken,
+            ),
+        ));
 
-        $userInfo = json_decode($response, true);
+        $userInfo = json_decode($response['body'], true);
         return $userInfo;
     }
 
@@ -1465,33 +1491,35 @@ class Client implements ClientInterface
         $statusCode     = 200;
         $this->success = false;
 
-    // Submit the request and read response body
-    try {
+        // Submit the request and read response body
+        try {
             $shouldRetry = true;
             $retries     = 0;
             do {
                 try {
                     $this->constructUserAgentHeader();
 
-                    $httpCurlRequest = new HttpCurl($this->config);
-                    $response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
-                    $curlResponseInfo = $httpCurlRequest->getCurlResponseInfo();
-                    
-                    $statusCode = $curlResponseInfo["http_code"];
-                    
+                    $response = $this->transport->send(array(
+                        'method' => "POST",
+                        'config' => $this->config,
+                        'url' => $this->mwsServiceUrl,
+                        'userAgent' => $this->userAgent,
+                        'parameters' => $parameters,
+                    ));
+
                     $response = array(
-                        'Status' => $statusCode,
-                        'ResponseBody' => $response
+                        'Status' => $response['status'],
+                        'ResponseBody' => $response['body'],
                     );
 
                     $statusCode = $response['Status'];
-                    
-            if ($statusCode == 200) {
+
+                    if ($statusCode == 200) {
                         $shouldRetry    = false;
                         $this->success = true;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
 
-            $shouldRetry = true;
+                        $shouldRetry = true;
                         if ($shouldRetry && strtolower($this->config['handle_throttle'])) {
                             $this->pauseOnRetry(++$retries, $statusCode);
                         }

@@ -425,13 +425,10 @@ interface HttpCurlInterface
     
     public function __construct($config = null);
     
-    /* Set Http header for Access token for the GetUserInfo call */
+    /* Set Http header(s) (e.g Access token for the GetUserInfo call) */
     
-    public function setHttpHeader();
+    public function setHttpHeaders($headers);
     
-    /* Setter for  Access token to get the user info */
-    
-    public function setAccessToken($accesstoken);
     
     /* POST using curl for the following situations
      * 1. API calls
