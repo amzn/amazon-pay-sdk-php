@@ -27,6 +27,13 @@ Client Takes in parameters in the following format
 ```
 composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
 ```
+
+## Adding Login and Pay with Amazon to an existing project using composer
+Please add the followig requirement
+```
+"require": { "amzn/login-and-pay-with-amazon-sdk-php": "*@dev" }
+```
+
 ## Directory Tree
 ```
 .
