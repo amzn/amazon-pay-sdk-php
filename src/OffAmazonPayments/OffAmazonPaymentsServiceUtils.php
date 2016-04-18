@@ -18,7 +18,7 @@
 class OffAmazonPaymentsServiceUtils 
 {
     const MWS_CLIENT_VERSION = '2013-01-01';
-    const APPLICATION_LIBRARY_VERSION = '1.0.14';
+    const APPLICATION_LIBRARY_VERSION = '1.0.16';
 
     public function buildUserAgentString($applicationName, $applicationVersion, $attributes = null) 
     {   
