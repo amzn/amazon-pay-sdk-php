@@ -137,6 +137,10 @@ class OffAmazonPaymentsService_Model_AuthorizationDetails extends OffAmazonPayme
             'AddressVerificationCode' => array(
                 'FieldValue' => null,
                 'FieldType' => 'string'
+            ),
+            'SoftDecline' => array(
+                'FieldValue' => null,
+                'FieldType' => 'bool'
             )
         );
         parent::__construct($data);
@@ -821,6 +825,51 @@ class OffAmazonPaymentsService_Model_AuthorizationDetails extends OffAmazonPayme
     public function isSetAddressVerificationCode()
     {
         return !is_null($this->_fields['AddressVerificationCode']['FieldValue']);
+    }
+    
+    /**
+     * Gets the value of the SoftDecline property.
+     *
+     * @param bool SoftDecline
+     * @return this instance
+     */
+    public function getSoftDecline()
+    {
+        return $this->_fields['SoftDecline']['FieldValue'];
+    }
+
+    /**
+     * Sets the value of the SoftDecline property.
+     *
+     * @param bool SoftDecline
+     * @return this instance
+     */
+    public function setSoftDecline($value)
+    {
+        $this->_fields['SoftDecline']['FieldValue'] = $value;
+        return $this;
+    }
+
+    /**
+     * Sets the value of the SoftDecline and return this instance
+     *
+     * @param bool $value SoftDecline
+     * @return OffAmazonPaymentsService_Model_AuthorizationDetails instance
+     */
+    public function withSoftDecline($value)
+    {
+        $this->setSoftDecline($value);
+        return $this;
+    }
+
+    /**
+     * Checks if SoftDecline is set
+     *
+     * @return bool true if SoftDecline is set
+     */
+    public function isSetSoftDecline()
+    {
+        return !is_null($this->_fields['SoftDecline']['FieldValue']);
     }
     
 }
