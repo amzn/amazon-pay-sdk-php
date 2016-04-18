@@ -35,6 +35,14 @@ class OpenSslVerifySignature implements VerifySignature
     private $_expectedCnName = null;
 
     /**
+	   * @var string  A pattern that will match all regional SNS endpoints, e.g.:
+	   *                  - sns.<region>.amazonaws.com        (AWS)
+	   *                  - sns.us-gov-west-1.amazonaws.com   (AWS GovCloud)
+	   *                  - sns.cn-north-1.amazonaws.com.cn   (AWS China)
+	   */
+    private $defaultHostPattern = '/^sns\.[a-zA-Z0-9\-]{3,}\.amazonaws\.com(\.cn)?$/';
+
+    /**
      * IHttpRequestFactory for creating http requests
      *
      */
@@ -43,12 +51,12 @@ class OpenSslVerifySignature implements VerifySignature
     /**
      * Create a new instance of the openssl implementation of
      * verify signature
-     * 
+     *
      * @param string expectedCnName for Amazon cert
      * @param IHttpRequestFactory httpRequestFactory factory to create http requests
      *
      * @return void
-     */    
+     */
     public function __construct($expectedCnName, $httpRequestFactory)
     {
         $this->_expectedCnName = $expectedCnName;
@@ -58,15 +66,15 @@ class OpenSslVerifySignature implements VerifySignature
     /**
      * Verify that the signature is correct for the given data and
      * public key
-     * 
+     *
      * @param string $data            data to validate
      * @param string $signature       decoded signature to compare against
      * @param string $certificatePath path to certificate, can be file or url
-     * 
-     * @throws OffAmazonPaymentsNotifications_InvalidMessageException if there 
-     *                                                                is an error 
+     *
+     * @throws OffAmazonPaymentsNotifications_InvalidMessageException if there
+     *                                                                is an error
      *                                                                with the call
-     * 
+     *
      * @return bool true if valid
      */
     public function verifySignatureIsCorrect($data, $signature, $certificatePath)
@@ -76,19 +84,19 @@ class OpenSslVerifySignature implements VerifySignature
 
         return $this->verifySignatureIsCorrectFromCertificate($data, $signature, $certificate);
     }
-    
+
     /**
      * Verify that the signature is correct for the given data and
      * public key
-     * 
+     *
      * @param string $data            data to validate
      * @param string $signature       decoded signature to compare against
      * @param string $certificate     certificate object defined in Certificate.php
-     * 
-     * @throws OffAmazonPaymentsNotifications_InvalidMessageException if there 
-     *                                                                is an error 
+     *
+     * @throws OffAmazonPaymentsNotifications_InvalidMessageException if there
+     *                                                                is an error
      *                                                                with the call
-     * 
+     *
      * @return bool true if valid
      */
     public function verifySignatureIsCorrectFromCertificate($data, $signature, $certificate)
@@ -119,18 +127,18 @@ class OpenSslVerifySignature implements VerifySignature
                 "Unable to verify signature - error with the verification algorithm",
                 null, $ex
             );
-        } 
-       
+        }
+
         return ($result > 0);
     }
 
     /**
      * Verify that certificate is issued by Amazon
-     * 
+     *
      * @param array $certificateSubject certificate subject array
-     * 
+     *
      * @throws OffAmazonPaymentsNotifications_InvalidMessageException
-     * 
+     *
      * @return void
      */
     private function _verifyCertificateSubject($certificateSubject)
@@ -141,26 +149,50 @@ class OpenSslVerifySignature implements VerifySignature
             );
         }
     }
-    
+
     /**
      * Request the signing certificate from the given path, in order to
      * get the public key
-     * 
+     *
      * @param string $certificatePath certificate path to retreive
-     * 
+     *
      * @throws OffAmazonPaymentsNotifications_InvalidMessageException
-     * 
+     *
      * @return void
      */
     private function _getCertificateFromCertifcatePath($certificatePath)
     {
+        $this->_validateUrl($certificatePath);
+
         try {
             return $this->_httpRequestFactory->createGetRequest($certificatePath)->execute();
         } catch (OffAmazonPayments_HttpException $ex) {
             throw new OffAmazonPaymentsNotifications_InvalidMessageException(
-                "Error with signature validation - unable to request signing certificate at " . $certificatePath . 
+                "Error with signature validation - unable to request signing certificate at " . $certificatePath .
                     " - underlying exception of " . $ex->getMessage()
                 );
+        }
+    }
+
+    /* Ensures that the URL of the certificate is one belonging to AWS.
+     *
+     * @param string $url Certificate URL
+     *
+     * @throws InvalidSnsMessageException if the cert url is invalid.
+     */
+
+    private function _validateUrl($url)
+    {
+        $parsed = parse_url($url);
+        if (empty($parsed['scheme'])
+            || empty($parsed['host'])
+            || $parsed['scheme'] !== 'https'
+            || substr($url, -4) !== '.pem'
+            || !preg_match($this->defaultHostPattern, $parsed['host'])
+        ) {
+            throw new OffAmazonPaymentsNotifications_InvalidMessageException(
+                'The certificate is located on an invalid domain.'
+            );
         }
     }
 }

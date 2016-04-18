@@ -251,6 +251,11 @@ function printAuthorizeResponse($response)
                         	print "                    AddressVerificationCode" . PHP_EOL;
                         	print "                        " . $authorizationDetails->getAddressVerificationCode() . PHP_EOL;
                         }
+                        if ($authorizationDetails->isSetSoftDecline())
+                        {
+                        	print "                    SoftDecline" . PHP_EOL;
+                        	print "                        " . $authorizationDetails->getSoftDecline() . PHP_EOL;
+                        }
                     } 
                 } 
                 if ($response->isSetResponseMetadata()) { 

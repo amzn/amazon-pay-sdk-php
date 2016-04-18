@@ -133,6 +133,10 @@ class OffAmazonPaymentsNotifications_Samples_AuthorizationNotificationSample
             	$this->ipnLogFile->writeLine("      AddressVerificationCode");
             	$this->ipnLogFile->writeLine("           " . $authorizationDetails->getAddressVerificationCode());
             }
+            if ($authorizationDetails->isSoftDecline()) {
+            	$this->ipnLogFile->writeLine("      SoftDecline");
+            	$this->ipnLogFile->writeLine("           " . $authorizationDetails->getSoftDecline());
+            }
             if ($authorizationDetails->isSetAuthorizationStatus()) {
                 $this->ipnLogFile->writeLine("      AuthorizationStatus");
                 $authorizationStatus = $authorizationDetails->getAuthorizationStatus();

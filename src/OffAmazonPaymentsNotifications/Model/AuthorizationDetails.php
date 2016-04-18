@@ -123,6 +123,10 @@ class OffAmazonPaymentsNotifications_Model_AuthorizationDetails extends OffAmazo
              'FieldValue' => null, 
              'FieldType' => 'string'
          ),
+         'SoftDecline' => array(
+						 'FieldValue' => null,
+						 'FieldType' => 'bool'
+				 ),
         );
         parent::__construct($data);
     }
@@ -741,4 +745,51 @@ class OffAmazonPaymentsNotifications_Model_AuthorizationDetails extends OffAmazo
     {
         return !is_null($this->fields['SoftDescriptor']['FieldValue']);
     }
+
+    /**
+		 * Gets the value of the SoftDecline property.
+		 *
+		 * @return bool SoftDecline
+		 */
+		public function getSoftDecline()
+		{
+				return $this->fields['SoftDecline']['FieldValue'];
+		}
+
+		/**
+		 * Sets the value of the SoftDecline property.
+		 *
+		 * @param bool $value SoftDecline
+		 *
+		 * @return this instance
+		 */
+		public function setSoftDecline($value)
+		{
+				$this->fields['SoftDecline']['FieldValue'] = $value;
+				return $this;
+		}
+
+		/**
+		 * Sets the value of the SoftDecline and returns this instance
+		 *
+		 * @param bool $value SoftDecline
+		 *
+		 * @return OffAmazonPaymentsNotifications_Model_AuthorizationDetails instance
+		 */
+		public function withSoftDecline($value)
+		{
+				$this->setSoftDecline($value);
+				return $this;
+		}
+
+
+		/**
+		 * Checks if SoftDecline is set
+		 *
+		 * @return bool true if SoftDecline is set
+		 */
+		public function isSetSoftDecline()
+		{
+				return !is_null($this->fields['SoftDecline']['FieldValue']);
+		}
 }
