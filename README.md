@@ -3,13 +3,22 @@ Login and Pay with Amazon API Integration
 
 ## Requirements
 
-* Login and Pay With Amazon account - [Register here](https://payments.amazon.com/signup)
+* Login and Pay With Amazon account:
+ * [US - Registration](https://payments.amazon.com/signup)
+ * [UK - Registration](https://payments.amazon.co.uk/preregistration/lpa)
+ * [DE - Registration](https://payments.amazon.de/preregistration/lpa)
+ * [JP - Registration](https://www.amazon.co.jp/ap/signin?openid.return_to=https%3A%2F%2Fpayments.amazon.co.jp%2Foverview&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=amzn_payments_jp&openid.mode=checkid_setup&marketPlaceId=A1VC38T7YXB528&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&pageId=amzn_payments&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&&openid.pape.max_auth_age=0&openid.pape.preferred_auth_policies=http://schemas.amazon.com/pape/policies/2010/05/single-factor-strong)
+
 * PHP 5.3 or higher
 * Curl 7.18 or higher
 
 ## Documentation
 
-* The Integration steps can be found [here](https://payments.amazon.com/documentation)
+* Integration steps can be found below:
+ * [US](https://payments.amazon.com/documentation)
+ * [UK](https://payments.amazon.co.uk/developer/documentation)
+ * [DE](https://payments.amazon.de/developer/documentation)
+ * [JP](https://payments.amazon.jp/home)
 
 ## Sample
 
