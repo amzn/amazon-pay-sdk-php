@@ -18,6 +18,7 @@ class IpnHandler implements IpnHandlerInterface
     private $signatureFields = array();
     private $certificate = null;
     private $expectedCnName = 'sns.amazonaws.com';
+    private $defaultHostPattern = '/^sns\.[a-zA-Z0-9\-]{3,}\.amazonaws\.com(\.cn)?$/';
 
     private $ipnConfig = array('cabundle_file'  => null,
 			       'proxy_host' 	=> null,
@@ -206,6 +207,28 @@ class IpnHandler implements IpnHandlerInterface
         }
     }
 
+    /* Ensures that the URL of the certificate is one belonging to AWS.
+     *
+     * @param string $url Certificate URL
+     *
+     * @throws InvalidSnsMessageException if the cert url is invalid.
+     */
+
+    private function validateUrl($url)
+    {
+        $parsed = parse_url($url);
+        if (empty($parsed['scheme'])
+            || empty($parsed['host'])
+            || $parsed['scheme'] !== 'https'
+            || substr($url, -4) !== '.pem'
+            || !preg_match($this->defaultHostPattern, $parsed['host'])
+        ) {
+            throw new \Exception(
+                'The certificate is located on an invalid domain.'
+            );
+        }
+    }
+
     /* Verify that the signature is correct for the given data and
      * public key
      *
@@ -222,7 +245,7 @@ class IpnHandler implements IpnHandlerInterface
     {
 	$signature       = base64_decode($this->getMandatoryField("Signature"));
         $certificatePath = $this->getMandatoryField("SigningCertURL");
-
+        $this->validateUrl($certificatePath);
         $this->certificate = $this->getCertificate($certificatePath);
 
         $result = $this->verifySignatureIsCorrectFromCertificate($signature);

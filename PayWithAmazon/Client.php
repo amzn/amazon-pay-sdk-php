@@ -14,7 +14,7 @@ require_once 'Regions.php';
 
 class Client implements ClientInterface
 {
-    const MWS_CLIENT_VERSION = '1.0.0';
+    const MWS_CLIENT_VERSION = '1.0.1';
     const SERVICE_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -1464,8 +1464,8 @@ class Client implements ClientInterface
         $statusCode     = 200;
         $this->success = false;
 
-    // Submit the request and read response body
-    try {
+	// Submit the request and read response body
+	try {
             $shouldRetry = true;
             $retries     = 0;
             do {
@@ -1473,24 +1473,24 @@ class Client implements ClientInterface
                     $this->constructUserAgentHeader();
 
                     $httpCurlRequest = new HttpCurl($this->config);
-                    $response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
-                    $curlResponseInfo = $httpCurlRequest->getCurlResponseInfo();
-                    
-                    $statusCode = $curlResponseInfo["http_code"];
-                    
-                    $response = array(
+					$response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
+					$curlResponseInfo = $httpCurlRequest->getCurlResponseInfo();
+					
+					$statusCode = $curlResponseInfo["http_code"];
+					
+					$response = array(
                         'Status' => $statusCode,
                         'ResponseBody' => $response
                     );
 
-                    $statusCode = $response['Status'];
-                    
-            if ($statusCode == 200) {
+					$statusCode = $response['Status'];
+					
+		    if ($statusCode == 200) {
                         $shouldRetry    = false;
                         $this->success = true;
                     } elseif ($statusCode == 500 || $statusCode == 503) {
 
-            $shouldRetry = true;
+			$shouldRetry = true;
                         if ($shouldRetry && strtolower($this->config['handle_throttle'])) {
                             $this->pauseOnRetry(++$retries, $statusCode);
                         }
