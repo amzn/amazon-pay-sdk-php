@@ -9,7 +9,7 @@ namespace PayWithAmazon;
 
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
-require_once 'Interface.php';
+require_once 'ClientInterface.php';
 require_once 'Regions.php';
 
 class Client implements ClientInterface
