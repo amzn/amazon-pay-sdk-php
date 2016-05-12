@@ -4,14 +4,7 @@ namespace PayWithAmazon;
 /* Interface class to showcase the public API methods for Pay With Amazon */
 
 interface ClientInterface
-{
-    /* Takes user configuration array from the user as input
-     * Takes JSON file path with configuration information as input
-     * Validates the user configuation array against existing config array
-     */
-    
-    public function __construct($config = null);
-    
+{    
     /* Setter for sandbox
      * Sets the boolean value for config['sandbox'] variable
      */
@@ -229,9 +222,9 @@ interface ClientInterface
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CreateOrderReferenceForId.html
      *
      * @param requestParameters['merchant_id'] - [String]
-     * @param requestParameters['Id'] - [String]
+     * @param requestParameters['id'] - [String]
      * @optional requestParameters['inherit_shipping_address'] [Boolean]
-     * @optional requestParameters['ConfirmNow'] - [Boolean]
+     * @optional requestParameters['confirm_now'] - [Boolean]
      * @optional Amount (required when confirm_now is set to true) [String] 
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_note'] - [String]
@@ -379,101 +372,4 @@ interface ClientInterface
      */
     
     public function reverseProviderCredit($requestParameters = array());
-}
-
-/* Interface for IpnHandler.php */
-
-interface IpnHandlerInterface
-{
-   /* Takes headers and body of the IPN message as input in the constructor
-    * verifies that the IPN is from the right resource and has the valid data
-    */
-   
-    public function __construct($headers, $body, $ipnConfig = null);
-    
-    /* returnMessage() - JSON decode the raw [Message] portion of the IPN */
-    
-    public function returnMessage();
-
-    /* toJson() - Converts IPN [Message] field to JSON
-     *
-     * Has child elements
-     * ['NotificationData'] [XML] - API call XML notification data
-     * @param remainingFields - consists of remaining IPN array fields that are merged
-     * Type - Notification
-     * MessageId -  ID of the Notification
-     * Topic ARN - Topic of the IPN
-     * @return response in JSON format
-     */
-    
-    public function toJson();
-
-    /* toArray() - Converts IPN [Message] field to associative array
-     * @return response in array format
-     */
-    
-    public function toArray();
-}
-
-/* Interface for HttpCurl.php */
-
-interface HttpCurlInterface
-{
-    /* Takes user configuration array as input
-     * Takes configuration for API call or IPN config
-     */
-    
-    public function __construct($config = null);
-    
-    /* Set Http header for Access token for the GetUserInfo call */
-    
-    public function setHttpHeader();
-    
-    /* Setter for  Access token to get the user info */
-    
-    public function setAccessToken($accesstoken);
-    
-    /* POST using curl for the following situations
-     * 1. API calls
-     * 2. IPN certificate retrieval
-     * 3. Get User Info
-     */
-    
-    public function httpPost($url, $userAgent = null, $parameters = null);
-    
-    /* GET using curl for the following situations
-     * 1. IPN certificate retrieval
-     * 3. Get User Info
-     */
-    
-    public function httpGet($url, $userAgent = null);
-}
-
-/* Interface for ResponseParser.php */
-
-interface ResponseInterface
-{
-    /* Takes response from the API call */
-    
-    public function __construct($response = null);
-    
-    /* Returns the XML portion of the response */
-    
-    public function toXml();
-    
-    /* toJson  - converts XML into Json
-     * @param $response [XML]
-     */
-    
-    public function toJson();
-    
-    /* toArray  - converts XML into associative array
-     * @param $this->_response [XML]
-     */
-    
-    public function toArray();
-    
-    /* Get the status of the BillingAgreement */
-    
-    public function getBillingAgreementDetailsStatus($response);
 }

@@ -7,7 +7,7 @@ namespace PayWithAmazon;
  */
 
 require_once 'HttpCurl.php';
-require_once 'Interface.php';
+require_once 'IpnHandlerInterface.php';
 class IpnHandler implements IpnHandlerInterface
 {
 

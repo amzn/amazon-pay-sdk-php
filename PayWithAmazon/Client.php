@@ -9,12 +9,12 @@ namespace PayWithAmazon;
 
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
-require_once 'Interface.php';
+require_once 'ClientInterface.php';
 require_once 'Regions.php';
 
 class Client implements ClientInterface
 {
-    const MWS_CLIENT_VERSION = '1.0.1';
+    const MWS_CLIENT_VERSION = '1.0.2';
     const SERVICE_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -861,9 +861,9 @@ class Client implements ClientInterface
      * @see http://docs.developer.amazonservices.com/en_US/off_amazon_payments/OffAmazonPayments_CreateOrderReferenceForId.html
      *
      * @param requestParameters['merchant_id'] - [String]
-     * @param requestParameters['Id'] - [String]
+     * @param requestParameters['id'] - [String]
      * @optional requestParameters['inherit_shipping_address'] [Boolean]
-     * @optional requestParameters['ConfirmNow'] - [Boolean]
+     * @optional requestParameters['confirm_now'] - [Boolean]
      * @optional Amount (required when confirm_now is set to true) [String]
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_note'] - [String]
