@@ -5,7 +5,7 @@ namespace PayWithAmazon;
  * Methods provided to convert the Response from the POST to XML, Array or JSON
  */
 
-require_once 'Interface.php';
+require_once 'ResponseInterface.php';
 
 class ResponseParser implements ResponseInterface
 {
@@ -68,33 +68,32 @@ class ResponseParser implements ResponseInterface
     
     public function getOrderReferenceDetailsStatus($response)
     {
-       $data= new \SimpleXMLElement($response);
-        $namespaces = $data->getNamespaces(true);
-        foreach($namespaces as $key=>$value){
-            $namespace = $value;
-        }
-        $data->registerXPathNamespace('GetORO', $namespace);
-        foreach ($data->xpath('//GetORO:OrderReferenceStatus') as $value) {
-            $oroStatus = json_decode(json_encode((array)$value), TRUE);
-        }
-        
-        return $oroStatus ;
+       $oroStatus = getStatus('GetORO', '//GetORO:OrderReferenceStatus', $response);
+               
+       return $oroStatus;
     }
     
     /* Get the status of the BillingAgreement */
     
     public function getBillingAgreementDetailsStatus($response)
     {
+       $baStatus = getStatus('GetBA', '//GetBA:BillingAgreementStatus', $response);  
+       
+       return $baStatus;
+    }
+    
+    private function getStatus($type, $path, $response) 
+    {
        $data= new \SimpleXMLElement($response);
-        $namespaces = $data->getNamespaces(true);
-        foreach($namespaces as $key=>$value){
-            $namespace = $value;
-        }
-        $data->registerXPathNamespace('GetBA', $namespace);
-        foreach ($data->xpath('//GetBA:BillingAgreementStatus') as $value) {
-            $baStatus = json_decode(json_encode((array)$value), TRUE);
-        }
-        
-        return $baStatus ;
+       $namespaces = $data->getNamespaces(true);
+       foreach($namespaces as $key=>$value){
+           $namespace = $value;
+       }
+       $data->registerXPathNamespace($type, $namespace);
+       foreach ($data->xpath($path) as $value) {
+           $status = json_decode(json_encode((array)$value), TRUE);
+       }
+       
+       return $status;
     }
 }
