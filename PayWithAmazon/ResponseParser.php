@@ -11,7 +11,7 @@ class ResponseParser implements ResponseInterface
 {
     public $response = null;
 
-    public function __construct($response=null)
+    public function __construct($response = null)
     {
         $this->response = $response;
     }
@@ -56,7 +56,7 @@ class ResponseParser implements ResponseInterface
         $status = strval($response['Status']);
 
         // Getting the Simple XML element object of the XML Response Body
-        $response = simplexml_load_string((string) $response['ResponseBody']);
+        $response = simplexml_load_string((string)$response['ResponseBody']);
 
         // Adding the HttpResponse Status code to the output as a string
         $response->addChild('ResponseStatus', $status);
@@ -68,32 +68,32 @@ class ResponseParser implements ResponseInterface
 
     public function getOrderReferenceDetailsStatus($response)
     {
-       $oroStatus = $this->getStatus('GetORO', '//GetORO:OrderReferenceStatus', $response);
+        $oroStatus = $this->getStatus('GetORO', '//GetORO:OrderReferenceStatus', $response);
 
-       return $oroStatus;
+        return $oroStatus;
     }
 
     /* Get the status of the BillingAgreement */
 
     public function getBillingAgreementDetailsStatus($response)
     {
-       $baStatus = $this->getStatus('GetBA', '//GetBA:BillingAgreementStatus', $response);  
+        $baStatus = $this->getStatus('GetBA', '//GetBA:BillingAgreementStatus', $response);
 
-       return $baStatus;
+        return $baStatus;
     }
 
     private function getStatus($type, $path, $response)
     {
-       $data= new \SimpleXMLElement($response);
-       $namespaces = $data->getNamespaces(true);
-       foreach($namespaces as $key=>$value){
-           $namespace = $value;
-       }
-       $data->registerXPathNamespace($type, $namespace);
-       foreach ($data->xpath($path) as $value) {
-           $status = json_decode(json_encode((array)$value), TRUE);
-       }
+        $data = new \SimpleXMLElement($response);
+        $namespaces = $data->getNamespaces(true);
+        foreach ($namespaces as $key => $value) {
+            $namespace = $value;
+        }
+        $data->registerXPathNamespace($type, $namespace);
+        foreach ($data->xpath($path) as $value) {
+            $status = json_decode(json_encode((array)$value), TRUE);
+        }
 
-       return $status;
+        return $status;
     }
 }
