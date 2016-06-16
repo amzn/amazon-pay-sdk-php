@@ -1604,4 +1604,10 @@ class Client implements ClientInterface
         $quotedString = preg_replace('/\\(/', '\\(', $quotedString);
         return $quotedString;
     }
+
+    /* Computes RFC 2104-compliant HMAC signature */
+    public static function getSignature($stringToSign, $secretKey)
+    {
+        return base64_encode(hash_hmac('sha256', $stringToSign, $secretKey, true));
+    }
 }
