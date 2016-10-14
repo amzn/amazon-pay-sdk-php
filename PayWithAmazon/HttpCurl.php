@@ -117,7 +117,7 @@ class HttpCurl implements HttpCurlInterface
     {
         $response = '';
         $response = curl_exec($ch);
-        if (!$response = curl_exec($ch)) {
+        if ($response === false) {
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
             curl_close($ch);
             throw new \Exception($error_msg);
