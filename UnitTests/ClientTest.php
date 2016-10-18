@@ -16,7 +16,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 'region' => 'us',
                 'sandbox' => true,
                 'platform_id' => 'test',
-                'cabundle_file' => null,
                 'application_name' => 'sdk testing',
                 'application_version' => '1.0',
                 'proxy_host' => null,
@@ -626,7 +625,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client = new Client($this->configParams);
         $apiCallParams = array('amazon_reference_id' => 'S01-TEST');
 
-        $client->charge($apiCallParams);
 
         try {
             $client = new Client($this->configParams);
