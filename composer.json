@@ -2,6 +2,7 @@
    "name": "amzn/login-and-pay-with-amazon-sdk-php",
    "type": "library",
    "description": "Pay with Amazon SDK",
+   "version": "2.1.0",
    "keywords": [
       "amazon",
       "pay",

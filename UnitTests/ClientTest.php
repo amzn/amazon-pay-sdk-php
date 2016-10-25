@@ -631,7 +631,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $apiCallParams = array('amazon_reference_id' => '');
             $client->charge($apiCallParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/amazon_reference_id is null and is a required parameter./i', strval($expected));
+            $this->assertRegExp('/key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter./i', strval($expected));
         }
 
         try {
