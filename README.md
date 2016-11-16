@@ -36,7 +36,7 @@ Client Takes in parameters in the following format
 
 ## Installing using Composer
 ```
-composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
+composer require amzn/login-and-pay-with-amazon-sdk-php
 ```
 ## Directory Tree
 ```
