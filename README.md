@@ -1,5 +1,3 @@
-> IN DEVELOPMENT
-
 # Amazon Pay SDK (PHP)
 Amazon Pay API Integration
 
@@ -66,9 +64,9 @@ composer require amzn/amazon-pay-sdk-php
     ├── IpnHandlerTest.php
     └── Signature.php
 ```
-##Parameters List
+## Parameters List
 
-####Mandatory Parameters
+#### Mandatory Parameters
 | Parameter    | variable name | Values          				|
 |--------------|---------------|------------------------------------------------|
 | Merchant Id  | `merchant_id` | Default : `null`				|
@@ -76,7 +74,7 @@ composer require amzn/amazon-pay-sdk-php
 | Secret Key   | `secret_key`  | Default : `null`				|
 | Region       | `region`      | Default : `null`<br>Other: `us`,`de`,`uk`,`jp`	|
 
-####Optional Parameters
+#### Optional Parameters
 | Parameter           | Variable name         | Values                                      	   |
 |---------------------|-----------------------|----------------------------------------------------|
 | Currency Code       | `currency_code`       | Default : `null`<br>Other: `USD`,`EUR`,`GBP`,`JPY` |
@@ -94,13 +92,16 @@ composer require amzn/amazon-pay-sdk-php
 
 ## Setting Configuration
 
+Your Amazon Pay keys are available in your Seller Central account
+
 Setting configuration while instantiating the Client object
 ```php
 <?php
 namespace AmazonPay;
 
 require_once 'Client.php';
-// Your Amazon Pay keys are available in your Seller Central account
+// or, instead of using require_once, you can use the phar file instead
+// include 'amazon-pay.phar';
 
 // PHP Associative array
 $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
@@ -109,8 +110,9 @@ $config = array('merchant_id' => 'YOUR_MERCHANT_ID',
                 'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
                 'region'      => 'REGION');
 
-// JSON file path
-$config = 'PATH_TO_JSON_FILE';
+// or, instead of setting the array in the code, you can
+// initialze the Client by specifying a JSON file
+// $config = 'PATH_TO_JSON_FILE';
 
 // Instantiate the client class with the config type
 $client = new Client($config);
@@ -198,7 +200,7 @@ See the [IPN Response](https://github.com/amzn/amazon-pay-sdk-php#ipn-response) 
 
 ### Convenience Methods
 
-#####Charge Method
+#### Charge Method
 
 The charge method combines the following API calls:
 
@@ -267,7 +269,7 @@ $response = $client->charge($requestParameters);
 ```
 See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
 
-#####Obtain profile information (getUserInfo method)
+#### Obtain profile information (getUserInfo method)
 1. obtains the user's profile information from Amazon using the access token returned by the Button widget.
 2. An access token is granted by the authorization server when a user logs in to a site.
 3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data.
@@ -310,7 +312,7 @@ Responses are provided in 3 formats
 2. Associative array
 3. JSON format
 
-#####API Response
+#### API Response
 ```php
 // Returns an object($response) of the class ResponseParser.php
 $response = $client->getOrderReferenceDetails($requestParameters);
@@ -325,7 +327,7 @@ $response->toArray();
 $response->toJson();
 ```
 
-#####IPN Response
+#### IPN Response
 ```php
 $ipnHandler = new IpnHandler($headers, $body);
 
@@ -343,7 +345,7 @@ $ipnHandler->toJson();
 
 SDK logging of sanitized requests and responses can work with any PSR-3 compliant logger such as Monolog.
 
-#####API Response
+#### API Response
 ```php
 namespace AmazonPay;
 require 'vendor/autoload.php';
