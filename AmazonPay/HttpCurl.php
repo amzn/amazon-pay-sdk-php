@@ -13,6 +13,7 @@ class HttpCurl implements HttpCurlInterface
     private $header = false;
     private $accessToken = null;
     private $curlResponseInfo = null;
+    private $headerArray = [];
 
     /* Takes user configuration array as input
      * Takes configuration for API call or IPN config
@@ -102,9 +103,7 @@ class HttpCurl implements HttpCurlInterface
 
         // Setting the HTTP header with the Access Token only for Getting user info
         if ($this->header) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization: bearer ' . $this->accessToken
-            ));
+            $this->headerArray[] = 'Authorization: bearer ' . $this->accessToken;
         }
 
         $response = $this->execute($ch);
@@ -118,7 +117,8 @@ class HttpCurl implements HttpCurlInterface
         $response = '';
 
         // Ensure we never send the "Expect: 100-continue" header
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
+        $this->headerArray[] = 'Expect:';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headerArray);
 
         $response = curl_exec($ch);
         if ($response === false) {
