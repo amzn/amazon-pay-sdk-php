@@ -28,5 +28,8 @@
    "require": {
       "ext-curl": "*",
       "php": ">=5.5.0"
+   },
+   "require-dev": {
+      "friendsofphp/php-cs-fixer": "^2.3"
    }
 }
