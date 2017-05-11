@@ -5,4 +5,3 @@
     $p->buildFromDirectory('.', '$(.*)\.php$');
     $p->stopBuffering();
     echo "Phar created: amazon-pay.phar\n";
-?>

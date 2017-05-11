@@ -11,4 +11,4 @@ cs:
 	@php vendor/bin/php-cs-fixer fix tst/ --rules=@Symfony
 
 	# Running PHP-CS-Fixer on create-amazon-pay-phar.php
-	@php vendor/bin/php-cs-fixer fix create-amazon-pay-phar.php/ --rules=@Symfony
+	@php vendor/bin/php-cs-fixer fix create-amazon-pay-phar.php --rules=@Symfony
