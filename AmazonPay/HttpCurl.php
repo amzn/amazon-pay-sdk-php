@@ -2,12 +2,12 @@
 
 namespace AmazonPay;
 
-/* Class HttpCurl
- * Handles Curl POST function for all requests
- */
 
 require_once 'HttpCurlInterface.php';
 
+/**
+ * Handles Curl POST function for all requests
+ */
 class HttpCurl implements HttpCurlInterface
 {
     private $config = array();
@@ -15,10 +15,12 @@ class HttpCurl implements HttpCurlInterface
     private $accessToken = null;
     private $curlResponseInfo = null;
 
-    /* Takes user configuration array as input
+    /**
+     * Takes user configuration array as input
      * Takes configuration for API call or IPN config
+     *
+     * @param null $config
      */
-
     public function __construct($config = null)
     {
         $this->config = $config;
@@ -31,22 +33,28 @@ class HttpCurl implements HttpCurlInterface
         $this->header = true;
     }
 
-    /* Setter for Access token to get the user info */
-
+    /**
+     * @inheritdoc
+     */
     public function setAccessToken($accesstoken)
     {
         $this->accessToken = $accesstoken;
     }
 
-    /* Add the common Curl Parameters to the curl handler $ch
+    /**
+     * Add the common Curl Parameters to the curl handler $ch
      * Also checks for optional parameters if provided in the config
      * config['cabundle_file']
      * config['proxy_port']
      * config['proxy_host']
      * config['proxy_username']
      * config['proxy_password']
+     *
+     * @param $url
+     * @param $userAgent
+     *
+     * @return resource
      */
-
     private function commonCurlParams($url, $userAgent)
     {
         $ch = curl_init();
@@ -75,12 +83,9 @@ class HttpCurl implements HttpCurlInterface
         return $ch;
     }
 
-    /* POST using curl for the following situations
-     * 1. API calls
-     * 2. IPN certificate retrieval
-     * 3. Get User Info
+    /**
+     * @inheritdoc
      */
-
     public function httpPost($url, $userAgent = null, $parameters = null)
     {
         $ch = $this->commonCurlParams($url, $userAgent);
@@ -89,16 +94,12 @@ class HttpCurl implements HttpCurlInterface
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, false);
 
-        $response = $this->execute($ch);
-
-        return $response;
+        return $this->execute($ch);
     }
 
-    /* GET using curl for the following situations
-     * 1. IPN certificate retrieval
-     * 2. Get User Info
+    /**
+     * @inheritdoc
      */
-
     public function httpGet($url, $userAgent = null)
     {
         $ch = $this->commonCurlParams($url, $userAgent);
@@ -110,13 +111,17 @@ class HttpCurl implements HttpCurlInterface
             ));
         }
 
-        $response = $this->execute($ch);
-
-        return $response;
+        return $this->execute($ch);
     }
 
-    /* Execute Curl request */
-
+    /**
+     * Execute Curl request
+     *
+     * @param $ch
+     *
+     * @return mixed|string
+     * @throws \Exception
+     */
     private function execute($ch)
     {
         $response = '';
@@ -137,8 +142,11 @@ class HttpCurl implements HttpCurlInterface
         return $response;
     }
 
-    /* Get the output of Curl Getinfo */
-
+    /**
+     * Get the output of Curl Getinfo
+     *
+     * @return null
+     */
     public function getCurlResponseInfo()
     {
         return $this->curlResponseInfo;

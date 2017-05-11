@@ -2,32 +2,34 @@
 
 namespace AmazonPay;
 
-/* ResponseParser
- * Methods provided to convert the Response from the POST to XML, Array or JSON
- */
-
 require_once 'ResponseInterface.php';
 
+/**
+ * Methods provided to convert the Response from the POST to XML, Array or JSON
+ */
 class ResponseParser implements ResponseInterface
 {
     public $response = null;
 
+    /**
+     * @param null $response
+     */
     public function __construct($response = null)
     {
         $this->response = $response;
     }
 
-    /* Returns the XML portion of the response */
-
+    /**
+     * @inheritdoc
+     */
     public function toXml()
     {
         return $this->response['ResponseBody'];
     }
 
-    /* toJson - converts XML into Json
-     * @param $response [XML]
+    /**
+     * @inheritdoc
      */
-
     public function toJson()
     {
         $response = $this->simpleXmlObject();
@@ -35,10 +37,9 @@ class ResponseParser implements ResponseInterface
         return json_encode($response);
     }
 
-    /* toArray - converts XML into associative array
-     * @param $this->response [XML]
+    /**
+     * @inheritdoc
      */
-
     public function toArray()
     {
         $response = $this->simpleXmlObject();
@@ -49,6 +50,9 @@ class ResponseParser implements ResponseInterface
         return json_decode($response, true);
     }
 
+    /**
+     * @return null|\SimpleXMLElement
+     */
     private function simpleXmlObject()
     {
         $response = $this->response;
@@ -65,24 +69,37 @@ class ResponseParser implements ResponseInterface
         return $response;
     }
 
-    /* Get the status of the Order Reference ID */
-
+    /**
+     * Get the status of the Order Reference ID
+     *
+     * @param $response
+     *
+     * @return mixed
+     */
     public function getOrderReferenceDetailsStatus($response)
     {
-        $oroStatus = $this->getStatus('GetORO', '//GetORO:OrderReferenceStatus', $response);
-
-        return $oroStatus;
+        return $this->getStatus('GetORO', '//GetORO:OrderReferenceStatus', $response);
     }
 
-    /* Get the status of the BillingAgreement */
-
+    /**
+     * Get the status of the BillingAgreement
+     *
+     * @param $response
+     *
+     * @return mixed
+     */
     public function getBillingAgreementDetailsStatus($response)
     {
-        $baStatus = $this->getStatus('GetBA', '//GetBA:BillingAgreementStatus', $response);
-
-        return $baStatus;
+        return $this->getStatus('GetBA', '//GetBA:BillingAgreementStatus', $response);
     }
 
+    /**
+     * @param $type
+     * @param $path
+     * @param $response
+     *
+     * @return mixed
+     */
     private function getStatus($type, $path, $response)
     {
         $data = new \SimpleXMLElement($response);

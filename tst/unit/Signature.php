@@ -27,7 +27,10 @@ class Signature
         'jp' => 'jp',
     );
 
-
+    /**
+     * @param array $config
+     * @param array $parameters
+     */
     public function __construct($config = array(), $parameters = array())
     {
         $config = array_change_key_case($config, CASE_LOWER);
@@ -35,21 +38,26 @@ class Signature
         $this->signature = $this->calculateSignature($parameters);
     }
 
+    /**
+     * @return string
+     */
     public function getSignature()
     {
         return trim($this->signature);
     }
 
-    /* Create an Array of required parameters, sort them
-     * Calculate signature and invoke the POST them to the MWS Service URL
+    /**
+     * Create an Array of required parameters, sort them
+     * Calculate signature and invoke the POST them to the MWS Service URL.
      *
      * @param AWSAccessKeyId [String]
      * @param Version [String]
      * @param SignatureMethod [String]
      * @param Timestamp [String]
      * @param Signature [String]
+     *
+     * @return string
      */
-
     private function calculateSignature($parameters)
     {
         $this->createServiceUrl();
@@ -58,8 +66,9 @@ class Signature
         return $signature;
     }
 
-    /* Computes RFC 2104-compliant HMAC signature for request parameters
-     * Implements AWS Signature, as per following spec:
+    /**
+     * Computes RFC 2104-compliant HMAC signature for request parameters
+     * Implements AWS Signature, as per following spec:.
      *
      * If Signature Version is 0, it signs concatenated Action and Timestamp
      *
@@ -85,9 +94,7 @@ class Signature
      *       Parameter names are separated from their values by the '=' character
      *       (ASCII character 61), even if the value is empty.
      *       Pairs of parameter and values are separated by the '&' character (ASCII code 38).
-     *
      */
-
     private function signParameters(array $parameters)
     {
         $signatureVersion = $parameters['SignatureVersion'];
@@ -104,11 +111,13 @@ class Signature
         return $this->sign($stringToSign, $algorithm);
     }
 
-    /* Calculate String to Sign for SignatureVersion 2
+    /**
+     * Calculate String to Sign for SignatureVersion 2.
+     *
      * @param array $parameters request parameters
-     * @return String to Sign
+     *
+     * @return string to Sign
      */
-
     private function calculateStringToSignV2(array $parameters)
     {
         $data = 'POST';
@@ -122,8 +131,9 @@ class Signature
         return $data;
     }
 
-    /* Convert paremeters to Url encoded query string */
-
+    /**
+     * Convert paremeters to Url encoded query string.
+     */
     private function getParametersAsString(array $parameters)
     {
         $queryParameters = array();
@@ -134,13 +144,26 @@ class Signature
         return implode('&', $queryParameters);
     }
 
+    /**
+     * @param $value
+     *
+     * @return mixed
+     */
     private function urlEncode($value)
     {
         return str_replace('%7E', '~', rawurlencode($value));
     }
 
-    /* Computes RFC 2104-compliant HMAC signature.*/
-
+    /**
+     * Computes RFC 2104-compliant HMAC signature.
+     *
+     * @param $data
+     * @param $algorithm
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
     private function sign($data, $algorithm)
     {
         if ($algorithm === 'HmacSHA1') {
@@ -148,19 +171,25 @@ class Signature
         } elseif ($algorithm === 'HmacSHA256') {
             $hash = 'sha256';
         } else {
-            throw new Exception('Non-supported signing method specified');
+            throw new \Exception('Non-supported signing method specified');
         }
 
         return base64_encode(hash_hmac($hash, $data, $this->config['secret_key'], true));
     }
 
-    /* Formats date as ISO 8601 timestamp */
-
+    /**
+     * Formats date as ISO 8601 timestamp.
+     *
+     * @return false|string
+     */
     private function getFormattedTimestamp()
     {
         return gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", time());
     }
 
+    /**
+     * @throws \Exception
+     */
     private function createServiceUrl()
     {
         $this->modePath = strtolower($this->config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
@@ -172,10 +201,10 @@ class Signature
                 $this->mwsServiceUrl = 'https://'.$this->mwsEndpointUrl.'/'.$this->modePath.'/'.self::MWS_VERSION;
                 $this->mwsEndpointPath = '/'.$this->modePath.'/'.self::MWS_VERSION;
             } else {
-                throw new Exception($region.' is not a valid region');
+                throw new \Exception($region.' is not a valid region');
             }
         } else {
-            throw new Exception("config['region'] is a required parameter and is not set");
+            throw new \Exception("config['region'] is a required parameter and is not set");
         }
     }
 }

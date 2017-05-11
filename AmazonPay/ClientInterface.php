@@ -48,12 +48,14 @@ interface ClientInterface
 
     /**
      * GetUserInfo convenience funtion - Returns user's profile information from Amazon using the access token returned by the Button widget.
+     *
      * @param $access_token [String]
      */
     public function getUserInfo($access_token);
 
     /**
      * GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751970
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -65,6 +67,7 @@ interface ClientInterface
 
     /**
      * SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751960
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -82,6 +85,7 @@ interface ClientInterface
 
     /**
      * ConfirmOrderReferenceDetails API call - Confirms that the order reference is free of constraints and all required information has been set on the order reference.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751980
 
      *
@@ -93,6 +97,7 @@ interface ClientInterface
 
     /**
      * CancelOrderReferenceDetails API call - Cancels a previously confirmed order reference.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751990
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -116,6 +121,7 @@ interface ClientInterface
 
     /**
      * CloseAuthorization API call - Closes an authorization.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752070
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -127,6 +133,7 @@ interface ClientInterface
 
     /**
      * Authorize API call - Reserves a specified amount against the payment method(s) stored in the order reference.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752010
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -145,6 +152,7 @@ interface ClientInterface
 
     /**
      * GetAuthorizationDetails API call - Returns the status of a particular authorization and the total amount captured on the authorization.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752030
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -155,6 +163,7 @@ interface ClientInterface
 
     /**
      * Capture API call - Captures funds from an authorized payment instrument.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752040
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -171,6 +180,7 @@ interface ClientInterface
 
     /**
      * GetCaptureDetails API call - Returns the status of a particular capture and the total amount refunded on the capture.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752060
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -181,6 +191,7 @@ interface ClientInterface
 
     /**
      * Refund API call - Refunds a previously captured amount.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752080
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -197,6 +208,7 @@ interface ClientInterface
 
     /**
      * GetRefundDetails API call - Returns the status of a particular refund.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752100
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -206,7 +218,8 @@ interface ClientInterface
     public function getRefundDetails($requestParameters = array());
 
     /**
-     * GetServiceStatus API Call - Returns the operational status of the OffAmazonPayments API section
+     * GetServiceStatus API Call - Returns the operational status of the OffAmazonPayments API section.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201752110
      *
      * The GetServiceStatus operation returns the operational status of the OffAmazonPayments API
@@ -219,7 +232,8 @@ interface ClientInterface
     public function getServiceStatus($requestParameters = array());
 
     /**
-     * CreateOrderReferenceForId API Call - Creates an order reference for the given object
+     * CreateOrderReferenceForId API Call - Creates an order reference for the given object.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751670
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -238,6 +252,7 @@ interface ClientInterface
 
     /**
      * GetBillingAgreementDetails API Call - Returns details about the Billing Agreement object and its current state.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751690
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -248,6 +263,7 @@ interface ClientInterface
 
     /**
      * SetBillingAgreementDetails API call - Sets Billing Agreement details such as a description of the agreement and other information about the seller.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751700
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -265,6 +281,7 @@ interface ClientInterface
 
     /**
      * ConfirmBillingAgreement API Call - Confirms that the Billing Agreement is free of constraints and all required information has been set on the Billing Agreement.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751710
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -275,6 +292,7 @@ interface ClientInterface
 
     /**
      * ValidateBillingAgreement API Call - Validates the status of the Billing Agreement object and the payment method associated with it.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751720
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -285,6 +303,7 @@ interface ClientInterface
 
     /**
      * AuthorizeOnBillingAgreement API call - Reserves a specified amount against the payment method(s) stored in the Billing Agreement.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751940
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -308,6 +327,7 @@ interface ClientInterface
 
     /**
      * CloseBillingAgreement API Call - Returns details about the Billing Agreement object and its current state.
+     *
      * @see https://pay.amazon.com/developer/documentation/apireference/201751950
      *
      * @param requestParameters['merchant_id'] - [String]
@@ -342,6 +362,7 @@ interface ClientInterface
 
     /**
      * GetProviderCreditDetails API Call - Get the details of the Provider Credit.
+     *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -350,6 +371,7 @@ interface ClientInterface
 
     /**
      * GetProviderCreditReversalDetails API Call - Get details of the Provider Credit Reversal.
+     *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_reversal_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -358,9 +380,11 @@ interface ClientInterface
 
     /**
      * ReverseProviderCredit API Call - Reverse the Provider Credit.
+     *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_provider_credit_id'] - [String]
      * @optional requestParameters['credit_reversal_reference_id'] - [String]
+     *
      * @param requestParameters['credit_reversal_amount'] - [String]
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['credit_reversal_note'] - [String]
