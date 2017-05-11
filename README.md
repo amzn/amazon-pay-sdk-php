@@ -104,11 +104,13 @@ require_once 'Client.php';
 // include 'amazon-pay.phar';
 
 // PHP Associative array
-$config = array('merchant_id' => 'YOUR_MERCHANT_ID',
-                'access_key'  => 'YOUR_ACCESS_KEY',
-                'secret_key'  => 'YOUR_SECRET_KEY',
-                'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'region'      => 'REGION');
+$config = array(
+    'merchant_id' => 'YOUR_MERCHANT_ID',
+    'access_key' => 'YOUR_ACCESS_KEY',
+    'secret_key' => 'YOUR_SECRET_KEY',
+    'client_id' => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+    'region' => 'REGION',
+);
 
 // or, instead of setting the array in the code, you can
 // initialze the Client by specifying a JSON file
@@ -124,12 +126,14 @@ The sandbox parameter is defaulted to false if not specified:
 <?php
 namespace AmazonPay;
 
-$config = array('merchant_id'   => 'YOUR_MERCHANT_ID',
-                'access_key'    => 'YOUR_ACCESS_KEY',
-                'secret_key'    => 'YOUR_SECRET_KEY',
-                'client_id'     => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-                'region'     	=> 'REGION',
-                'sandbox'       => true );
+$config = array(
+    'merchant_id' => 'YOUR_MERCHANT_ID',
+    'access_key' => 'YOUR_ACCESS_KEY',
+    'secret_key' => 'YOUR_SECRET_KEY',
+    'client_id' => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+    'region' => 'REGION',
+    'sandbox' => true,
+);
 
 $client = new Client($config);
 
@@ -166,8 +170,8 @@ $requestParameters = array();
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 
 // Optional Parameter
-$requestParameters['address_consent_token']     = 'ACCESS_TOKEN';
-$requestParameters['mws_auth_token']            = 'MWS_AUTH_TOKEN';
+$requestParameters['address_consent_token'] = 'ACCESS_TOKEN';
+$requestParameters['mws_auth_token'] = 'MWS_AUTH_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
@@ -189,8 +193,8 @@ namespace AmazonPay;
 require_once 'IpnHandler.php';
 
 // Get the IPN headers and Message body
-$headers    = getallheaders();
-$body       = file_get_contents('php://input');
+$headers = getallheaders();
+$body = file_get_contents('php://input');
 
 // Create an object($ipnHandler) of the IpnHandler class
 $ipnHandler = new IpnHandler($headers, $body);
@@ -248,7 +252,7 @@ $requestParameters['amazon_reference_id'] = 'AMAZON_REFERENCE_ID';
 // Or
 // If $requestParameters['amazon_reference_id'] is not provided,
 // either one of the following ID input is needed
-$requestParameters['amazon_order_reference_id']   = 'AMAZON_ORDER_REFERENCE_ID';
+$requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 $requestParameters['amazon_billing_agreement_id'] = 'AMAZON_BILLING_AGREEMENT_ID';
 
 $requestParameters['seller_id'] = null;
