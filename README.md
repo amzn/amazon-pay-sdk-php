@@ -12,7 +12,7 @@ Amazon Pay API Integration
 * PHP 5.5 or higher
 * Curl 7.18 or higher
 
-Support for PHP 5.3 and 5.4 is being deprecated.  The SDK will work in these older environments, but future versions may not.  We encourage merchants to move to a newer version of PHP at their earliest convenience.
+Support for PHP 5.3 and 5.4 is being deprecated. The SDK will work in these older environments, but future versions may not. We encourage merchants to move to a newer version of PHP at their earliest convenience.
 
 ## Documentation
 
