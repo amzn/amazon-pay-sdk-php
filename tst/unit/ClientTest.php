@@ -9,21 +9,21 @@ require_once 'Signature.php';
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     private $configParams = array(
-                'merchant_id' => 'test',
-                'access_key' => 'test',
-                'secret_key' => 'test',
-                'currency_code' => 'usd',
-                'client_id' => 'test',
-                'region' => 'us',
-                'sandbox' => true,
-                'platform_id' => 'test',
-                'application_name' => 'sdk testing',
-                'application_version' => '1.0',
-                'proxy_host' => null,
-                'proxy_port' => -1,
-                'proxy_username' => null,
-                'proxy_Password' => null,
-            );
+        'merchant_id' => 'test',
+        'access_key' => 'test',
+        'secret_key' => 'test',
+        'currency_code' => 'usd',
+        'client_id' => 'test',
+        'region' => 'us',
+        'sandbox' => true,
+        'platform_id' => 'test',
+        'application_name' => 'sdk testing',
+        'application_version' => '1.0',
+        'proxy_host' => null,
+        'proxy_port' => -1,
+        'proxy_username' => null,
+        'proxy_Password' => null,
+    );
 
     public function testConfigArray()
     {

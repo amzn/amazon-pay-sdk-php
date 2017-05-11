@@ -35,23 +35,23 @@ class Client implements ClientInterface, LoggerAwareInterface
     private $mwsEndpointUrl = null;
     private $profileEndpoint = null;
     private $config = array(
-                'merchant_id' => null,
-                'secret_key' => null,
-                'access_key' => null,
-                'region' => null,
-                'currency_code' => null,
-                'sandbox' => false,
-                'platform_id' => null,
-                'cabundle_file' => null,
-                'application_name' => null,
-                'application_version' => null,
-                'proxy_host' => null,
-                'proxy_port' => -1,
-                'proxy_username' => null,
-                'proxy_password' => null,
-                'client_id' => null,
-                'handle_throttle' => true,
-            );
+        'merchant_id' => null,
+        'secret_key' => null,
+        'access_key' => null,
+        'region' => null,
+        'currency_code' => null,
+        'sandbox' => false,
+        'platform_id' => null,
+        'cabundle_file' => null,
+        'application_name' => null,
+        'application_version' => null,
+        'proxy_host' => null,
+        'proxy_port' => -1,
+        'proxy_username' => null,
+        'proxy_password' => null,
+        'client_id' => null,
+        'handle_throttle' => true,
+    );
 
     private $modePath = null;
 

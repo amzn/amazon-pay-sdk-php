@@ -7,17 +7,16 @@ require_once 'AmazonPay/IpnHandler.php';
 class IpnHandlertest extends \PHPUnit_Framework_TestCase
 {
     private $configParams = array(
-                'cabundle_file' => null,
-                'proxy_host' => null,
-                'proxy_port' => -1,
-                'proxy_username' => null,
-                'proxy_Password' => null,
-            );
+        'cabundle_file' => null,
+        'proxy_host' => null,
+        'proxy_port' => -1,
+        'proxy_username' => null,
+        'proxy_Password' => null,
+    );
 
     public function testConstructor()
     {
         try {
-            $headers = array();
             $headers = array('ab' => 'abc');
             $body = 'abctest';
 
