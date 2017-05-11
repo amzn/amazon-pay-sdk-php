@@ -44,8 +44,9 @@ composer require amzn/amazon-pay-sdk-php
 ```
 .
 ├── composer.json - Configuration for composer
-├── LICENSE.txt
-├── NOTICE.txt
+├── LICENSE
+├── NOTICE.md
+├── CHANGELOG.md
 ├── AmazonPay
 │   ├── Client.php - Main class with the API calls
 │   ├── ClientInterface.php - Shows the public function definitions in Client.php
