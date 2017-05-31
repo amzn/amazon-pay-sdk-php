@@ -231,7 +231,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
-        $response = $client->CloseAuthorization($apiCallParams);
+        $response = $client->closeAuthorization($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 

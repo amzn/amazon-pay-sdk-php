@@ -296,7 +296,7 @@ class Client implements ClientInterface, LoggerAwareInterface
 
         // To make sure double encoding doesn't occur decode first and encode again.
         $accessToken = urldecode($accessToken);
-        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . urlEncode($accessToken);
+        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . $this->urlEncode($accessToken);
 
         $httpCurlRequest = new HttpCurl($this->config);
 
@@ -313,7 +313,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         $httpCurlRequest = new HttpCurl($this->config);
 
         $httpCurlRequest->setAccessToken($accessToken);
-        $httpCurlRequest->setHttpHeader(true);
+        $httpCurlRequest->setHttpHeader();
         $response = $httpCurlRequest->httpGet($url);
 
         $userInfo = json_decode($response, true);
@@ -1226,7 +1226,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         
         if ($oroStatus['State'] === 'Open') {
             if ($this->success) {
-                    $response = $this->Authorize($authorizeParameters);
+                $response = $this->authorize($authorizeParameters);
             }
         }
         if ($oroStatus['State'] != 'Open' && $oroStatus['State'] != 'Draft') {
