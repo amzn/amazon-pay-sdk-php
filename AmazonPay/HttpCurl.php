@@ -125,8 +125,7 @@ class HttpCurl implements HttpCurlInterface
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
             curl_close($ch);
             throw new \Exception($error_msg);
-        }
-        else{
+        } else {
             $this->curlResponseInfo = curl_getinfo($ch);
         }
         curl_close($ch);

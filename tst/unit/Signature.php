@@ -91,7 +91,7 @@ class Signature
             $parameters['SignatureMethod'] = $algorithm;
             $stringToSign                  = $this->calculateStringToSignV2($parameters);
         } else {
-            throw new Exception("Invalid Signature Version specified");
+            throw new \Exception("Invalid Signature Version specified");
         }
         
         return $this->sign($stringToSign, $algorithm);
@@ -140,7 +140,7 @@ class Signature
         } else if ($algorithm === 'HmacSHA256') {
             $hash = 'sha256';
         } else {
-            throw new Exception("Non-supported signing method specified");
+            throw new \Exception("Non-supported signing method specified");
         }
         
         return base64_encode(hash_hmac($hash, $data, $this->config['secret_key'], true));
@@ -164,10 +164,10 @@ class Signature
                 $this->mwsServiceUrl   = 'https://' . $this->mwsEndpointUrl . '/' . $this->modePath . '/' . self::MWS_VERSION;
                 $this->mwsEndpointPath = '/' . $this->modePath . '/' . self::MWS_VERSION;
             } else {
-                throw new Exception($region . ' is not a valid region');
+                throw new \Exception($region . ' is not a valid region');
             }
         } else {
-            throw new Exception("config['region'] is a required parameter and is not set");
+            throw new \Exception("config['region'] is a required parameter and is not set");
         }
     }
 }

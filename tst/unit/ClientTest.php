@@ -26,12 +26,49 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testConfigArray()
     {
+
+        // Test that trimmimg isn't converting the Boolean to a string
+        $client = new Client($this->configParams);
+        $this->assertTrue((bool)$client->__get('sandbox'));
+
+        // Test four cases in which sandbox is in constructor with an array
+        $client = new Client(array('sandbox' => false));
+        $this->assertFalse((bool)$client->__get('sandbox'));
+
+        try {
+          $client = new Client(array('sandbox' => 'false'));
+        } catch (\Exception $expected) {
+            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+        }
+
+        $client = new Client(array('sandbox' => true));
+        $this->assertTrue((bool)$client->__get('sandbox'));
+
+        try {
+            $client = new Client(array('sandbox' => 'true'));
+        } catch (\Exception $expected) {
+            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+        }
+
+        // Test that string trimming is working as intended
+        $client = new Client(array(
+            'region'        => 'us  ', // two spaces at end
+            'currency_code' => '  usd', // two spaces at beginning
+            'client_id'     => '  A113  ' // two spaces and beginning and end
+        ));
+        $this->assertEquals('us', $client->__get('region'));
+        $this->assertEquals('usd', $client->__get('currency_code'));
+        $this->assertEquals('A113', $client->__get('client_id'));
+        $this->assertFalse((bool)$client->__get('sandbox'));
+
+        // Unclear what is is actually doing, exception doesn't get thrown, consider removing
         try {
             $client = new Client($this->configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/is not a Json File or the Json File./i', strval($expected));
         }
 
+        // Test passing in invalid keys to constructor
         try {
             $configParams = array(
                 'a' => 'A',
@@ -42,21 +79,51 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }
 
+        // Test passing in an empty array to construtor
         try {
             $configParams = array();
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/$config cannot be null./i', strval($expected));
         }
+
     }
 
     public function testJsonFile()
     {
+        $configParams = "tst/unit/config/sandbox_true_bool.json";
+        $client = new Client($configParams);
+
+        $this->assertTrue((bool)$client->__get('sandbox'));
+        $this->assertEquals('test_merchant_id', $client->__get('merchant_id'));
+        $this->assertEquals('test_access_key', $client->__get('access_key'));
+        $this->assertEquals('test_secret_key', $client->__get('secret_key'));
+        $this->assertEquals('USD', $client->__get('currency_code'));
+        $this->assertEquals('test_client_id', $client->__get('client_id'));
+        $this->assertEquals('us', $client->__get('region'));
+        $this->assertEquals('sdk testing', $client->__get('application_name'));
+        $this->assertEquals('1.0', $client->__get('application_version'));
+
         try {
-            $configParams = "tst/unit/config.json";
+            $configParams = "tst/unit/config/sandbox_true_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/Error with message - content is not in json format./i', strval($expected));
+            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+        }
+
+        $configParams = "tst/unit/config/sandbox_false_bool.json";
+        $client = new Client($configParams);
+        $this->assertFalse((bool)$client->__get('sandbox'));
+
+        $configParams = "tst/unit/config/sandbox_none.json";
+        $client = new Client($configParams);
+        $this->assertFalse((bool)$client->__get('sandbox'));
+
+        try {
+            $configParams = "tst/unit/config/sandbox_false_string.json";
+            $client = new Client($configParams);
+        } catch (\Exception $expected) {
+            $this->assertRegExp('/should be a boolean value/i', strval($expected));
         }
 
         try {
@@ -90,6 +157,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'merchant_id' => 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
             'address_consent_token' => 'AddressConsentToken',
+            'access_token' => 'AccessToken',
             'mws_auth_token' => 'MWSAuthToken'
         );
 
@@ -104,7 +172,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $response = $client->getOrderReferenceDetails($apiCallParams);
 
         $apiParametersString = $client->getParameters();
-
         $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
@@ -217,10 +284,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client($this->configParams);
         $fieldMappings = array(
-            'merchant_id' 		=> 'SellerId',
-            'amazon_authorization_id'   => 'AmazonAuthorizationId',
-            'closure_reason'            => 'ClosureReason',
-            'mws_auth_token' 		=> 'MWSAuthToken'
+            'merchant_id'             => 'SellerId',
+            'amazon_authorization_id' => 'AmazonAuthorizationId',
+            'closure_reason'          => 'ClosureReason',
+            'mws_auth_token'          => 'MWSAuthToken'
         );
 
         $action = 'CloseAuthorization';
@@ -259,7 +326,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
-
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->authorize($apiCallParams);
@@ -463,6 +529,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'merchant_id' 		  => 'SellerId',
             'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
             'address_consent_token' 	  => 'AddressConsentToken',
+            'access_token' 	          => 'AccessToken',
             'mws_auth_token' 		  => 'MWSAuthToken'
         );
 
@@ -606,6 +673,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
 
         $action = 'CloseBillingAgreement';
+
 
         $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
@@ -767,15 +835,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedParameters['Action'] = $action;
 
         foreach ($fieldMappings as $parm => $value) {
-            if(!isset($expectedParameters[$value]))
-            {
-		$expectedParameters[$value] = 'test';
+            if ($parm === 'capture_now' || $parm === 'confirm_now' || $parm === 'inherit_shipping_address') {
+                $expectedParameters[$value] = false;
+                $apiCallParams[$parm] = false;
+            } elseif (!isset($expectedParameters[$value])) {
+                $expectedParameters[$value] = 'test';
                 $apiCallParams[$parm] = 'test';
             }
         }
 
         return array('expectedParameters' => $expectedParameters,
-                     'apiCallParams'      =>$apiCallParams);
+                     'apiCallParams'      => $apiCallParams);
     }
 
     private function setDefaultValues($fieldMappings)

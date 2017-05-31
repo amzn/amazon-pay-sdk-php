@@ -29,7 +29,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     private $expectedCnName = 'sns.amazonaws.com';
     private $defaultHostPattern = '/^sns\.[a-zA-Z0-9\-]{3,}\.amazonaws\.com(\.cn)?$/';
 
-    // Implement a logging library that utilizes the PSR 3 logger interface 
+    // Implement a logging library that utilizes the PSR 3 logger interface
     private $logger = null;
 
     private $ipnConfig = array('cabundle_file'  => null,

@@ -106,11 +106,10 @@ require_once 'Client.php';
 // PHP Associative array
 $config = array(
     'merchant_id' => 'YOUR_MERCHANT_ID',
-    'access_key' => 'YOUR_ACCESS_KEY',
-    'secret_key' => 'YOUR_SECRET_KEY',
-    'client_id' => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-    'region' => 'REGION',
-);
+    'access_key'  => 'YOUR_ACCESS_KEY',
+    'secret_key'  => 'YOUR_SECRET_KEY',
+    'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+    'region'      => 'REGION');
 
 // or, instead of setting the array in the code, you can
 // initialze the Client by specifying a JSON file
@@ -128,12 +127,11 @@ namespace AmazonPay;
 
 $config = array(
     'merchant_id' => 'YOUR_MERCHANT_ID',
-    'access_key' => 'YOUR_ACCESS_KEY',
-    'secret_key' => 'YOUR_SECRET_KEY',
-    'client_id' => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
-    'region' => 'REGION',
-    'sandbox' => true,
-);
+    'access_key'  => 'YOUR_ACCESS_KEY',
+    'secret_key'  => 'YOUR_SECRET_KEY',
+    'client_id'   => 'YOUR_LOGIN_WITH_AMAZON_CLIENT_ID',
+    'region'      => 'REGION',
+    'sandbox'     => true);
 
 $client = new Client($config);
 
@@ -170,8 +168,8 @@ $requestParameters = array();
 $requestParameters['amazon_order_reference_id'] = 'AMAZON_ORDER_REFERENCE_ID';
 
 // Optional Parameter
-$requestParameters['address_consent_token'] = 'ACCESS_TOKEN';
-$requestParameters['mws_auth_token'] = 'MWS_AUTH_TOKEN';
+$requestParameters['address_consent_token']  = 'ACCESS_TOKEN';
+$requestParameters['mws_auth_token']         = 'MWS_AUTH_TOKEN';
 
 $response = $client->getOrderReferenceDetails($requestParameters);
 
@@ -260,7 +258,7 @@ $requestParameters['charge_amount'] = '100.50';
 $requestParameters['currency_code'] = 'USD';
 $requestParameters['authorization_reference_id'] = 'UNIQUE STRING';
 $requestParameters['transaction_timeout'] = 0;
-$requestParameters['capture_now'] = false; //`true` for Digital goods
+$requestParameters['capture_now'] = false; //true for Digital goods
 $requestParameters['charge_note'] = 'Example item note';
 $requestParameters['charge_order_id'] = '1234-Example-Order';
 $requestParameters['store_name'] = 'Example Store';
@@ -288,8 +286,9 @@ See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) 
 <?php namespace AmazonPay;
 
 // config array parameters that need to be instantiated
-$config = array('client_id' => 'YOUR_LWA_CLIENT_ID',
-                'region'    => 'REGION' );
+$config = array(
+    'client_id' => 'YOUR_LWA_CLIENT_ID',
+    'region'    => 'REGION');
 
 $client = new Client($config);
 

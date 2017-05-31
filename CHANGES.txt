@@ -1,3 +1,15 @@
+3.1.0 - May 2017
+- Fix getUserInfo call (bearer token) issue impacted by 3.0.0's Curl fix
+- app_id can be passed in to Client constructor as optional configuration parameter
+  Needed if your Mobile SDK application needs to call the PHP SDK getUserInfo call on the backend
+- access_token can be specified as a parameter to the getOrderReferenceDetails functions
+  This provides access to the payment descriptor response needed for Mobile SDK implementations
+  Your account must be whitelisted for Mobile SDK access to retrieve payment descriptor details
+- SDK was not consistently handling boolean input parameters:
+  'false' was sometimes treated as true because it was a non-empty string, 'true' was sometimes getting converted to '1' instead of true
+  An Exception will be thrown if sandbox, capture_now, confirm_now, inherit_shipping_address attributes are not specified as booleans
+- Fix relative paths in Psr\Log interface files
+
 3.0.0 - March 2017
 - Pay with Amazon to Amazon Pay rebranding
 - PHP Archive (amazon-pay.phar) now bundled with release for convenience
