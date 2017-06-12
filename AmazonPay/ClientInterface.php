@@ -1,4 +1,5 @@
 <?php
+
 namespace AmazonPay;
 
 /* Interface class to showcase the public API methods for Amazon Pay */
@@ -34,7 +35,7 @@ interface ClientInterface
     public function setProxy($proxy);
 
     /* Setter for $_mwsServiceUrl
-     * Set the URL to which the post request has to be made for unit testing 
+     * Set the URL to which the post request has to be made for unit testing
      */
 
     public function setMwsServiceUrl($url);
@@ -230,7 +231,7 @@ interface ClientInterface
      * @param requestParameters['id'] - [String]
      * @optional requestParameters['inherit_shipping_address'] [Boolean]
      * @optional requestParameters['confirm_now'] - [Boolean]
-     * @optional Amount (required when confirm_now is set to true) [String] 
+     * @optional Amount (required when confirm_now is set to true) [String]
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['seller_note'] - [String]
      * @optional requestParameters['seller_order_id'] - [String]
@@ -335,7 +336,7 @@ interface ClientInterface
      * @param requestParameters['amazon_order_reference_id'] - [String] : Order Reference ID
      * or,
      * @param requestParameters['amazon_billing_agreement_id'] - [String] : Billing Agreement ID
-     * 
+     *
      * @param $requestParameters['charge_amount'] - [String] : Amount value to be captured
      * @param requestParameters['currency_code'] - [String] : Currency Code for the Amount
      * @param requestParameters['authorization_reference_id'] - [String]- Any unique string that needs to be passed
