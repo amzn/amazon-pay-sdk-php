@@ -14,14 +14,18 @@ class Signature
 
     private $mwsServiceUrl = null;
 
-    private $mwsServiceUrls = array('eu' => 'mws-eu.amazonservices.com',
-                     'na' => 'mws.amazonservices.com',
-                     'jp' => 'mws.amazonservices.jp', );
+    private $mwsServiceUrls = array(
+        'eu' => 'mws-eu.amazonservices.com',
+        'na' => 'mws.amazonservices.com',
+        'jp' => 'mws.amazonservices.jp',
+    );
 
-    private $regionMappings = array('de' => 'eu',
-                     'uk' => 'eu',
-                     'us' => 'na',
-                     'jp' => 'jp', );
+    private $regionMappings = array(
+        'de' => 'eu',
+        'uk' => 'eu',
+        'us' => 'na',
+        'jp' => 'jp',
+    );
 
     public function __construct($config = array(), $parameters = array())
     {
