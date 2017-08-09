@@ -47,7 +47,7 @@ class HttpCurl implements HttpCurlInterface
      * config['proxy_password']
      */
 
-    private  function commonCurlParams($url,$userAgent)
+    private function commonCurlParams($url, $userAgent)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -82,12 +82,12 @@ class HttpCurl implements HttpCurlInterface
 
     public function httpPost($url, $userAgent = null, $parameters = null)
     {
-        $ch = $this->commonCurlParams($url,$userAgent);
-      
+        $ch = $this->commonCurlParams($url, $userAgent);
+
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        
+
         $response = $this->execute($ch);
         return $response;
     }
@@ -99,7 +99,7 @@ class HttpCurl implements HttpCurlInterface
 
     public function httpGet($url, $userAgent = null)
     {
-        $ch = $this->commonCurlParams($url,$userAgent);
+        $ch = $this->commonCurlParams($url, $userAgent);
 
         // Setting the HTTP header with the Access Token only for Getting user info
         if ($this->header) {
