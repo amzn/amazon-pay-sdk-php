@@ -242,17 +242,21 @@ class Client implements ClientInterface, LoggerAwareInterface
 
     public function setProxy($proxy)
     {
-        if (!empty($proxy['proxy_user_host']))
+        if (!empty($proxy['proxy_user_host'])) {
             $this->config['proxy_host'] = $proxy['proxy_user_host'];
+        }
 
-        if (!empty($proxy['proxy_user_port']))
+        if (!empty($proxy['proxy_user_port'])) {
             $this->config['proxy_port'] = $proxy['proxy_user_port'];
+        }
 
-        if (!empty($proxy['proxy_user_name']))
+        if (!empty($proxy['proxy_user_name'])) {
             $this->config['proxy_username'] = $proxy['proxy_user_name'];
+        }
 
-        if (!empty($proxy['proxy_user_password']))
+        if (!empty($proxy['proxy_user_password'])) {
             $this->config['proxy_password'] = $proxy['proxy_user_password'];
+        }
     }
 
     /* Setter for $mwsServiceUrl
@@ -416,12 +420,14 @@ class Client implements ClientInterface, LoggerAwareInterface
 
     private function setDefaultValues($parameters, $fieldMappings, $requestParameters)
     {
-        if (empty($requestParameters['merchant_id']))
+        if (empty($requestParameters['merchant_id'])) {
             $parameters['SellerId'] = $this->config['merchant_id'];
+        }
 
         if (array_key_exists('platform_id', $fieldMappings)) {
-            if (empty($requestParameters['platform_id']) && !empty($this->config['platform_id']))
+            if (empty($requestParameters['platform_id']) && !empty($this->config['platform_id'])) {
                 $parameters[$fieldMappings['platform_id']] = $this->config['platform_id'];
+            }
         }
 
         if (array_key_exists('currency_code', $fieldMappings)) {
@@ -1506,7 +1512,7 @@ class Client implements ClientInterface, LoggerAwareInterface
     {
         if ($algorithm === 'HmacSHA1') {
             $hash = 'sha1';
-        } else if ($algorithm === 'HmacSHA256') {
+        } elseif ($algorithm === 'HmacSHA256') {
             $hash = 'sha256';
         } else {
             throw new \Exception("Non-supported signing method specified");

@@ -91,7 +91,7 @@ class ResponseParser implements ResponseInterface
         }
         $data->registerXPathNamespace($type, $namespace);
         foreach ($data->xpath($path) as $value) {
-            $status = json_decode(json_encode((array)$value), TRUE);
+            $status = json_decode(json_encode((array)$value), true);
         }
 
         return $status;

@@ -306,7 +306,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     {
         $certKey = openssl_get_publickey($this->certificate);
 
-        if ($certKey === False) {
+        if ($certKey === false) {
             throw new \Exception("Unable to extract public key from cert");
         }
 
@@ -436,7 +436,8 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     {
         $ipnMessage = $this->returnMessage();
 
-        $this->logMessage(sprintf('IPN received for merchant account: %s', $this->sanitizeResponseData($ipnMessage['SellerId'])));
+        $this->logMessage(sprintf('IPN received for merchant account: %s',
+            $this->sanitizeResponseData($ipnMessage['SellerId'])));
         $this->logMessage($this->sanitizeResponseData($ipnMessage['NotificationData']));
 
         // Getting the Simple XML element object of the IPN XML Response Body
@@ -462,7 +463,8 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
             'NotificationReferenceId' => $ipnMessage['NotificationReferenceId'],
             'NotificationType'        => $ipnMessage['NotificationType'],
             'SellerId'                => $ipnMessage['SellerId'],
-            'ReleaseEnvironment'      => $ipnMessage['ReleaseEnvironment']);
+            'ReleaseEnvironment'      => $ipnMessage['ReleaseEnvironment']
+        );
 
         return $remainingFields;
     }
