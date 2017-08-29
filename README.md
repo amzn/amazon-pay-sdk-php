@@ -26,7 +26,7 @@ Support for PHP 5.3 and 5.4 is being deprecated. The SDK will work in these olde
 
 ## Sample
 
-* View the sample integration demo [here](https://amzn.github.io/login-and-pay-with-amazon-sdk-samples/)
+* View the sample integration demo [here](https://amzn.github.io/amazon-pay-sdk-samples/)
 
 ## Quick Start
 
