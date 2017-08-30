@@ -20,9 +20,7 @@ Support for PHP 5.3 and 5.4 is being deprecated. The SDK will work in these olde
  * [US](https://pay.amazon.com/us/developer/documentation)
  * [UK](https://pay.amazon.com/uk/developer/documentation)
  * [DE](https://pay.amazon.com/de/developer/documentation)
- * [JP OneTime](https://m.media-amazon.com/images/G/09/AmazonPayments/LoginAndPayWithAmazonIntegrationGuide_JP.pdf)
- * [JP AutoPay](https://m.media-amazon.com/images/G/09/AmazonPayments/LoginAndPayWithAmazonRecurringPaymentsIntegrationGuide_JP.pdf)
- * [JP API Reference](https://m.media-amazon.com/images/G/09/AmazonPayments/PayWithAmazonApiReferenceGuide_JP.pdf)
+ * [JP](https://pay.amazon.com/jp/developer/documentation)
 
 ## Sample
 
