@@ -47,7 +47,7 @@ class HttpCurl implements HttpCurlInterface
      * config['proxy_password']
      */
 
-    private  function commonCurlParams($url,$userAgent)
+    private function commonCurlParams($url, $userAgent)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -60,15 +60,17 @@ class HttpCurl implements HttpCurlInterface
             curl_setopt($ch, CURLOPT_CAINFO, $this->config['cabundle_file']);
         }
 
-        if (!empty($userAgent))
+        if (!empty($userAgent)) {
             curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+        }
 
         if ($this->config['proxy_host'] != null && $this->config['proxy_port'] != -1) {
             curl_setopt($ch, CURLOPT_PROXY, $this->config['proxy_host'] . ':' . $this->config['proxy_port']);
         }
 
         if ($this->config['proxy_username'] != null && $this->config['proxy_password'] != null) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config['proxy_username'] . ':' . $this->config['proxy_password']);
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD,
+                $this->config['proxy_username'] . ':' . $this->config['proxy_password']);
         }
 
         return $ch;
@@ -82,12 +84,12 @@ class HttpCurl implements HttpCurlInterface
 
     public function httpPost($url, $userAgent = null, $parameters = null)
     {
-        $ch = $this->commonCurlParams($url,$userAgent);
-      
+        $ch = $this->commonCurlParams($url, $userAgent);
+
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        
+
         $response = $this->execute($ch);
         return $response;
     }
@@ -99,7 +101,7 @@ class HttpCurl implements HttpCurlInterface
 
     public function httpGet($url, $userAgent = null)
     {
-        $ch = $this->commonCurlParams($url,$userAgent);
+        $ch = $this->commonCurlParams($url, $userAgent);
 
         // Setting the HTTP header with the Access Token only for Getting user info
         if ($this->header) {
