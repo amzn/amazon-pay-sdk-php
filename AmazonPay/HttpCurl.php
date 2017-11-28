@@ -13,7 +13,7 @@ class HttpCurl implements HttpCurlInterface
     private $header = false;
     private $accessToken = null;
     private $curlResponseInfo = null;
-    private $headerArray = [];
+    private $headerArray = array();
 
     /* Takes user configuration array as input
      * Takes configuration for API call or IPN config
@@ -47,7 +47,7 @@ class HttpCurl implements HttpCurlInterface
      * config['proxy_password']
      */
 
-    private  function commonCurlParams($url,$userAgent)
+    protected function commonCurlParams($url,$userAgent)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -111,8 +111,8 @@ class HttpCurl implements HttpCurlInterface
     }
 
     /* Execute Curl request */
-
-    private function execute($ch)
+    /* Protected because will be used by PSP module */
+    protected function execute($ch)
     {
         $response = '';
 

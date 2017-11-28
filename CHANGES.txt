@@ -1,3 +1,6 @@
+3.2.0 - November 2017
+- Add support for new SetOrderAttributes API call (available for use in 2018)
+
 3.1.0 - May 2017
 - Fix getUserInfo call (bearer token) issue impacted by 3.0.0's Curl fix
 - app_id can be passed in to Client constructor as optional configuration parameter

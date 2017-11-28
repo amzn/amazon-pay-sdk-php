@@ -16,7 +16,7 @@ Support for PHP 5.3 and 5.4 is being deprecated. The SDK will work in these olde
 
 ## Documentation
 
-* Integration steps can be found below:
+Integration steps can be found below:
  * [US](https://pay.amazon.com/us/developer/documentation)
  * [UK](https://pay.amazon.com/uk/developer/documentation)
  * [DE](https://pay.amazon.com/de/developer/documentation)
@@ -24,12 +24,11 @@ Support for PHP 5.3 and 5.4 is being deprecated. The SDK will work in these olde
 
 ## Sample
 
-* View the sample integration demo [here](https://amzn.github.io/amazon-pay-sdk-samples/)
+* View the [Amazon Pay SDK samples](https://amzn.github.io/amazon-pay-sdk-samples/)
 
 ## Quick Start
 
-Instantiating the client:
-Client Takes in parameters in the following format
+The client takes in parameters in the following format:
 
 1. Associative array
 2. Path to the JSON file containing configuration information.

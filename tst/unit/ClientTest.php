@@ -79,6 +79,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }
 
+        // Test passing in override service URL for MWS API endpoint
+        $client = new Client(array('override_service_url' => 'https://over.ride'));
+        $this->assertEquals('https://over.ride', $client->__get('override_service_url'));
+
         // Test passing in an empty array to construtor
         try {
             $configParams = array();
@@ -179,16 +183,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client($this->configParams);
         $fieldMappings = array(
-            'Merchant_Id' 		=> 'SellerId',
-            'amazon_order_reference_id' => 'AmazonOrderReferenceId',
-            'amount' 			=> 'OrderReferenceAttributes.OrderTotal.Amount',
-            'currency_code' 		=> 'OrderReferenceAttributes.OrderTotal.CurrencyCode',
-            'platform_id' 		=> 'OrderReferenceAttributes.PlatformId',
-            'seller_note' 		=> 'OrderReferenceAttributes.SellerNote',
-            'seller_order_id' 		=> 'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId',
-            'store_name' 		=> 'OrderReferenceAttributes.SellerOrderAttributes.StoreName',
-            'custom_information'	=> 'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation',
-            'mws_auth_token' 		=> 'MWSAuthToken'
+            'Merchant_Id'                   => 'SellerId',
+            'amazon_order_reference_id'     => 'AmazonOrderReferenceId',
+            'amount'                        => 'OrderReferenceAttributes.OrderTotal.Amount',
+            'currency_code'                 => 'OrderReferenceAttributes.OrderTotal.CurrencyCode',
+            'platform_id'                   => 'OrderReferenceAttributes.PlatformId',
+            'seller_note'                   => 'OrderReferenceAttributes.SellerNote',
+            'seller_order_id'               => 'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId',
+            'store_name'                    => 'OrderReferenceAttributes.SellerOrderAttributes.StoreName',
+            'custom_information'            => 'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation',
+            'request_payment_authorization' => 'OrderReferenceAttributes.RequestPaymentAuthorization',
+            'mws_auth_token'                => 'MWSAuthToken'
         );
 
         $action = 'SetOrderReferenceDetails';
@@ -200,6 +205,80 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->setOrderReferenceDetails($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testSetOrderAttributesBeforeConfirm()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                       => 'SellerId',
+            'amazon_order_reference_id'         => 'AmazonOrderReferenceId',
+            'amount'                            => 'OrderAttributes.OrderTotal.Amount',
+            'currency_code'                     => 'OrderAttributes.OrderTotal.CurrencyCode',
+            'platform_id'                       => 'OrderAttributes.PlatformId',
+            'seller_note'                       => 'OrderAttributes.SellerNote',
+            'seller_order_id'                   => 'OrderAttributes.SellerOrderAttributes.SellerOrderId',
+            'store_name'                        => 'OrderAttributes.SellerOrderAttributes.StoreName',
+            'custom_information'                => 'OrderAttributes.SellerOrderAttributes.CustomInformation',
+            'request_payment_authorization'     => 'OrderAttributes.RequestPaymentAuthorization',
+            'payment_service_provider_id'	=> 'OrderAttributes.PaymentServiceProviderAttributes.PaymentServiceProviderId',
+            'payment_service_provider_order_id' => 'OrderAttributes.PaymentServiceProviderAttributes.PaymentServiceProviderOrderId',
+            'order_item_categories'             => array(),
+            'mws_auth_token'                    => 'MWSAuthToken'
+        );
+
+        $action = 'SetOrderAttributes';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $expectedParameters['OrderAttributes.SellerOrderAttributes.OrderItemCategories.OrderItemCategory.1'] = 'Antiques';
+        $expectedParameters['OrderAttributes.SellerOrderAttributes.OrderItemCategories.OrderItemCategory.2'] = 'Electronics';
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->setOrderAttributes($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+
+    /* Call is same as BeforeConfirm call except the amount and currency_code fields are omitted */
+    public function testSetOrderAttributesAfterConfirm()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                       => 'SellerId',
+            'amazon_order_reference_id'         => 'AmazonOrderReferenceId',
+            'platform_id'                       => 'OrderAttributes.PlatformId',
+            'seller_note'                       => 'OrderAttributes.SellerNote',
+            'seller_order_id'                   => 'OrderAttributes.SellerOrderAttributes.SellerOrderId',
+            'store_name'                        => 'OrderAttributes.SellerOrderAttributes.StoreName',
+            'custom_information'                => 'OrderAttributes.SellerOrderAttributes.CustomInformation',
+            'request_payment_authorization'     => 'OrderAttributes.RequestPaymentAuthorization',
+            'payment_service_provider_id'	=> 'OrderAttributes.PaymentServiceProviderAttributes.PaymentServiceProviderId',
+            'payment_service_provider_order_id' => 'OrderAttributes.PaymentServiceProviderAttributes.PaymentServiceProviderOrderId',
+            'order_item_categories'             => array(),
+            'mws_auth_token'                    => 'MWSAuthToken'
+        );
+
+        $action = 'SetOrderAttributes';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $expectedParameters['OrderAttributes.SellerOrderAttributes.OrderItemCategories.OrderItemCategory.1'] = 'Antiques';
+        $expectedParameters['OrderAttributes.SellerOrderAttributes.OrderItemCategories.OrderItemCategory.2'] = 'Electronics';
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->setOrderAttributes($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
@@ -835,12 +914,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedParameters['Action'] = $action;
 
         foreach ($fieldMappings as $parm => $value) {
-            if ($parm === 'capture_now' || $parm === 'confirm_now' || $parm === 'inherit_shipping_address') {
-                $expectedParameters[$value] = false;
-                $apiCallParams[$parm] = false;
+            if ($parm === 'capture_now' || $parm === 'confirm_now' || $parm === 'inherit_shipping_address' || $parm === 'request_payment_authorization') {
+                $expectedParameters[$value] = true;
+                $apiCallParams[$parm] = true;
+            } elseif ($parm === 'order_item_categories') {
+                $apiCallParams[$parm] = array('Antiques', 'Electronics');
             } elseif (!isset($expectedParameters[$value])) {
-                $expectedParameters[$value] = 'test';
-                $apiCallParams[$parm] = 'test';
+                $unique_id = uniqid();
+                $expectedParameters[$value] = $unique_id;
+                $apiCallParams[$parm] = $unique_id;
             }
         }
 
