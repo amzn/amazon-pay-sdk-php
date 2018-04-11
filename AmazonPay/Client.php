@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.2.0';
+    const SDK_VERSION = '3.3.0';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -529,6 +529,26 @@ class Client implements ClientInterface, LoggerAwareInterface
         return $parameters;
     }
 
+    /* GetMerchantAccountStatus API call - Returns the status of the Merchant Account.
+     * @see TODO
+
+     * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function getMerchantAccountStatus($requestParameters = array())
+    {
+        $parameters           = array();
+        $parameters['Action'] = 'GetMerchantAccountStatus';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+
+        $fieldMappings = array(
+            'merchant_id'         => 'SellerId',
+            'mws_auth_token'      => 'MWSAuthToken'
+        );
+
+        $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        return ($responseObject);
+    }
 
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
      * @see https://pay.amazon.com/developer/documentation/apireference/201751970

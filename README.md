@@ -173,6 +173,33 @@ $response = $client->getOrderReferenceDetails($requestParameters);
 ```
 See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
 
+Below is an example on how to make the GetMerchantAccountStatus API call:
+
+```php
+
+$requestParameters = array();
+
+// Optional Parameter
+$requestParameters['mws_auth_token']         = 'MWS_AUTH_TOKEN';
+
+$response = $client->getMerchantAccountStatus($requestParameters);
+echo $response->toXml() . "\n";
+
+// Sample Response
+<GetMerchantAccountStatusResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+  <GetMerchantAccountStatusResult>
+    <AccountStatus>ACTIVE</AccountStatus>
+  </GetMerchantAccountStatusResult>
+  <ResponseMetadata>
+    <RequestId>b0a141f7-712a-4830-8014-2aa0c446b04e</RequestId>
+  </ResponseMetadata>
+</GetMerchantAccountStatusResponse>
+
+
+```
+See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
+
+
 ### IPN Handling
 
 1. To receive IPN's successfully you will need an valid SSL on your domain.

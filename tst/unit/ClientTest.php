@@ -26,7 +26,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testConfigArray()
     {
-
         // Test that trimmimg isn't converting the Boolean to a string
         $client = new Client($this->configParams);
         $this->assertTrue((bool)$client->__get('sandbox'));
@@ -538,6 +537,29 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getRefundDetails($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testGetMerchantAccountStatus()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id' 		=> 'SellerId',
+            'mws_auth_token' 	=> 'MWSAuthToken'
+        );
+
+        $action = 'GetMerchantAccountStatus';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->getMerchantAccountStatus($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
