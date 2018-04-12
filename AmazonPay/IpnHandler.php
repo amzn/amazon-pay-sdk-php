@@ -8,12 +8,6 @@ namespace AmazonPay;
 
 require_once 'HttpCurl.php';
 require_once 'IpnHandlerInterface.php';
-if (!interface_exists('\Psr\Log\LoggerAwareInterface')) {
-    require_once(__DIR__.'/../Psr/Log/LoggerAwareInterface.php');
-}
-if (!interface_exists('\Psr\Log\LoggerInterface')) {
-    require_once(__DIR__.'/../Psr/Log/LoggerInterface.php');
-}
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
