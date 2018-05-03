@@ -2,7 +2,7 @@
    "name": "amzn/amazon-pay-sdk-php",
    "type": "library",
    "description": "Amazon Pay SDK (PHP)",
-   "version": "3.2.0",
+   "version": "3.3.1",
    "keywords": [
       "amazon",
       "pay",
@@ -28,5 +28,8 @@
    "require": {
       "ext-curl": "*",
       "php": ">=5.5.0"
+   },
+   "require-dev": {
+    "phpunit/phpunit": "^4"
    }
 }
