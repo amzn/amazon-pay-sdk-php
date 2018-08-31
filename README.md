@@ -199,6 +199,102 @@ echo $response->toXml() . "\n";
 ```
 See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
 
+Below is an example on how to make the ListOrderReference API call:
+
+```php
+
+$requestParameters = array();
+
+// Required Parameter
+$configArray['query_id']             = 'SELLER_ORDER_ID';
+$configArray['query_id_type']        = 'SellerOrderId';
+
+// Optional Parameter
+$requestParameters['mws_auth_token'] = 'MWS_AUTH_TOKEN';
+$configArray['page_size']            = "1";
+
+$response = $client->listOrderReference($requestParameters);
+echo $response->toXml() . "\n";
+
+// Sample Response
+<ListOrderReferenceResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+  <ListOrderReferenceResult>
+    <OrderReferenceList>
+      <OrderReference>
+        <ReleaseEnvironment>Sandbox</ReleaseEnvironment>
+        <OrderReferenceStatus>
+          <LastUpdateTimestamp>2018-08-06T22:45:37.314Z</LastUpdateTimestamp>
+          <State>Open</State>
+        </OrderReferenceStatus>
+        <AmazonOrderReferenceId>S01-6649662-0708590</AmazonOrderReferenceId>
+        <CreationTimestamp>2018-08-06T22:45:28.203Z</CreationTimestamp>
+        <SellerOrderAttributes>
+          <StoreName>PHP SDK Test goGetOrderReferenceDetails</StoreName>
+          <CustomInformation>PHP SDK Custom Information Testing</CustomInformation>
+          <SellerOrderId>PHP SDK ID# 12345</SellerOrderId>
+        </SellerOrderAttributes>
+        <OrderTotal>
+          <CurrencyCode>USD</CurrencyCode>
+          <Amount>0.01</Amount>
+        </OrderTotal>
+      </OrderReference>
+    </OrderReferenceList>
+    <NextPageToken>eyJuZXh0UGFn...=</NextPageToken>
+  </ListOrderReferenceResult>
+  <ResponseMetadata>
+    <RequestId>5749768d-307b-493b-90b0-8b5b9f2ea436</RequestId>
+  </ResponseMetadata>
+</ListOrderReferenceResponse>
+
+```
+See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
+
+Below is an example on how to make the ListOrderReferenceByNextToken API call:
+
+```php
+
+$requestParameters = array();
+
+// Required Parameter
+$configArray['next_page_token']            = "NEXT_PAGE_TOKEN";
+
+$response = $client->listOrderReferenceByNextToken($requestParameters);
+echo $response->toXml() . "\n";
+
+// Sample Response
+<ListOrderReferenceByNextTokenResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+  <ListOrderReferenceByNextTokenResult>
+    <OrderReferenceList>
+      <OrderReference>
+        <ReleaseEnvironment>Sandbox</ReleaseEnvironment>
+        <OrderReferenceStatus>
+          <LastUpdateTimestamp>2018-08-06T22:42:50.191Z</LastUpdateTimestamp>
+          <State>Open</State>
+        </OrderReferenceStatus>
+        <AmazonOrderReferenceId>S01-1662310-7599388</AmazonOrderReferenceId>
+        <CreationTimestamp>2018-08-06T22:42:35.904Z</CreationTimestamp>
+        <SellerOrderAttributes>
+          <StoreName>PHP SDK Test goGetOrderReferenceDetails</StoreName>
+          <CustomInformation>PHP SDK Custom Information Testing</CustomInformation>
+          <SellerOrderId>PHP SDK ID# 12345</SellerOrderId>
+        </SellerOrderAttributes>
+        <OrderTotal>
+          <CurrencyCode>USD</CurrencyCode>
+          <Amount>0.01</Amount>
+        </OrderTotal>
+      </OrderReference>
+    </OrderReferenceList>
+    <NextPageToken>eyJuZXh0UGFnZVRva2VuIjoiQUFBQUFBQUFBQ...</NextPageToken>
+  </ListOrderReferenceByNextTokenResult>
+  <ResponseMetadata>
+    <RequestId>8e06c852-4072-4cfb-99a3-060ec1ef7be8</RequestId>
+  </ResponseMetadata>
+</ListOrderReferenceByNextTokenResponse>
+
+
+```
+See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
+
 
 ### IPN Handling
 

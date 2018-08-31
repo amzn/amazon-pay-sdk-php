@@ -1,3 +1,8 @@
+3.3.2 - August 2018
+- Added method for listOrderReference API call 
+- Added method for listOrderReferenceByNextToken API call 
+- Added new supplementary_data attribute for SetOrderAttributes and SetOrderReferenceDetails.
+
 3.3.1 - April 2018
 - Add call to GetMerchantAccountStatus API call 
 
