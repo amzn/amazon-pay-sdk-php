@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.3.2';
+    const SDK_VERSION = '3.4.0';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -431,7 +431,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (array_key_exists('currency_code', $fieldMappings)) {
             if (!empty($requestParameters['currency_code'])) {
                 $parameters[$fieldMappings['currency_code']] = strtoupper($requestParameters['currency_code']);
-            } else if (!(array_key_exists('Action', $parameters) && $parameters['Action'] === 'SetOrderAttributes')) {
+            } else if (!(array_key_exists('Action', $parameters) && ( $parameters['Action'] === 'SetOrderAttributes' || $parameters['Action'] === 'ConfirmOrderReference'))) {
                 // Only supply a default CurrencyCode parameter if not using SetOrderAttributes API
                 $parameters[$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
             }
@@ -757,6 +757,10 @@ class Client implements ClientInterface, LoggerAwareInterface
 
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['success_url'] - [String]'
+     * @optional requestParameters['failure_url'] - [String]
+     * @optional requestParameters['authorization_amount'] - [String]
+     * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function confirmOrderReference($requestParameters = array())
@@ -766,12 +770,21 @@ class Client implements ClientInterface, LoggerAwareInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id'         => 'SellerId',
+            'merchant_id'               => 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
-            'mws_auth_token'         => 'MWSAuthToken'
+            'success_url'               => 'SuccessUrl',
+            'failure_url'               => 'FailureUrl',
+            'authorization_amount'      => 'AuthorizationAmount.Amount',
+            'currency_code'             => 'AuthorizationAmount.CurrencyCode',
+            'mws_auth_token'            => 'MWSAuthToken'
         );
 
+        if ($requestParameters['authorization_amount'] && !$requestParameters['currency_code']) {
+            $requestParameters['currency_code'] = strtoupper($this->config['currency_code']);
+        }
+
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+
         return ($responseObject);
     }
 
@@ -1083,6 +1096,7 @@ class Client implements ClientInterface, LoggerAwareInterface
      * @optional requestParameters['seller_note'] - [String]
      * @optional requestParameters['seller_order_id'] - [String]
      * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['supplementary_data'] - [String]
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
@@ -1104,6 +1118,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             'seller_note'              => 'OrderReferenceAttributes.SellerNote',
             'seller_order_id'          => 'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId',
             'store_name'               => 'OrderReferenceAttributes.SellerOrderAttributes.StoreName',
+            'supplementary_data'       => 'OrderReferenceAttributes.SupplementaryData',
             'custom_information'       => 'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation',
             'mws_auth_token'           => 'MWSAuthToken'
         );
@@ -1245,6 +1260,7 @@ class Client implements ClientInterface, LoggerAwareInterface
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['seller_order_id'] - [String]
      * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['supplementary_data'] - [String]
      * @optional requestParameters['inherit_shipping_address'] [Boolean] - Defaults to true
      * @optional requestParameters['mws_auth_token'] - [String]
      */
@@ -1269,6 +1285,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             'custom_information'          => 'SellerOrderAttributes.CustomInformation',
             'seller_order_id'             => 'SellerOrderAttributes.SellerOrderId',
             'store_name'                  => 'SellerOrderAttributes.StoreName',
+            'supplementary_data'          => 'SellerOrderAttributes.SupplementaryData',
             'inherit_shipping_address'    => 'InheritShippingAddress',
             'mws_auth_token'              => 'MWSAuthToken'
         );
