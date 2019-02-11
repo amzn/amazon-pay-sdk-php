@@ -293,7 +293,6 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
 
     /* Verify that the signature is correct for the given data and public key
      *
-     * @param string $data            data to validate
      * @param string $signature       decoded signature to compare against
      * @param string $certificate     certificate object defined in Certificate.php
      */
