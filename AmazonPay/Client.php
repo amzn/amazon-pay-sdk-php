@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.4.0';
+    const SDK_VERSION = '3.4.1';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
