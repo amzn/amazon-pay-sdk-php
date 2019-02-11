@@ -1,9 +1,8 @@
 <?php
-namespace AmazonPay;
+namespace AmazonPayTst;
 
-require_once 'AmazonPay/Client.php';
-require_once 'AmazonPay/ResponseParser.php';
-require_once 'Signature.php';
+use AmazonPay\Client;
+use AmazonPay\ResponseParser;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {

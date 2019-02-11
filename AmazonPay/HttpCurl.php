@@ -5,8 +5,6 @@ namespace AmazonPay;
  * Handles Curl POST function for all requests
  */
 
-require_once 'HttpCurlInterface.php';
-
 class HttpCurl implements HttpCurlInterface
 {
     private $config = array();
