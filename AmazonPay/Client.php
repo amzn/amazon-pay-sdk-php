@@ -779,7 +779,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             'mws_auth_token'            => 'MWSAuthToken'
         );
 
-        if ($requestParameters['authorization_amount'] && !$requestParameters['currency_code']) {
+        if (isset($requestParameters['authorization_amount']) && !isset($requestParameters['currency_code'])) {
             $requestParameters['currency_code'] = strtoupper($this->config['currency_code']);
         }
 
