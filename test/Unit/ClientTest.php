@@ -108,22 +108,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1.0', $client->__get('application_version'));
 
         try {
-            $configParams = "Test/Unit/config/sandbox_true_string.json";
+            $configParams = "test/Unit/config/sandbox_true_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/should be a boolean value/i', strval($expected));
         }
 
-        $configParams = "Test/Unit/config/sandbox_false_bool.json";
+        $configParams = "test/Unit/config/sandbox_false_bool.json";
         $client = new Client($configParams);
         $this->assertFalse((bool)$client->__get('sandbox'));
 
-        $configParams = "Test/Unit/config/sandbox_none.json";
+        $configParams = "test/Unit/config/sandbox_none.json";
         $client = new Client($configParams);
         $this->assertFalse((bool)$client->__get('sandbox'));
 
         try {
-            $configParams = "Test/unit/config/sandbox_false_string.json";
+            $configParams = "test/unit/config/sandbox_false_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/should be a boolean value/i', strval($expected));
