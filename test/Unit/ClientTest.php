@@ -1,9 +1,9 @@
 <?php
-namespace AmazonPay;
 
-require_once 'AmazonPay/Client.php';
-require_once 'AmazonPay/ResponseParser.php';
-require_once 'Signature.php';
+namespace AmazonPayTest\Unit;
+
+use AmazonPay\Client;
+use AmazonPay\ResponseParser;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -94,7 +94,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testJsonFile()
     {
-        $configParams = "tst/unit/config/sandbox_true_bool.json";
+        $configParams = "test/Unit/config/sandbox_true_bool.json";
         $client = new Client($configParams);
 
         $this->assertTrue((bool)$client->__get('sandbox'));
@@ -108,22 +108,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1.0', $client->__get('application_version'));
 
         try {
-            $configParams = "tst/unit/config/sandbox_true_string.json";
+            $configParams = "test/Unit/config/sandbox_true_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/should be a boolean value/i', strval($expected));
         }
 
-        $configParams = "tst/unit/config/sandbox_false_bool.json";
+        $configParams = "test/Unit/config/sandbox_false_bool.json";
         $client = new Client($configParams);
         $this->assertFalse((bool)$client->__get('sandbox'));
 
-        $configParams = "tst/unit/config/sandbox_none.json";
+        $configParams = "test/Unit/config/sandbox_none.json";
         $client = new Client($configParams);
         $this->assertFalse((bool)$client->__get('sandbox'));
 
         try {
-            $configParams = "tst/unit/config/sandbox_false_string.json";
+            $configParams = "test/unit/config/sandbox_false_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
             $this->assertRegExp('/should be a boolean value/i', strval($expected));

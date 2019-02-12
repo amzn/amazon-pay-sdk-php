@@ -1,5 +1,6 @@
 <?php
-namespace AmazonPay;
+
+namespace AmazonPayTest\Unit;
 
 class Signature
 {

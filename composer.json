@@ -22,7 +22,13 @@
    ],
    "autoload": {
       "psr-4": {
-         "AmazonPay\\": "AmazonPay/"
+         "AmazonPay\\": "AmazonPay/",
+         "Psr\\": "Psr/"
+      }
+   },
+   "autoload-dev": {
+      "psr-4": {
+         "AmazonPayTest\\":"test/"
       }
    },
    "require": {
