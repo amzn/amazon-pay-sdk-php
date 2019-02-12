@@ -5,7 +5,7 @@
         checkForUnintentionallyCoveredCode="true">
     <testsuites>
         <testsuite name="Test Amazon Pay Sdk PHP">
-            <directory>tst/unit</directory>
+            <directory>Test/Unit</directory>
         </testsuite>
     </testsuites>
 </phpunit>

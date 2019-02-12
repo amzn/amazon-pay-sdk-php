@@ -1,5 +1,6 @@
 <?php
-namespace AmazonPayTst;
+
+namespace AmazonPayTest\Unit;
 
 use AmazonPay\IpnHandler;
 

@@ -28,7 +28,7 @@
    },
    "autoload-dev": {
       "psr-4": {
-         "AmazonPayTst\\":"tst/unit"
+         "AmazonPayTest\\":"test/"
       }
    },
    "require": {
