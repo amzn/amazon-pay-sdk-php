@@ -565,6 +565,8 @@ class Client implements ClientInterface, LoggerAwareInterface
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_order_reference_id'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
+     * @optional requestParameters['success_url'] - [String]
+     * @optional requestParameters['failure_url'] - [String]
      */
 
     public function confirmOrderReference($requestParameters = array())
@@ -574,9 +576,11 @@ class Client implements ClientInterface, LoggerAwareInterface
         $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
 
         $fieldMappings = array(
-            'merchant_id'         => 'SellerId',
+            'merchant_id' => 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
-            'mws_auth_token'         => 'MWSAuthToken'
+            'mws_auth_token' => 'MWSAuthToken',
+            'success_url' => 'SuccessUrl',
+            'failure_url' => 'FailureUrl'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
