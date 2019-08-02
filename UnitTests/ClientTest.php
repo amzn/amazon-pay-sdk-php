@@ -143,9 +143,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client($this->configParams);
         $fieldMappings = array(
-            'merchant_id' 		=> 'SellerId',
+            'merchant_id' => 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
-            'mws_auth_token' 		=> 'MWSAuthToken'
+            'mws_auth_token' => 'MWSAuthToken',
+            'success_url' => 'SuccessUrl',
+            'failure_url' => 'FailureUrl'
         );
 
         $action = 'ConfirmOrderReference';
