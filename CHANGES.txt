@@ -1,9 +1,13 @@
+3.5.0 - August 2019
+- Added additional attributes (success_url, failure_url) to ConfirmBillingAgreement and (subscription_amount, currency_code) to SetBillingAgreement Details..  See Amazon Pay Strong Customer Authentication (SCA) Upgrade Integration Guide for more information.
+- Synced missing changes in ClientInterface.php
+
 3.4.1 - February 2019
 - Fix undefined index message in ConfirmOrderReference
 
 3.4.0 - January 2019
 - Added new supplementary_data attribute for AuthorizeOnBillingAgreement and CreateOrderReferenceForId.
-- Added additional attributes (success_url, failure_url, authorization_amount, currency_code) to ConfirmOrderReference.  Amazon Pay Strong Customer Authentication (SCA) Upgrade Integration Guide     
+- Added additional attributes (success_url, failure_url, authorization_amount, currency_code) to ConfirmOrderReference.  See Amazon Pay Strong Customer Authentication (SCA) Upgrade Integration Guide for more information.
 
 3.3.2 - August 2018
 - Added method for listOrderReference API call 
@@ -11,10 +15,10 @@
 - Added new supplementary_data attribute for SetOrderAttributes and SetOrderReferenceDetails.
 
 3.3.1 - April 2018
-- Add call to GetMerchantAccountStatus API call 
+- Add GetMerchantAccountStatus API call
 
 3.2.0 - November 2017
-- Add support for new SetOrderAttributes API call (available for use in 2018)
+- Add SetOrderAttributes API call
 
 3.1.0 - May 2017
 - Fix getUserInfo call (bearer token) issue impacted by 3.0.0's Curl fix

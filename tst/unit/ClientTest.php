@@ -798,7 +798,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
-    public function testSetBillingAgreementDetails()
+    public function testSetBillingAgreementDetailsWithoutSCA()
     {
         $client = new Client($this->configParams);
         $fieldMappings = array(
@@ -827,7 +827,71 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($apiParametersString, $expectedStringParams);
     }
 
-    public function testConfirmBillingAgreement()
+    public function testSetBillingAgreementDetailsWithSCA()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                 => 'SellerId',
+            'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
+            'platform_id'                 => 'BillingAgreementAttributes.PlatformId',
+            'seller_note'                 => 'BillingAgreementAttributes.SellerNote',
+            'seller_billing_agreement_id' => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.SellerBillingAgreementId',
+            'custom_information'          => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation',
+            'store_name'                  => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName',
+            'billing_agreement_type'      => 'BillingAgreementAttributes.BillingAgreementType',
+            'subscription_amount'         => 'BillingAgreementAttributes.SubscriptionAmount.Amount',
+            'currency_code'               => 'BillingAgreementAttributes.SubscriptionAmount.CurrencyCode',
+            'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $action = 'SetBillingAgreementDetails';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->setBillingAgreementDetails($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testSetBillingAgreementDetailsWithSCAExceptCurrencyCode()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                 => 'SellerId',
+            'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
+            'platform_id'                 => 'BillingAgreementAttributes.PlatformId',
+            'seller_note'                 => 'BillingAgreementAttributes.SellerNote',
+            'seller_billing_agreement_id' => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.SellerBillingAgreementId',
+            'custom_information'          => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation',
+            'store_name'                  => 'BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName',
+            'billing_agreement_type'      => 'BillingAgreementAttributes.BillingAgreementType',
+            'subscription_amount'         => 'BillingAgreementAttributes.SubscriptionAmount.Amount',
+            'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $action = 'SetBillingAgreementDetails';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedParameters['BillingAgreementAttributes.SubscriptionAmount.CurrencyCode'] = 'USD'; # default from client
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->setBillingAgreementDetails($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testConfirmBillingAgreementWithoutSCA()
     {
         $client = new Client($this->configParams);
         $fieldMappings = array(
@@ -850,6 +914,33 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($apiParametersString, $expectedStringParams);
     }
+
+    public function testConfirmBillingAgreementWithSCA()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                 => 'SellerId',
+            'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
+            'success_url'                 => 'SuccessUrl',
+            'failure_url'                 => 'FailureUrl',
+            'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $action = 'ConfirmBillingAgreement';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->confirmBillingAgreement($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
 
     public function testValidateBillingAgreement()
     {

@@ -2,7 +2,7 @@
    "name": "amzn/amazon-pay-sdk-php",
    "type": "library",
    "description": "Amazon Pay SDK (PHP)",
-   "version": "3.4.1",
+   "version": "3.5.0",
    "keywords": [
       "amazon",
       "pay",
@@ -13,7 +13,7 @@
       "amazon pay"
    ],
    "homepage": "https://github.com/amzn/amazon-pay-sdk-php",
-   "license": "Apache OSL-2",
+   "license": "Apache-2.0",
    "authors": [
       {
          "name": "Amazon Pay SDK",

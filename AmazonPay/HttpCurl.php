@@ -87,7 +87,6 @@ class HttpCurl implements HttpCurlInterface
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        
         $response = $this->execute($ch);
         return $response;
     }

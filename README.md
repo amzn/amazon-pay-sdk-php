@@ -20,9 +20,6 @@ Integration steps can be found below:
  * [US](https://pay.amazon.com/us/developer/documentation)
  * [UK](https://pay.amazon.com/uk/developer/documentation)
  * [DE](https://pay.amazon.com/de/developer/documentation)
- * [FR](https://pay.amazon.com/fr/developer/documentation)
- * [IT](https://pay.amazon.com/it/developer/documentation)
- * [ES](https://pay.amazon.com/es/developer/documentation)
  * [JP](https://pay.amazon.com/jp/developer/documentation)
 
 ## Sample

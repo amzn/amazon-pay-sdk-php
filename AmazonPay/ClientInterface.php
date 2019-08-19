@@ -58,6 +58,14 @@ interface ClientInterface
     public function getUserInfo($access_token);
 
 
+    /* GetMerchantAccountStatus API call - Returns the status of the Merchant Account.
+     * @see TODO
+
+     * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function getMerchantAccountStatus($requestParameters = array());
+
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
      * @see https://pay.amazon.com/developer/documentation/apireference/201751970
      *
@@ -67,6 +75,33 @@ interface ClientInterface
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function getOrderReferenceDetails($requestParameters = array());
+
+
+    /* ListOrderReference API call - Returns details about the Order Reference object and its current state from the sellers.
+     * @see https://pay.amazon.com/developer/documentation/apireference/201751970
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['query_id'] - [String]
+     * @param requestParameters['query_id_type'] - [String] (SellerOrderId)
+     * @optional requestParameters['page_size'] - [Int]
+     * @optional requestParameters['created_start_time'] - [String] (Date/Time ISO8601)
+     * @optional requestParameters['created_end_time'] - [String] (Date/Time ISO8601) Limited to 31 days
+     * @optional requestParameters['sort_order'] - [String] (Ascending/Descending)
+     * @optional requestParameters['mws_auth_token'] - [String]
+     * @optional requestParameters['status_list'] - [Array]
+     */
+    public function listOrderReference($requestParameters = array());
+
+
+    /* ListOrderReferenceByNextToken API call - Returns details about the Order Reference object and its current
+     * state from the sellers.
+     * @see https://pay.amazon.com/developer/documentation/apireference/201751970
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['next_token'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function listOrderReferenceByNextToken($requestParameters = array());
 
 
     /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
@@ -80,6 +115,7 @@ interface ClientInterface
      * @optional requestParameters['seller_note'] - [String]
      * @optional requestParameters['seller_order_id'] - [String]
      * @optional requestParameters['store_name'] - [String]
+     * @optional requestParameters['supplementary_data'] - [String]
      * @optional requestParameters['custom_information'] - [String]
      * @optional requestParameters['request_payment_authorization'] - [Boolean]
      * @optional requestParameters['mws_auth_token'] - [String]
@@ -100,6 +136,7 @@ interface ClientInterface
      * @optional requestParameters['seller_order_id'] - [String]
      * @optional requestParameters['store_name'] - [String]
      * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['supplementary_data'] - [String]
      * @optional requestParameters['request_payment_authorization'] - [Boolean]
      * @optional requestParameters['payment_service_provider_id'] - [String]
      * @optional requestParameters['payment_service_provider_order_id'] - [String]
@@ -114,6 +151,10 @@ interface ClientInterface
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_order_reference_id'] - [String]
+     * @optional requestParameters['success_url'] - [String]
+     * @optional requestParameters['failure_url'] - [String]
+     * @optional requestParameters['authorization_amount'] - [String]
+     * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function confirmOrderReference($requestParameters = array());
@@ -286,6 +327,9 @@ interface ClientInterface
      * @optional requestParameters['seller_billing_agreement_id'] - [String]
      * @optional requestParameters['store_name'] - [String]
      * @optional requestParameters['custom_information'] - [String]
+     * @optional requestParameters['billing_agreement_type'] - [String] either 'CustomerInitiatedTransaction' or 'MerchantInitiatedTransaction'
+     * @optional requestParameters['subscription_amount'] - [String]
+     * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function setBillingAgreementDetails($requestParameters = array());
@@ -296,6 +340,8 @@ interface ClientInterface
      *
      * @param requestParameters['merchant_id'] - [String]
      * @param requestParameters['amazon_billing_agreement_id'] - [String]
+     * @optional requestParameters['success_url'] - [String]
+     * @optional requestParameters['failure_url'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function confirmBillingAgreement($requestParameters = array());
@@ -399,4 +445,5 @@ interface ClientInterface
      * @optional requestParameters['mws_auth_token'] - [String]
      */
     public function reverseProviderCredit($requestParameters = array());
+
 }
