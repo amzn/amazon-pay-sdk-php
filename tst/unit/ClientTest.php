@@ -1015,7 +1015,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $action = 'CloseBillingAgreement';
 
-
         $parameters = $this->setParametersAndPost($fieldMappings, $action);
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
@@ -1023,6 +1022,58 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->closeBillingAgreement($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testGetMerchantNotificationConfiguration()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                 => 'SellerId',
+            'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $action = 'GetMerchantNotificationConfiguration';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->getMerchantNotificationConfiguration($apiCallParams);
+
+        $apiParametersString = $client->getParameters();
+
+        $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    public function testSetMerchantNotificationConfiguration()
+    {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'                     => 'SellerId',
+            'notification_configuration_list' => array(),
+            'mws_auth_token'                  => 'MWSAuthToken'
+        );
+
+        $action = 'SetMerchantNotificationConfiguration';
+
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $expectedParameters = $parameters['expectedParameters'];
+        $expectedParameters['NotificationConfigurationList.NotificationConfiguration.1.NotificationUrl'] = 'https://dev.null/one';
+        $expectedParameters['NotificationConfigurationList.NotificationConfiguration.2.NotificationUrl'] = 'https://dev.null/two';
+        $expectedParameters['NotificationConfigurationList.NotificationConfiguration.1.EventTypes.EventTypeList.1'] = 'ORDER_REFERENCE';
+        $expectedParameters['NotificationConfigurationList.NotificationConfiguration.1.EventTypes.EventTypeList.2'] = 'PAYMENT_AUTHORIZE';
+        $expectedParameters['NotificationConfigurationList.NotificationConfiguration.2.EventTypes.EventTypeList.1'] = 'ALL';
+        $apiCallParams = $parameters['apiCallParams'];
+
+        $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
+
+        $response = $client->setMerchantNotificationConfiguration($apiCallParams);
 
         $apiParametersString = $client->getParameters();
 
@@ -1183,6 +1234,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $apiCallParams[$parm] = array('Antiques', 'Electronics');
             } elseif ($parm === 'order_status_list') {
                 $apiCallParams[$parm] = array('Open', 'Closed');
+            } elseif ($parm === 'notification_configuration_list') {
+                $notificationConfiguration['https://dev.null/one'] = array('ORDER_REFERENCE', 'PAYMENT_AUTHORIZE');
+                $notificationConfiguration['https://dev.null/two'] = array('ALL');
+                $apiCallParams[$parm] = $notificationConfiguration;
             } elseif (!isset($expectedParameters[$value])) {
                 $unique_id = uniqid();
                 $expectedParameters[$value] = $unique_id;

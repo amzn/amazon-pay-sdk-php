@@ -391,6 +391,23 @@ interface ClientInterface
     public function closeBillingAgreement($requestParameters = array());
 
 
+    /* GetMerchantNotificationConfiguration API Call - Returns details about the defined IPN endpoints
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function getMerchantNotificationConfiguration($requestParameters = array());
+
+
+    /* SetMerchantNotificationConfiguration API Call - Set IPN endpoints
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['notification_configuration_list'] - [Array]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function setMerchantNotificationConfiguration($requestParameters = array());
+
+
     /* charge convenience method
      * Performs the API calls
      * 1. SetOrderReferenceDetails / SetBillingAgreementDetails

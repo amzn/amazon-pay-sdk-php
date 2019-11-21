@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.5.0';
+    const SDK_VERSION = '3.6.0';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -365,7 +365,7 @@ class Client implements ClientInterface, LoggerAwareInterface
                 if (!is_bool($value)) {
                     throw new \Exception($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
                 }
-            } elseif ($param === 'provider_credit_details' || $param === 'provider_credit_reversal_details' || $param === 'order_item_categories') {
+            } elseif ($param === 'provider_credit_details' || $param === 'provider_credit_reversal_details' || $param === 'order_item_categories' || $param === 'notification_configuration_list') {
                 if (!is_array($value)) {
                     throw new \Exception($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be an array value');
                 }
@@ -382,6 +382,8 @@ class Client implements ClientInterface, LoggerAwareInterface
                         $parameters = $this->setProviderCreditReversalDetails($parameters, $value);
                     } elseif ($param === 'order_item_categories') {
                         $parameters = $this->setOrderItemCategories($parameters, $value);
+                    } elseif ($param == 'notification_configuration_list') {
+                        $parameters = $this->setNotificationConfigurationList($parameters, $value);
                     }
 
                 } else {
@@ -453,6 +455,32 @@ class Client implements ClientInterface, LoggerAwareInterface
         foreach ($categories as $value) {
             $categoryIndex = $categoryIndex + 1;
             $parameters[$categoryString . $categoryIndex] = $value;
+        }
+
+        return $parameters;
+    }
+
+
+    /* setMerchantNotificationUrls - helper function used by SetMerchantNotificationConfiguration API to set
+     * one or more Notification Configurations
+    */
+    private function setNotificationConfigurationList($parameters, $configuration)
+    {
+        $configurationIndex = 0;
+        if (!is_array($configuration)) {
+            throw new \Exception('Notification Configuration List value ' . $configuration . ' is of type ' . gettype($configuration) . ' and should be an array value');
+        }
+        foreach ($configuration as $url => $events) {
+            $configurationIndex = $configurationIndex + 1;
+            $parameters['NotificationConfigurationList.NotificationConfiguration.' . $configurationIndex . '.NotificationUrl'] = $url;
+            $eventIndex = 0;
+            if (!is_array($events)) {
+                throw new \Exception('Notification Configuration Events value ' . $events . ' is of type ' . gettype($events) . ' and should be an array value');
+            }
+            foreach ($events as $event) {
+                $eventIndex = $eventIndex + 1;
+                $parameters['NotificationConfigurationList.NotificationConfiguration.' . $configurationIndex . '.EventTypes.EventTypeList.' . $eventIndex] = $event;
+            }
         }
 
         return $parameters;
@@ -1329,6 +1357,50 @@ class Client implements ClientInterface, LoggerAwareInterface
             'amazon_billing_agreement_id' => 'AmazonBillingAgreementId',
             'closure_reason'              => 'ClosureReason',
             'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        return ($responseObject);
+    }
+
+
+    /* GetMerchantNotificationConfiguration API Call - Returns details about the defined IPN endpoints
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function getMerchantNotificationConfiguration($requestParameters = array())
+    {
+        $parameters           = array();
+        $parameters['Action'] = 'GetMerchantNotificationConfiguration';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+
+        $fieldMappings = array(
+            'merchant_id'                 => 'SellerId',
+            'mws_auth_token'              => 'MWSAuthToken'
+        );
+
+        $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
+        return ($responseObject);
+    }
+
+
+    /* SetMerchantNotificationConfiguration API Call - Set IPN endpoints
+     *
+     * @param requestParameters['merchant_id'] - [String]
+     * @param requestParameters['notification_configuration_list'] - [Array]
+     * @optional requestParameters['mws_auth_token'] - [String]
+     */
+    public function setMerchantNotificationConfiguration($requestParameters = array())
+    {
+        $parameters           = array();
+        $parameters['Action'] = 'SetMerchantNotificationConfiguration';
+        $requestParameters    = array_change_key_case($requestParameters, CASE_LOWER);
+
+        $fieldMappings = array(
+            'merchant_id'                     => 'SellerId',
+            'notification_configuration_list' => array(),
+            'mws_auth_token'                  => 'MWSAuthToken'
         );
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);

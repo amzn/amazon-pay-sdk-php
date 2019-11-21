@@ -299,7 +299,7 @@ See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) 
 ### IPN Handling
 
 1. To receive IPN's successfully you will need an valid SSL on your domain.
-2. You can set up your Notification endpoints in Seller Central by accessing the Integration Settings page in the Settings tab.
+2. You can set up your Notification endpoints by either (a) using the Seller Central Integration Settings page Settings tab, or (b) by using the SetMerchantNotificationConfiguration API call.
 3. IpnHandler.php class handles verification of the source and the data of the IPN
 
 Add the below code into any file and set the URL to the file location in Merchant/Integrator URL by accessing Integration Settings page in the Settings tab.
@@ -319,6 +319,34 @@ $ipnHandler = new IpnHandler($headers, $body);
 
 ```
 See the [IPN Response](https://github.com/amzn/amazon-pay-sdk-php#ipn-response) section for information on parsing the IPN response.
+
+#### Setting notification endpoints using SetMerchantNotificationConfiguration API
+
+```php
+$client = new AmazonPay\Client($config);
+
+// possible array values: ALL, ORDER_REFERENCE, PAYMENT_AUTHORIZE, PAYMENT_CAPTURE, PAYMENT_REFUND, BILLING_AGREEMENT, CHARGEBACK_DETAILED
+$notificationConfiguration['https://dev.null/ipn/onetime'] = array('ORDER_REFERENCE', 'PAYMENT_AUTHORIZE', 'PAYMENT_CAPTURE');
+$notificationConfiguration['https://dev.null/ipn/recurring'] = array('BILLING_AGREEMENT');
+$notificationConfiguration['https://dev.null/ipn/refunds'] = array('PAYMENT_REFUND', 'CHARGEBACK_DETAILED');
+$requestParameters['notification_configuration_list'] = $notificationConfiguration;
+
+// or, if you prefer all IPNs come to the same endpoint, do this one-liner instead:
+// $requestParameters['notification_configuration_list'] = array('https://dev.null/ipn' => array('ALL'));
+
+// if you are calling on behalf of another merhcant using delegated access, be sure to set the merchant ID and auth token:
+// $requestParameters['merchant_id'] = 'A3URCZVLDMDI45';
+// $requestParameters['mws_auth_token'] = 'amzn.mws.d6ac8f2d-6a5f-b06a-bc12-1d0dbf4ca63d';
+
+$response = $client->setMerchantNotificationConfiguration($requestParameters);
+if ($response->toArray()['ResponseStatus'] !== '200') {
+    print "error occured calling API";
+}
+
+// to troubleshoot, you can call GetMerchantNotificationConfiguration to view current IPN settings
+$response = $client->getMerchantNotificationConfiguration($requestParameters);
+print $response->toXml();
+```
 
 ### Convenience Methods
 
