@@ -335,8 +335,8 @@ $requestParameters['notification_configuration_list'] = $notificationConfigurati
 // $requestParameters['notification_configuration_list'] = array('https://dev.null/ipn' => array('ALL'));
 
 // if you are calling on behalf of another merhcant using delegated access, be sure to set the merchant ID and auth token:
-// $requestParameters['merchant_id'] = 'A3URCZVLDMDI45';
-// $requestParameters['mws_auth_token'] = 'amzn.mws.d6ac8f2d-6a5f-b06a-bc12-1d0dbf4ca63d';
+// $requestParameters['merchant_id'] = 'THE_MERCHANT_ID';
+// $requestParameters['mws_auth_token'] = 'THE_MWS_AUTH_TOKEN';
 
 $response = $client->setMerchantNotificationConfiguration($requestParameters);
 if ($response->toArray()['ResponseStatus'] !== '200') {
