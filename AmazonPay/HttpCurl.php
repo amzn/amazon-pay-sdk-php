@@ -5,6 +5,9 @@ namespace AmazonPay;
  * Handles Curl POST function for all requests
  */
 
+use AmazonPay\Exception\CurlException;
+use AmazonPay\Exception\HttpCurlException;
+
 require_once 'HttpCurlInterface.php';
 
 class HttpCurl implements HttpCurlInterface
@@ -123,7 +126,7 @@ class HttpCurl implements HttpCurlInterface
         if ($response === false) {
             $error_msg = "Unable to post request, underlying exception of " . curl_error($ch);
             curl_close($ch);
-            throw new \Exception($error_msg);
+            throw new HttpCurlException($error_msg, 0, new CurlException(curl_error($ch), curl_errno($ch)));
         } else {
             $this->curlResponseInfo = curl_getinfo($ch);
         }
