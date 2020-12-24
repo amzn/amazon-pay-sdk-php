@@ -457,7 +457,10 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
                             'NotificationType' =>$ipnMessage['NotificationType'],
                             'SellerId' =>$ipnMessage['SellerId'],
                             'ReleaseEnvironment' =>$ipnMessage['ReleaseEnvironment'] );
-
+        // Add the EventType field when it's available. e.g- BillingAgreementNotification
+        if (isset($ipnMessage['EventType'])) {
+            $remainingFields['EventType'] = $ipnMessage['EventType'];
+        }
         return $remainingFields;
     }
 
