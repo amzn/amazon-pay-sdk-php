@@ -340,7 +340,7 @@ $requestParameters['notification_configuration_list'] = $notificationConfigurati
 
 $response = $client->setMerchantNotificationConfiguration($requestParameters);
 if ($response->toArray()['ResponseStatus'] !== '200') {
-    print "error occured calling API";
+    print "error occurred calling API";
 }
 
 // to troubleshoot, you can call GetMerchantNotificationConfiguration to view current IPN settings
