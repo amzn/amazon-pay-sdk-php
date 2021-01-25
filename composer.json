@@ -2,7 +2,7 @@
    "name": "amzn/amazon-pay-sdk-php",
    "type": "library",
    "description": "Amazon Pay SDK (PHP)",
-   "version": "3.6.0",
+   "version": "3.7.0",
    "keywords": [
       "amazon",
       "pay",

@@ -387,6 +387,7 @@ and the amount captured by making the `capture` API call after the shipment is c
 | Platform ID         	     | `platform_id`         	    | no        | Platform ID of the Solution provider                                                                      |
 | Custom Information  	     | `custom_information`  	    | no        | Any custom string                                                                                         |
 | MWS Auth Token      	     | `mws_auth_token`      	    | no        | MWS Auth Token required if API call is made on behalf of the seller                                       |
+| ExpectImmediateAuthorization      	     | `expect_immediate_authorization`      	    | no        | Setting value to true, will make OrderReferenceObject to be closed automatically in case no authorization is triggered within 60 minutes                                      |
 
 ```php
 // Create an array that will contain the parameters for the charge API call

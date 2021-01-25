@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.6.0';
+    const SDK_VERSION = '3.7.0';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -361,7 +361,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             }
 
             // Ensure that no unexpected type coercions have happened
-            if ($param === 'capture_now' || $param === 'confirm_now' || $param === 'inherit_shipping_address' || $param === 'request_payment_authorization') {
+            if ($param === 'capture_now' || $param === 'confirm_now' || $param === 'inherit_shipping_address' || $param === 'request_payment_authorization' || $param === 'expect_immediate_authorization') {
                 if (!is_bool($value)) {
                     throw new \Exception($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
                 }
@@ -622,7 +622,7 @@ class Client implements ClientInterface, LoggerAwareInterface
      * @optional requestParameters['created_end_time'] - [String] (Date/Time ISO8601) Limited to 31 days
      * @optional requestParameters['sort_order'] - [String] (Ascending/Descending)
      * @optional requestParameters['mws_auth_token'] - [String]
-     * @optional requestParameters['status_list'] - [Array]
+     * @optional requestParameters['order_status_list'] - [Array]
      */
     public function listOrderReference($requestParameters = array())
     {
@@ -791,6 +791,7 @@ class Client implements ClientInterface, LoggerAwareInterface
      * @optional requestParameters['authorization_amount'] - [String]
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
+     * @optional requestParameters['expect_immediate_authorization'] - [Boolean] Default value is false
      */
     public function confirmOrderReference($requestParameters = array())
     {
@@ -805,7 +806,8 @@ class Client implements ClientInterface, LoggerAwareInterface
             'failure_url'               => 'FailureUrl',
             'authorization_amount'      => 'AuthorizationAmount.Amount',
             'currency_code'             => 'AuthorizationAmount.CurrencyCode',
-            'mws_auth_token'            => 'MWSAuthToken'
+            'mws_auth_token'            => 'MWSAuthToken',
+            'expect_immediate_authorization' => 'ExpectImmediateAuthorization'
         );
 
         if (isset($requestParameters['authorization_amount']) && !isset($requestParameters['currency_code'])) {

@@ -362,7 +362,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'success_url'               => 'SuccessUrl',
             'failure_url'               => 'FailureUrl',
             'authorization_amount'      => 'AuthorizationAmount.Amount',
-            'currency_code'             => 'AuthorizationAmount.CurrencyCode'
+            'currency_code'             => 'AuthorizationAmount.CurrencyCode',
+            'expect_immediate_authorization' => 'ExpectImmediateAuthorization'
         );
 
         $action = 'ConfirmOrderReference';
@@ -389,7 +390,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'mws_auth_token'            => 'MWSAuthToken',
             'success_url'               => 'SuccessUrl',
             'failure_url'               => 'FailureUrl',
-            'authorization_amount'      => 'AuthorizationAmount.Amount'
+            'authorization_amount'      => 'AuthorizationAmount.Amount',
+            'expect_immediate_authorization' => 'ExpectImmediateAuthorization'
         );
 
         $action = 'ConfirmOrderReference';
@@ -415,7 +417,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
             'mws_auth_token'            => 'MWSAuthToken',
             'success_url'               => 'SuccessUrl',
-            'failure_url'               => 'FailureUrl'
+            'failure_url'               => 'FailureUrl',
+            'expect_immediate_authorization' => 'ExpectImmediateAuthorization'
         );
 
         $action = 'ConfirmOrderReference';
@@ -455,6 +458,33 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $apiParametersString = $client->getParameters();
 
         $this->assertEquals($apiParametersString, $expectedStringParams);
+    }
+
+    /*
+    * Test to validate ConfirmOrderReference API with ExpectImmediateAuthorization optional value as null
+    * It is expected to accept only Boolean value (i.e true or false)
+    */
+    public function testConfirmOrderReferenceWithExpectImmediateAuthorizationValueAsNull() {
+        $client = new Client($this->configParams);
+        $fieldMappings = array(
+            'merchant_id'               => 'SellerId',
+            'amazon_order_reference_id' => 'AmazonOrderReferenceId',
+            'mws_auth_token'            => 'MWSAuthToken',
+            'success_url'               => 'SuccessUrl',
+            'failure_url'               => 'FailureUrl',
+            'authorization_amount'      => 'AuthorizationAmount.Amount',
+            'expect_immediate_authorization' => 'ExpectImmediateAuthorization'
+        );
+        $action = 'ConfirmOrderReference';
+        $parameters = $this->setParametersAndPost($fieldMappings, $action);
+        $apiCallParams = $parameters['apiCallParams'];
+        $apiCallParams['expect_immediate_authorization'] = null;
+        try{
+            $response = $client->confirmOrderReference($apiCallParams);
+        }
+        catch (\Exception $expected) {
+            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+        }
     }
 
     public function testCancelOrderReference()
@@ -1227,7 +1257,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedParameters['Action'] = $action;
 
         foreach ($fieldMappings as $parm => $value) {
-            if ($parm === 'capture_now' || $parm === 'confirm_now' || $parm === 'inherit_shipping_address' || $parm === 'request_payment_authorization') {
+            if ($parm === 'capture_now' || $parm === 'confirm_now' || $parm === 'inherit_shipping_address' || $parm === 'request_payment_authorization' || $parm === 'expect_immediate_authorization') {
                 $expectedParameters[$value] = true;
                 $apiCallParams[$parm] = true;
             } elseif ($parm === 'order_item_categories') {
