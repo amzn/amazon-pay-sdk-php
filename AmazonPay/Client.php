@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
-    const SDK_VERSION = '3.7.0';
+    const SDK_VERSION = '3.7.1';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
 
@@ -316,9 +316,11 @@ class Client implements ClientInterface, LoggerAwareInterface
 
         // To make sure double encoding doesn't occur decode first and encode again.
         $accessToken = urldecode($accessToken);
-        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo?access_token=' . $this->urlEncode($accessToken);
+        $url          = $this->profileEndpoint . '/auth/o2/tokeninfo';
 
         $httpCurlRequest = new HttpCurl($this->config);
+        $httpCurlRequest->setAccessToken($accessToken);
+        $httpCurlRequest->setHttpHeader();
 
         $response = $httpCurlRequest->httpGet($url);
         $data       = json_decode($response);
@@ -326,6 +328,9 @@ class Client implements ClientInterface, LoggerAwareInterface
         // Ensure that the Access Token matches either the supplied Client ID *or* the supplied App ID
         // Web apps and Mobile apps will have different Client ID's but App ID should be the same
         // As long as one of these matches, from a security perspective, we have done our due diligence
+        if (!isset($data->aud)) {
+            throw new \Exception('The tokeninfo API call did not succeed');
+        }
         if (($data->aud != $this->config['client_id']) && ($data->app_id != $this->config['app_id'])) {
             // The access token does not belong to us
             throw new \Exception('The Access Token belongs to neither your Client ID nor App ID');

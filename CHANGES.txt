@@ -1,3 +1,6 @@
+3.7.1 - March 2021
+- Fixed Secuity issue - Sending access token via HTTP header instead of query string in URL for GetUserInfo API
+
 3.7.0 - January 2021
 - Added additional attribute (expect_immediate_authorization) to ConfirmOrderReference. This value can be set to true or false (Boolean). See Amazon Pay Strong Customer Authentication (SCA) Upgrade Integration Guide for more information.
 

@@ -102,7 +102,7 @@ class HttpCurl implements HttpCurlInterface
 
         // Setting the HTTP header with the Access Token only for Getting user info
         if ($this->header) {
-            $this->headerArray[] = 'Authorization: bearer ' . $this->accessToken;
+            $this->headerArray[] = 'x-amz-access-token : ' . $this->accessToken;
         }
 
         $response = $this->execute($ch);
