@@ -1,0 +1,39 @@
+name: Testing
+
+on: [push]
+
+jobs:
+
+  phpunit:
+    strategy:
+      matrix:
+        php-versions: [ '8.0', '8.1' ]
+    name: 'PHPUnit [PHP ${{ matrix.php-versions }}]'
+    runs-on: ubuntu-latest
+    steps:
+      -   name: Checkout
+          uses: actions/checkout@master
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php-versions }}
+            tools: composer:v2
+            extensions: 'json curl xml openssl'
+          env:
+            update: true
+      -   name: Get Composer Cache Directory
+          id: composer-cache
+          run: 'echo "::set-output name=dir::$(composer config cache-files-dir)"'
+      -   name: Cache Composer Dependencies
+          uses: actions/cache@v2
+          with:
+            path: vendor
+            key: composer-${{ hashFiles('composer.lock') }}
+      -   name: Installing Composer Packages
+          run: 'composer install --no-scripts --prefer-dist'
+      -   name: Unit Tests
+          run: composer test:coverage -- --coverage-clover clover.xml
+      -   name: Upload to codecov
+          uses: codecov/codecov-action@v2
+          with:
+            files: ./clover.xml

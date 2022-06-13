@@ -1,11 +1,9 @@
 <?php
 namespace AmazonPay;
 
-require_once 'AmazonPay/Client.php';
-require_once 'AmazonPay/ResponseParser.php';
-require_once 'Signature.php';
+use PHPUnit\Framework\TestCase;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     private $configParams = array(
                 'merchant_id'          => 'MERCHANT1234567',
@@ -37,7 +35,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         try {
           $client = new Client(array('sandbox' => 'false'));
         } catch (\Exception $expected) {
-            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+            $this->assertMatchesRegularExpression('/should be a boolean value/i', strval($expected));
         }
 
         $client = new Client(array('sandbox' => true));
@@ -46,7 +44,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         try {
             $client = new Client(array('sandbox' => 'true'));
         } catch (\Exception $expected) {
-            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+            $this->assertMatchesRegularExpression('/should be a boolean value/i', strval($expected));
         }
 
         // Test that string trimming is working as intended
@@ -64,7 +62,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         try {
             $client = new Client($this->configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/is not a Json File or the Json File./i', strval($expected));
+            $this->assertMatchesRegularExpression('/is not a Json File or the Json File./i', strval($expected));
         }
 
         // Test passing in invalid keys to constructor
@@ -75,7 +73,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
+            $this->assertMatchesRegularExpression('/is either not part of the configuration or has incorrect Key name./i', strval($expected));
         }
 
         // Test passing in override service URL for MWS API endpoint
@@ -87,7 +85,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $configParams = array();
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/$config cannot be null./i', strval($expected));
+            $this->assertMatchesRegularExpression('/$config cannot be null./i', strval($expected));
         }
 
     }
@@ -111,7 +109,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $configParams = "tst/unit/config/sandbox_true_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+            $this->assertMatchesRegularExpression('/should be a boolean value/i', strval($expected));
         }
 
         $configParams = "tst/unit/config/sandbox_false_bool.json";
@@ -126,14 +124,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $configParams = "tst/unit/config/sandbox_false_string.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+            $this->assertMatchesRegularExpression('/should be a boolean value/i', strval($expected));
         }
 
         try {
             $configParams = "abc.json";
             $client = new Client($configParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/is not a Json File path or the Json File./i', strval($expected));
+            $this->assertMatchesRegularExpression('/is not a Json File path or the Json File./i', strval($expected));
         }
     }
 
@@ -143,13 +141,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         try {
             $client->setSandbox(true);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/and should be a boolean value./i', strval($expected));
+            $this->assertMatchesRegularExpression('/and should be a boolean value./i', strval($expected));
         }
 
         try {
             $client->setSandbox('string value');
         } catch (\Exception $expected) {
-            $this->assertRegExp('/and should be a boolean value./i', strval($expected));
+            $this->assertMatchesRegularExpression('/and should be a boolean value./i', strval($expected));
         }
     }
 
@@ -483,7 +481,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $response = $client->confirmOrderReference($apiCallParams);
         }
         catch (\Exception $expected) {
-            $this->assertRegExp('/should be a boolean value/i', strval($expected));
+            $this->assertMatchesRegularExpression('/should be a boolean value/i', strval($expected));
         }
     }
 
@@ -1121,7 +1119,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $apiCallParams = array('amazon_reference_id' => '');
             $client->charge($apiCallParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter./i', strval($expected));
+            $this->assertMatchesRegularExpression('/key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter./i', strval($expected));
         }
 
         try {
@@ -1129,7 +1127,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $apiCallParams = array('amazon_reference_id' => 'T01');
             $client->charge($apiCallParams);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/Invalid Amazon Reference ID./i', strval($expected));
+            $this->assertMatchesRegularExpression('/Invalid Amazon Reference ID./i', strval($expected));
         }
     }
 
@@ -1140,7 +1138,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $client = new Client($this->configParams);
             $client->getUserInfo('Atza');
         } catch (\Exception $expected) {
-            $this->assertRegExp('/is a required parameter./i', strval($expected));
+            $this->assertMatchesRegularExpression('/is a required parameter./i', strval($expected));
         }
 
         try {
@@ -1148,7 +1146,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $client = new Client($this->configParams);
             $client->getUserInfo(null);
         } catch (\Exception $expected) {
-            $this->assertRegExp('/Access Token is a required parameter and is not set./i', strval($expected));
+            $this->assertMatchesRegularExpression('/Access Token is a required parameter and is not set./i', strval($expected));
         }
     }
 
@@ -1184,7 +1182,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $this->callPrivateMethod($client, 'invokePost', null);
 
         } catch (\Exception $expected) {
-            $this->assertRegExp('/Maximum number of retry attempts./i', strval($expected));
+            $this->assertMatchesRegularExpression('/Maximum number of retry attempts./i', strval($expected));
         }
 
     }

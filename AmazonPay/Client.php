@@ -7,22 +7,13 @@ namespace AmazonPay;
  * returns Response Object
  */
 
-require_once 'ResponseParser.php';
-require_once 'HttpCurl.php';
-require_once 'ClientInterface.php';
-require_once 'Regions.php';
-if (!interface_exists('\Psr\Log\LoggerAwareInterface')) {
-    require_once(__DIR__.'/../Psr/Log/LoggerAwareInterface.php');
-}
-
-if (!interface_exists('\Psr\Log\LoggerInterface')) {
-    require_once(__DIR__.'/../Psr/Log/LoggerInterface.php');
-}
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 
 class Client implements ClientInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     const SDK_VERSION = '3.7.1';
     const MWS_VERSION = '2013-01-01';
     const MAX_ERROR_RETRY = 3;
@@ -62,9 +53,6 @@ class Client implements ClientInterface, LoggerAwareInterface
     private $profileEndpointUrls;
     private $regionMappings;
 
-    // Implement a logging library that utilizes the PSR 3 logger interface
-    private $logger = null;
-
     // Boolean variable to check if the API call was a success
     public $success = false;
 
@@ -100,11 +88,6 @@ class Client implements ClientInterface, LoggerAwareInterface
         }
     }
 
-
-    public function setLogger(LoggerInterface $logger = null) {
-        $this->logger = $logger;
-    }
-    
 
     /* Helper function to log data within the Client */
     private function logMessage($message) {
