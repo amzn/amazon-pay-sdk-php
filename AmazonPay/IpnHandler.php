@@ -8,12 +8,21 @@ namespace AmazonPay;
 
 require_once 'HttpCurl.php';
 require_once 'IpnHandlerInterface.php';
+require_once(__DIR__.'/Exception/ConfigException.php');
+require_once(__DIR__.'/Exception/SnsHeaderException.php');
+require_once(__DIR__.'/Exception/SnsMessageException.php');
+require_once(__DIR__.'/Exception/SnsSignatureException.php');
 if (!interface_exists('\Psr\Log\LoggerAwareInterface')) {
     require_once(__DIR__.'/../Psr/Log/LoggerAwareInterface.php');
 }
 if (!interface_exists('\Psr\Log\LoggerInterface')) {
     require_once(__DIR__.'/../Psr/Log/LoggerInterface.php');
 }
+
+use AmazonPay\Exception\ConfigException;
+use AmazonPay\Exception\SnsHeaderException;
+use AmazonPay\Exception\SnsMessageException;
+use AmazonPay\Exception\SnsSignatureException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -80,7 +89,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
             if (array_key_exists($key, $this->ipnConfig)) {
                 $this->ipnConfig[$key] = $value;
             } else {
-                throw new \Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
+                throw new ConfigException('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
                 check the ipnConfig array key names to match your key names of your config array ', 1);
             }
         }
@@ -107,7 +116,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
         if (array_key_exists(strtolower($name), $this->ipnConfig)) {
             $this->ipnConfig[$name] = $value;
         } else {
-            throw new \Exception("Key " . $name . " is not part of the configuration", 1);
+            throw new ConfigException("Key " . $name . " is not part of the configuration", 1);
         }
     }
 
@@ -120,7 +129,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
         if (array_key_exists(strtolower($name), $this->ipnConfig)) {
             return $this->ipnConfig[$name];
         } else {
-            throw new \Exception("Key " . $name . " was not found in the configuration", 1);
+            throw new ConfigException("Key " . $name . " was not found in the configuration", 1);
         }
     }
 
@@ -139,11 +148,11 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     {
         // Quickly check that this is a sns message
         if (!array_key_exists('x-amz-sns-message-type', $this->headers)) {
-            throw new \Exception("Error with message - header " . "does not contain x-amz-sns-message-type header");
+            throw new SnsHeaderException("Error with message - header " . "does not contain x-amz-sns-message-type header");
         }
 
         if ($this->headers['x-amz-sns-message-type'] !== 'Notification') {
-            throw new \Exception("Error with message - header x-amz-sns-message-type is not " . "Notification, is " . $this->headers['x-amz-sns-message-type']);
+            throw new SnsHeaderException("Error with message - header x-amz-sns-message-type is not " . "Notification, is " . $this->headers['x-amz-sns-message-type']);
         }
     }
 
@@ -155,7 +164,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
 
         if ($json_error != 0) {
             $errorMsg = "Error with message - content is not in json format" . $this->getErrorMessageForJsonError($json_error) . " " . $this->snsMessage;
-            throw new \Exception($errorMsg);
+            throw new SnsMessageException($errorMsg);
         }
     }
 
@@ -198,11 +207,11 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     {
         $type = $this->getMandatoryField("Type");
         if (strcasecmp($type, "Notification") != 0) {
-            throw new \Exception("Error with SNS Notification - unexpected message with Type of " . $type);
+            throw new SnsMessageException("Error with SNS Notification - unexpected message with Type of " . $type);
         }
 
         if (strcmp($this->getMandatoryField("Type"), "Notification") != 0) {
-            throw new \Exception("Error with signature verification - unable to verify " . $this->getMandatoryField("Type") . " message");
+            throw new SnsMessageException("Error with signature verification - unable to verify " . $this->getMandatoryField("Type") . " message");
         } else {
 
             // Sort the fields into byte order based on the key name(A-Za-z)
@@ -246,7 +255,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
             || substr($url, -4) !== '.pem'
             || !preg_match($this->defaultHostPattern, $parsed['host'])
         ) {
-            throw new \Exception(
+            throw new SnsSignatureException(
                 'The certificate is located on an invalid domain.'
             );
         }
@@ -272,7 +281,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
 
         $result = $this->verifySignatureIsCorrectFromCertificate($signature);
         if (!$result) {
-            throw new \Exception("Unable to match signature from remote server: signature of " . $this->getCertificate($certificatePath) . " , SigningCertURL of " . $this->getMandatoryField("SigningCertURL") . " , SignatureOf " . $this->getMandatoryField("Signature"));
+            throw new SnsSignatureException("Unable to match signature from remote server: signature of " . $this->getCertificate($certificatePath) . " , SigningCertURL of " . $this->getMandatoryField("SigningCertURL") . " , SignatureOf " . $this->getMandatoryField("Signature"));
         }
     }
 
@@ -301,7 +310,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
         $certKey = openssl_get_publickey($this->certificate);
 
         if ($certKey === False) {
-            throw new \Exception("Unable to extract public key from cert");
+            throw new SnsSignatureException("Unable to extract public key from cert");
         }
 
         try {
@@ -309,21 +318,21 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
             $certSubject = $certInfo["subject"];
 
             if (is_null($certSubject)) {
-                throw new \Exception("Error with certificate - subject cannot be found");
+                throw new SnsSignatureException("Error with certificate - subject cannot be found");
             }
         } catch (\Exception $ex) {
-            throw new \Exception("Unable to verify certificate - error with the certificate subject", null, $ex);
+            throw new SnsSignatureException("Unable to verify certificate - error with the certificate subject", null, $ex);
         }
 
         if (strcmp($certSubject["CN"], $this->expectedCnName)) {
-            throw new \Exception("Unable to verify certificate issued by Amazon - error with certificate subject");
+            throw new SnsSignatureException("Unable to verify certificate issued by Amazon - error with certificate subject");
         }
 
         $result = -1;
         try {
             $result = openssl_verify($this->signatureFields, $signature, $certKey, OPENSSL_ALGO_SHA1);
         } catch (\Exception $ex) {
-            throw new \Exception("Unable to verify signature - error with the verification algorithm", null, $ex);
+            throw new SnsSignatureException("Unable to verify signature - error with the verification algorithm", null, $ex);
         }
 
         return ($result > 0);
@@ -343,7 +352,7 @@ class IpnHandler implements IpnHandlerInterface, LoggerAwareInterface
     {
         $value = $this->getField($fieldName);
         if (is_null($value)) {
-            throw new \Exception("Error with json message - mandatory field " . $fieldName . " cannot be found");
+            throw new SnsMessageException("Error with json message - mandatory field " . $fieldName . " cannot be found");
         }
         return $value;
     }
