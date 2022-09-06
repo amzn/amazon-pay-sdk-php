@@ -109,7 +109,7 @@ $config = array(
     'region'      => 'REGION');
 
 // or, instead of setting the array in the code, you can
-// initialze the Client by specifying a JSON file
+// initialize the Client by specifying a JSON file
 // $config = 'PATH_TO_JSON_FILE';
 
 // Instantiate the client class with the config type
