@@ -7,7 +7,7 @@ jobs:
   phpunit:
     strategy:
       matrix:
-        php-versions: [ '8.0', '8.1' ]
+        php-versions: [ '8.0', '8.1', '8.2' ]
     name: 'PHPUnit [PHP ${{ matrix.php-versions }}]'
     runs-on: ubuntu-latest
     steps:
