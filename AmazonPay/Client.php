@@ -51,7 +51,9 @@ class Client implements ClientInterface, LoggerAwareInterface
                 'client_id'            => null,
                 'app_id'               => null,
                 'handle_throttle'      => true,
-                'override_service_url' => null
+                'override_service_url' => null,
+                'curl_connecttimeout'  => 300,
+                'curl_timeout'         => 0
             );
 
     private $modePath = null;

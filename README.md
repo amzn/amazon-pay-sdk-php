@@ -86,6 +86,8 @@ composer require amzn/amazon-pay-sdk-php
 | Proxy Password      | `proxy_password`      | Default : `null`			    	   |
 | LWA Client ID       | `client_id`           | Default : `null`			    	   |
 | Handle Throttle     | `handle_throttle`     | Default : `true`<br>Other: `false`	    	   |
+| Curl ConnectTimeout | `curl_connecttimeout` | Default : `300`					  	   |
+| Curl Timeout        | `curl_timeout`        | Default : `0`					    	   |
 
 ## Setting Configuration
 
