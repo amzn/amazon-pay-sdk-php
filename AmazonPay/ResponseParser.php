@@ -5,8 +5,6 @@ namespace AmazonPay;
  * Methods provided to convert the Response from the POST to XML, Array or JSON
  */
 
-require_once 'ResponseInterface.php';
-
 class ResponseParser implements ResponseInterface
 {
     public $response = null;

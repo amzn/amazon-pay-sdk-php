@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+>
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tst/unit</directory>
+        </testsuite>
+    </testsuites>
+    <coverage includeUncoveredFiles="false">
+        <include>
+            <directory suffix=".php">AmazonPay</directory>
+        </include>
+    </coverage>
+</phpunit>

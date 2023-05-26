@@ -1,3 +1,10 @@
+This fork only works, when this is used via composer and implements fixes for PHP 8.1
+
+- Removed psr files from repository
+- Removed phar file creation tool
+- Added missing php extension requirements
+- Supports only PHP 8.0+
+
 # Amazon Pay SDK (PHP)
 Amazon Pay API Integration
 
