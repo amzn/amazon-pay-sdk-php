@@ -84,6 +84,7 @@ class ResponseParser implements ResponseInterface
     
     private function getStatus($type, $path, $response) 
     {
+       $status = null;
        $data= new \SimpleXMLElement($response);
        $namespaces = $data->getNamespaces(true);
        foreach($namespaces as $key=>$value){
