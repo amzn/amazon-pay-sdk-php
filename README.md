@@ -1,4 +1,4 @@
-> **Important:** This SDK has been deprecated. Amazon Pay will continue to support this version but it will not be updated with new features. New integrations should use [Amazon Pay API SDK (PHP)](https://github.com/amzn/amazon-pay-api-sdk-php) & refer this [documentation](https://developer.amazon.com/docs/amazon-pay/intro.html) for more details.
+> **Important:** This SDK has been deprecated and no longer maintained. No further updates or security patches will be provided. New integrations should use [Amazon Pay API SDK (PHP)](https://github.com/amzn/amazon-pay-api-sdk-php) & refer this [documentation](https://developer.amazon.com/docs/amazon-pay/intro.html) for more details.
  
 # Amazon Pay SDK (PHP)
 Amazon Pay API Integration
