@@ -11,6 +11,9 @@ require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
 require_once 'ClientInterface.php';
 require_once 'Regions.php';
+require_once(__DIR__.'/Exception/ClientException.php');
+require_once(__DIR__.'/Exception/ConfigException.php');
+require_once(__DIR__.'/Exception/SignatureException.php');
 if (!interface_exists('\Psr\Log\LoggerAwareInterface')) {
     require_once(__DIR__.'/../Psr/Log/LoggerAwareInterface.php');
 }
@@ -18,6 +21,10 @@ if (!interface_exists('\Psr\Log\LoggerAwareInterface')) {
 if (!interface_exists('\Psr\Log\LoggerInterface')) {
     require_once(__DIR__.'/../Psr/Log/LoggerInterface.php');
 }
+
+use AmazonPay\Exception\ClientException;
+use AmazonPay\Exception\ConfigException;
+use AmazonPay\Exception\SignatureException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -93,10 +100,10 @@ class Client implements ClientInterface, LoggerAwareInterface
             if (is_array($configArray)) {
                 $this->checkConfigKeys($configArray);
             } else {
-                throw new \Exception('$config is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
+                throw new ConfigException('$config is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
             }
         } else {
-            throw new \Exception('$config cannot be null.');
+            throw new ConfigException('$config cannot be null.');
         }
     }
 
@@ -135,11 +142,11 @@ class Client implements ClientInterface, LoggerAwareInterface
 
             if ($jsonError != 0) {
                 $errorMsg = "Error with message - content is not in json format" . $this->getErrorMessageForJsonError($jsonError) . " " . $configArray;
-                throw new \Exception($errorMsg);
+                throw new ConfigException($errorMsg);
             }
         } else {
             $errorMsg ='$config is not a Json File path or the Json File was not found in the path provided';
-            throw new \Exception($errorMsg);
+            throw new ConfigException($errorMsg);
         }
         return $configArray;
     }
@@ -158,7 +165,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             if (array_key_exists($key, $this->config)) {
                 $this->config[$key] = $value;
             } else {
-                throw new \Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
+                throw new ConfigException('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
                 check the config array key names to match your key names of your config array', 1);
             }
         }
@@ -201,7 +208,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (is_bool($value)) {
             $this->config['sandbox'] = $value;
         } else {
-            throw new \Exception('sandbox value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
+            throw new ConfigException('sandbox value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
         }
     }
 
@@ -214,7 +221,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (!empty($value)) {
             $this->config['client_id'] = $value;
         } else {
-            throw new \Exception('setter value for client ID provided is empty');
+            throw new ConfigException('setter value for client ID provided is empty');
         }
     }
 
@@ -227,7 +234,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (!empty($value)) {
             $this->config['app_id'] = $value;
         } else {
-            throw new \Exception('setter value for app ID provided is empty');
+            throw new ConfigException('setter value for app ID provided is empty');
         }
     }
 
@@ -272,7 +279,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (array_key_exists(strtolower($name), $this->config)) {
             return $this->config[strtolower($name)];
         } else {
-            throw new \Exception('Key ' . $name . ' is either not a part of the configuration array config or the ' . $name . ' does not match the key name in the config array', 1);
+            throw new ConfigException('Key ' . $name . ' is either not a part of the configuration array config or the ' . $name . ' does not match the key name in the config array', 1);
         }
     }
 
@@ -333,7 +340,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         }
         if (($data->aud != $this->config['client_id']) && ($data->app_id != $this->config['app_id'])) {
             // The access token does not belong to us
-            throw new \Exception('The Access Token belongs to neither your Client ID nor App ID');
+            throw new ClientException('The Access Token belongs to neither your Client ID nor App ID');
         }
 
         // Exchange the access token for user profile
@@ -368,11 +375,11 @@ class Client implements ClientInterface, LoggerAwareInterface
             // Ensure that no unexpected type coercions have happened
             if ($param === 'capture_now' || $param === 'confirm_now' || $param === 'inherit_shipping_address' || $param === 'request_payment_authorization' || $param === 'expect_immediate_authorization') {
                 if (!is_bool($value)) {
-                    throw new \Exception($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
+                    throw new ClientException($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
                 }
             } elseif ($param === 'provider_credit_details' || $param === 'provider_credit_reversal_details' || $param === 'order_item_categories' || $param === 'notification_configuration_list') {
                 if (!is_array($value)) {
-                    throw new \Exception($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be an array value');
+                    throw new ClientException($param . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be an array value');
                 }
             }
 
@@ -473,14 +480,14 @@ class Client implements ClientInterface, LoggerAwareInterface
     {
         $configurationIndex = 0;
         if (!is_array($configuration)) {
-            throw new \Exception('Notification Configuration List value ' . $configuration . ' is of type ' . gettype($configuration) . ' and should be an array value');
+            throw new ClientException('Notification Configuration List value ' . $configuration . ' is of type ' . gettype($configuration) . ' and should be an array value');
         }
         foreach ($configuration as $url => $events) {
             $configurationIndex = $configurationIndex + 1;
             $parameters['NotificationConfigurationList.NotificationConfiguration.' . $configurationIndex . '.NotificationUrl'] = $url;
             $eventIndex = 0;
             if (!is_array($events)) {
-                throw new \Exception('Notification Configuration Events value ' . $events . ' is of type ' . gettype($events) . ' and should be an array value');
+                throw new ClientException('Notification Configuration Events value ' . $events . ' is of type ' . gettype($events) . ' and should be an array value');
             }
             foreach ($events as $event) {
                 $eventIndex = $eventIndex + 1;
@@ -1468,10 +1475,10 @@ class Client implements ClientInterface, LoggerAwareInterface
                     $confirmParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
                     break;
                 default:
-                    throw new \Exception('Invalid Amazon Reference ID');
+                    throw new ClientException('Invalid Amazon Reference ID');
             }
         } else {
-            throw new \Exception('key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter');
+            throw new ClientException('key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter');
         }
 
         // Set the other parameters if the values are present
@@ -1526,7 +1533,7 @@ class Client implements ClientInterface, LoggerAwareInterface
                 }
 
                 if ($oroStatus['State'] != 'Open' && $oroStatus['State'] != 'Draft') {
-                    throw new \Exception('The Order Reference is in the ' . $oroStatus['State'] . " State. It should be in the Draft or Open State");
+                    throw new ClientException('The Order Reference is in the ' . $oroStatus['State'] . " State. It should be in the Draft or Open State");
                 }
                 
                 return $response;
@@ -1557,13 +1564,13 @@ class Client implements ClientInterface, LoggerAwareInterface
                 }
         
                 if ($baStatus['State'] != 'Open' && $baStatus['State'] != 'Draft') {
-                    throw new \Exception('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
+                    throw new ClientException('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
                 }
         
                 return $response;
 
             default:
-                throw new \Exception('Invalid Charge Type');
+                throw new ClientException('Invalid Charge Type');
         }
     }
 
@@ -1660,7 +1667,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             // Ensure that no unexpected type coercions have happened
             if ($key === 'CaptureNow' || $key === 'ConfirmNow' || $key === 'InheritShippingAddress' || $key === 'RequestPaymentAuthorization') {
                 if (!is_bool($value)) {
-                    throw new \Exception($key . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
+                    throw new SignatureException($key . ' value ' . $value . ' is of type ' . gettype($value) . ' and should be a boolean value');
                 }
             }
 
@@ -1728,7 +1735,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             $parameters['SignatureMethod'] = $algorithm;
             $stringToSign                  = $this->calculateStringToSignV2($parameters);
         } else {
-            throw new \Exception("Invalid Signature Version specified");
+            throw new SignatureException("Invalid Signature Version specified");
         }
 
         return $this->sign($stringToSign, $algorithm);
@@ -1782,7 +1789,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         } else if ($algorithm === 'HmacSHA256') {
             $hash = 'sha256';
         } else {
-            throw new \Exception("Non-supported signing method specified");
+            throw new SignatureException("Non-supported signing method specified");
         }
 
         return base64_encode(hash_hmac($hash, $data, $this->config['secret_key'], true));
@@ -1865,7 +1872,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             $delay = (int) (pow(4, $retries) * 100000) + 600000;
             usleep($delay);
         } else {
-            throw new \Exception('Error Code: '. $status.PHP_EOL.'Maximum number of retry attempts - '. $retries .' reached');
+            throw new ClientException('Error Code: '. $status.PHP_EOL.'Maximum number of retry attempts - '. $retries .' reached');
         }
     }
 
@@ -1888,10 +1895,10 @@ class Client implements ClientInterface, LoggerAwareInterface
                 $this->mwsServiceUrl   = 'https://' . $this->mwsEndpointUrl . '/' . $this->modePath . '/' . self::MWS_VERSION;
                 $this->mwsEndpointPath = '/' . $this->modePath . '/' . self::MWS_VERSION;
             } else {
-                throw new \Exception($region . ' is not a valid region');
+                throw new ClientException($region . ' is not a valid region');
             }
         } else {
-            throw new \Exception("config['region'] is a required parameter and is not set");
+            throw new ClientException("config['region'] is a required parameter and is not set");
         }
     }
 
@@ -1907,10 +1914,10 @@ class Client implements ClientInterface, LoggerAwareInterface
             if (array_key_exists($region, $this->regionMappings) ) {
                 $this->profileEndpoint = 'https://' . $profileEnvt . '.' . $this->profileEndpointUrls[$region];
             } else {
-                throw new \Exception($region . ' is not a valid region');
+                throw new ConfigException($region . ' is not a valid region');
             }
         } else {
-            throw new \Exception("config['region'] is a required parameter and is not set");
+            throw new ConfigException("config['region'] is a required parameter and is not set");
         }
     }
 
