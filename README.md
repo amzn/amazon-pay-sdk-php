@@ -32,7 +32,7 @@ Integration steps can be found below:
 
 The client takes in parameters in the following format:
 
-1. Associative array
+1. Associative array.
 2. Path to the JSON file containing configuration information.
 
 ## Installing using Composer
@@ -134,7 +134,7 @@ $config = array(
 
 $client = new Client($config);
 
-// Also you can set the sandbox variable in the config() array of the Client class by
+// Also you can set the sandbox variable in the config array of the Client class by
 
 $client->setSandbox(true);
 ```
@@ -300,7 +300,7 @@ See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) 
 
 ### IPN Handling
 
-1. To receive IPN's successfully you will need an valid SSL on your domain.
+1. To receive IPN's successfully you will need a valid SSL on your domain.
 2. You can set up your Notification endpoints by either (a) using the Seller Central Integration Settings page Settings tab, or (b) by using the SetMerchantNotificationConfiguration API call.
 3. IpnHandler.php class handles verification of the source and the data of the IPN
 
@@ -423,7 +423,7 @@ $response = $client->charge($requestParameters);
 See the [API Response](https://github.com/amzn/amazon-pay-sdk-php#api-response) section for information on parsing the API response.
 
 #### Obtain profile information (getUserInfo method)
-1. obtains the user's profile information from Amazon using the access token returned by the Button widget.
+1. obtain the user's profile information from Amazon using the access token returned by the Button widget.
 2. An access token is granted by the authorization server when a user logs in to a site.
 3. An access token is specific to a client, a user, and an access scope. A client must use an access token to retrieve customer profile data.
 
