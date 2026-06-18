@@ -101,7 +101,7 @@ class Client implements ClientInterface, LoggerAwareInterface
     }
 
 
-    public function setLogger(LoggerInterface $logger = null) {
+    public function setLogger(LoggerInterface $logger = null): void {
         $this->logger = $logger;
     }
     
