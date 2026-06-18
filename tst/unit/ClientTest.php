@@ -21,7 +21,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 'proxy_host'           => null,
                 'proxy_port'           => -1,
                 'proxy_username'       => null,
-                'proxy_Password'       => null
+                'proxy_Password'       => null,
+                'curl_connecttimeout'  => 300,
+                'curl_timeout'         => 0
             );
 
     public function testConfigArray()

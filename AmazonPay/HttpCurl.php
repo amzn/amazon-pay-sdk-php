@@ -56,6 +56,9 @@ class HttpCurl implements HttpCurlInterface
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->config['curl_connecttimeout']);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->config['curl_timeout']);
+
         if (!is_null($this->config['cabundle_file'])) {
             curl_setopt($ch, CURLOPT_CAINFO, $this->config['cabundle_file']);
         }
