@@ -61,6 +61,7 @@ class Client implements ClientInterface, LoggerAwareInterface
     private $mwsServiceUrls;
     private $profileEndpointUrls;
     private $regionMappings;
+    private $requestBody;
 
     // Implement a logging library that utilizes the PSR 3 logger interface
     private $logger = null;
@@ -105,6 +106,15 @@ class Client implements ClientInterface, LoggerAwareInterface
         $this->logger = $logger;
     }
     
+    private function setRequestBody($url, $parameters = null)
+    {
+        $this->requestBody = $url . '?' . $parameters;
+    }
+
+    public function getRequestBody()
+    {
+        return $this->requestBody;
+    }
 
     /* Helper function to log data within the Client */
     private function logMessage($message) {
@@ -1817,6 +1827,7 @@ class Client implements ClientInterface, LoggerAwareInterface
                     $response = $httpCurlRequest->httpPost($this->mwsServiceUrl, $this->userAgent, $parameters);
                     $curlResponseInfo = $httpCurlRequest->getCurlResponseInfo();
                     $statusCode = $curlResponseInfo["http_code"];
+                    $this->setRequestBody($this->mwsServiceUrl, $parameters);
                     $this->logMessage($this->userAgent);
                     $response = array(
                         'Status' => $statusCode,
